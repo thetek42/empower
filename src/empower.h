@@ -2,9 +2,9 @@
 #define EMPOWER_H_
 
 #include <errno.h>
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -197,7 +197,7 @@ enum {
 
 #ifndef E_STDC23
 # define nullptr NULL
-#endif
+#endif // E_STDC23
 
 #define E_MACRO_STRINGIFY(x) E_MACRO_STRINGIFY_HELPER (x)
 #define E_MACRO_STRINGIFY_HELPER(x) #x
@@ -238,6 +238,33 @@ enum __e_log_level {
 void __e_log_impl (enum __e_log_level level, const char *formatted_file_pos, const char *fmt, ...);
 
 #endif // E_STDC23
+
+/* debugging utilities ********************************************************/
+
+#ifdef E_STDC11
+# define E_DEBUG_AUTO_FMT(value) _Generic ((value),                            \
+		i8: "%" PRIi8,                                                 \
+		i16: "%" PRIi16,                                               \
+		i32: "%" PRIi32,                                               \
+		i64: "%" PRIi64,                                               \
+		u8: "%" PRIu8,                                                 \
+		u16: "%" PRIu16,                                               \
+		u32: "%" PRIu32,                                               \
+		u64: "%" PRIu64,                                               \
+		f32: "%f",                                                     \
+		f64: "%f",                                                     \
+		bool: "%d",                                                    \
+		default: "%p")
+
+# define e_debug(value)                                                        \
+	do {                                                                   \
+		fprintf (stderr, "\x1b[35mDEBUG \x1b[0m"                       \
+		         E_MACRO_STRINGIFY (value) " = \x1b[35m");             \
+		fprintf (stderr, E_DEBUG_AUTO_FMT(value), (value));            \
+		fprintf (stderr, "\x1b[0m \x1b[90m(" __FILE__ ":"              \
+		         E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n");           \
+	} while (0)
+#endif // E_STDC11
 
 /* memory utilities ***********************************************************/
 
