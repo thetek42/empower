@@ -28,6 +28,15 @@
 # error "empower does not support C89."
 #endif
 
+/* macro utils ****************************************************************/
+
+#ifndef E_STDC23
+# define nullptr NULL
+#endif // E_STDC23
+
+#define E_MACRO_STRINGIFY(x) E_MACRO_STRINGIFY_HELPER (x)
+#define E_MACRO_STRINGIFY_HELPER(x) #x
+
 /* common types ***************************************************************/
 
 typedef int8_t i8;
@@ -194,15 +203,6 @@ enum {
 	E_ERR_HARDWARE_ERROR            = -EHWPOISON,
 };
 
-/* macro utils ****************************************************************/
-
-#ifndef E_STDC23
-# define nullptr NULL
-#endif // E_STDC23
-
-#define E_MACRO_STRINGIFY(x) E_MACRO_STRINGIFY_HELPER (x)
-#define E_MACRO_STRINGIFY_HELPER(x) #x
-
 /* logging ********************************************************************/
 
 #ifdef E_STDC23
@@ -239,6 +239,22 @@ enum __e_log_level {
 void __e_log_impl (enum __e_log_level level, const char *formatted_file_pos, const char *fmt, ...);
 
 #endif // E_STDC23
+
+/* strings ********************************************************************/
+
+typedef int (* e_char_predicate_t) (int c);
+
+usize e_cstr_count_char (const char *s, char c);
+usize e_cstr_count_func (const char *s, e_char_predicate_t func);
+bool e_cstr_is_ascii (const char *s);
+bool e_cstr_is_blank (const char *s);
+bool e_cstr_matches_predicate (const char *s, e_char_predicate_t func);
+char *e_cstr_to_ascii_lower (char *s);
+char *e_cstr_to_ascii_upper (char *s);
+char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
+char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
+
+int e_char_is_ascii (int c);
 
 /* debugging utilities ********************************************************/
 
@@ -377,14 +393,20 @@ struct __e_test_result __e_global_test = {0};
 		      EXIT_SUCCESS);                                           \
 	} while (0)
 
-#if !defined(E_STDC23) || defined(E_TEST_TYPE_MACROS)
-# define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
-# define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (type, (type), name, expr, check)
-# define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
-#else // !defined(E_STDC23) || E_TEST_TYPE_MACROS
+#if defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
 # define e_test_assert(name, expr) __e_test_assert (auto, name, expr)
 # define e_test_assert_eq(name, expr, check) __e_test_assert_eq (auto, typeof (result), name, expr, check)
 # define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
-#endif // !defined(E_STDC23) || E_TEST_TYPE_MACROS
+#else // defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
+# ifdef E_STDC11
+#  define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
+#  define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (type, type, name, expr, check)
+#  define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
+# else // E_STDC11
+#  define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
+#  define e_test_assert_eq(name, type, expr, check) __e_test_assert (type, name, (expr) == (check))
+#  define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
+# endif // E_STDC11
+#endif // defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
 
 #endif // EMPOWER_H_
