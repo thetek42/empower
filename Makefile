@@ -2,15 +2,16 @@ CC := cc
 AR := ar
 
 STDC ?= c23
-CFLAGS := -std=$(STDC) -Isrc
+CFLAGS := -std=$(STDC) -Iinc
 CFLAGS_WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -pedantic -fanalyzer
 CFLAGS_DEBUG := -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
 CFLAGS_RELEASE := -DNDEBUG -O3 -march=native
+CFLAGS_DEP = -MD -MP -MF $(<:src/%.c=obj/%.dep)
 
-HEADER := src/empower.h
 SRC_FILES := $(wildcard src/*.c)
-OBJ_DEBUG := $(SRC_FILES:src/%.c=obj/debug/%-$(STDC).o)
-OBJ_RELEASE := $(SRC_FILES:src/%.c=obj/release/%-$(STDC).o)
+OBJ_DEBUG := $(SRC_FILES:src/%.c=obj/%-debug-$(STDC).o)
+OBJ_RELEASE := $(SRC_FILES:src/%.c=obj/%-release-$(STDC).o)
+DEP_FILES := $(SRC_FILES:src/%.c=obj/%.dep)
 LIB_DEBUG := bin/empower-debug-$(STDC).a
 LIB_RELEASE := bin/empower-$(STDC).a
 TEST_FILES := $(wildcard test/test.c)
@@ -32,22 +33,25 @@ test: $(TEST_TARGET)
 .PHONY: all clean test
 
 
-$(LIB_DEBUG): $(OBJ_DEBUG) $(HEADER)
+$(LIB_DEBUG): $(OBJ_DEBUG)
 	@mkdir -p $(@D)
 	$(AR) rcs $@ $(OBJ_DEBUG)
 
-$(LIB_RELEASE): $(OBJ_RELEASE) $(HEADER)
+$(LIB_RELEASE): $(OBJ_RELEASE)
 	@mkdir -p $(@D)
 	$(AR) rcs $@ $(OBJ_RELEASE)
 
-$(TEST_TARGET): $(TEST_FILES) $(LIB_DEBUG) $(HEADER)
+$(TEST_TARGET): $(TEST_FILES) $(LIB_DEBUG)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) $(TEST_FILES) $(LIB_DEBUG) -o $@
 
-obj/debug/%-$(STDC).o: src/%.c $(HEADER)
+obj/%-debug-$(STDC).o: src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) -c $< -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) -c $< -o $@ $(CFLAGS_DEP)
 
-obj/release/%-$(STDC).o: src/%.c $(HEADER)
+obj/%-release-$(STDC).o: src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_RELEASE) -c $< -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_RELEASE) -c $< -o $@ $(CFLAGS_DEP)
+
+
+-include $(DEP_FILES)

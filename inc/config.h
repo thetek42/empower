@@ -6,7 +6,6 @@
 #define E_CONFIG_MODULE_CSTR				1
 #define E_CONFIG_MODULE_DEBUG				1
 #define E_CONFIG_MODULE_LOG				1
-#define E_CONFIG_MODULE_MACRO				1
 #define E_CONFIG_MODULE_RESULT				1
 #define E_CONFIG_MODULE_TEST				1
 
