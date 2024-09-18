@@ -1,6 +1,8 @@
 #include "empower.h"
 #include <stdlib.h>
 
+#if E_CONFIG_MODULE_ALLOC
+
 void *
 __e_mem_alloc (usize size)
 {
@@ -8,7 +10,7 @@ __e_mem_alloc (usize size)
 
 	ptr = malloc (size);
 	if (ptr == nullptr) {
-		e_die ("failed to alloc %zu bytes", size);
+		e_die ("failed to alloc %"E_FMT_USIZE" bytes", size);
 	}
 
 	return ptr;
@@ -21,7 +23,7 @@ __e_mem_calloc (usize nmemb, usize size)
 
 	ptr = calloc (nmemb, size);
 	if (ptr == nullptr) {
-		e_die ("failed to calloc %zu bytes", nmemb * size);
+		e_die ("failed to calloc %"E_FMT_USIZE" bytes", nmemb * size);
 	}
 
 	return ptr;
@@ -32,8 +34,10 @@ __e_mem_realloc (void *ptr, usize size)
 {
 	ptr = realloc (ptr, size);
 	if (ptr == nullptr) {
-		e_die ("failed to realloc %zu bytes", size);
+		e_die ("failed to realloc %"E_FMT_USIZE" bytes", size);
 	}
 
 	return ptr;
 }
+
+#endif /* E_CONFIG_MODULE_ALLOC */

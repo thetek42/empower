@@ -1,6 +1,8 @@
 #include "empower.h"
 #include <ctype.h>
 
+#if E_CONFIG_MODULE_CSTR
+
 usize
 e_cstr_count_char (const char *s, char c)
 {
@@ -104,3 +106,5 @@ e_char_is_ascii (int c)
 {
 	return 0 <= c && c <= 0x7F;
 }
+
+#endif /* E_CONFIG_MODULE_CSTR */

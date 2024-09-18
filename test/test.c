@@ -1,9 +1,10 @@
-#define E_TEST_MAIN
-#define E_TEST_TYPE_MACROS
+#define E_CONFIG_TEST_TYPE_MACROS_OVERRIDE
 #include "empower.h"
 #include <ctype.h>
 
 static void test_cstr (void);
+
+E_TEST_MAIN ();
 
 int
 main (int argc, char *argv[])

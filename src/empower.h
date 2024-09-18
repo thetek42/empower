@@ -1,68 +1,169 @@
-#ifndef EMPOWER_H_
-#define EMPOWER_H_
+#ifndef _EMPOWER_H_
+#define _EMPOWER_H_
 
+#include "config.h"
+
+/* c version checks ***********************************************************/
+
+#define E_STDC_VERSION_C23 202000L /* to be replaced with 202311L in the future */
+#define E_STDC_VERSION_C11 201112L
+#define E_STDC_VERSION_C99 199901L
+#define E_STDC_VERSION_C89 198900L
+
+#ifdef __STDC_VERSION__
+# define E_STDC_VERSION __STDC_VERSION__
+#else /* __STDC_VERSION__ */
+# define E_STDC_VERSION E_STDC_VERSION_C89
+#endif /* __STDC_VERSION__ */
+
+/* config checks **************************************************************/
+
+#if E_CONFIG_TEST_TYPE_MACROS && (E_STDC_VERSION < E_STDC_VERSION_C23)
+# error "E_CONFIG_TEST_TYPE_MACROS requires C23 or later"
+#endif /* E_CONFIG_TEST_TYPE_MACROS && (E_STDC_VERSION < E_STDC_VERSION_C23) */
+
+/* includes *******************************************************************/
+
+#include <assert.h>
 #include <errno.h>
-#include <inttypes.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 
-/* c version checks ***********************************************************/
+#if E_STDC_VERSION >= E_STDC_VERSION_C99
+# include <inttypes.h>
+# if E_STDC_VERSION < E_STDC_VERSION_C23
+#  include <stdbool.h>
+# endif /* E_STDC_VERSION < E_STDC_VERSION_C23 */
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
 
-#if __STDC_VERSION__ >= 202000L
-#define E_STDC23
+#if E_CONFIG_HAS_SYS_TYPES
+# include <sys/types.h>
 #endif
 
-#if __STDC_VERSION__ >= 201000L
-#define E_STDC11
-#endif
+/* c feature backports ********************************************************/
 
-#if __STDC_VERSION__ >= 199900L
-#define E_STDC99
-#endif
+#if E_STDC_VERSION < E_STDC_VERSION_C23
+# define nullptr NULL
+typedef void *nullptr_t;
+#endif /* E_STDC_VERSION < E_STDC_VERSION_C23 */
 
-#if __STDC_VERSION__ < 199900L
-# error "empower does not support C89."
-#endif
+#if E_STDC_VERSION < E_STDC_VERSION_C11
+# define static_assert(expr, msg) typedef char __e_static_assertion[(expr) ? 1 : -1]
+#endif /* E_STDC_VERSION < E_STDC_VERSION_C11 */
+
+#if !E_CONFIG_HAS_SYS_TYPES
+typedef ptrdiff_t ssize_t;
+static_assert (sizeof (isize) == sizeof (usize));
+#endif /* !E_CONFIG_HAS_SYS_TYPES */
+
+#if E_STDC_VERSION < E_STDC_VERSION_C99
+# define restrict
+#endif /* E_STDC_VERSION < E_STDC_VERSION_C99 */
+
+#if E_STDC_VERSION < E_STDC_VERSION_C99
+typedef signed char int8_t;
+typedef signed short int16_t;
+typedef signed int int32_t;
+typedef signed long int64_t;
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned long uint64_t;
+typedef ssize_t intptr_t;
+typedef size_t uintptr_t;
+typedef uint8_t bool;
+# define false 0
+# define true 1
+# define PRId8 "d"
+# define PRIi8 "i"
+# define PRIu8 "u"
+# define PRIo8 "o"
+# define PRIx8 "x"
+# define PRIX8 "X"
+# define PRId16 "d"
+# define PRIi16 "i"
+# define PRIu16 "u"
+# define PRIo16 "o"
+# define PRIx16 "x"
+# define PRIX16 "X"
+# define PRId32 "d"
+# define PRIi32 "i"
+# define PRIu32 "u"
+# define PRIo32 "o"
+# define PRIx32 "x"
+# define PRIX32 "X"
+# define PRId64 "ld"
+# define PRIi64 "li"
+# define PRIu64 "lu"
+# define PRIo64 "lo"
+# define PRIx64 "lx"
+# define PRIX64 "lX"
+# define PRIdPTR "ld"
+# define PRIiPTR "li"
+# define PRIuPTR "lu"
+# define PRIoPTR "lo"
+# define PRIxPTR "lx"
+# define PRIXPTR "lX"
+#endif /* E_STDC_VERSION < E_STDC_VERSION_C99 */
+
+#if E_STDC_VERSION >= E_STDC_VERSION_C99
+# define E_FMT_USIZE "zu"
+# define E_FMT_ISIZE "zi"
+#else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+# define E_FMT_USIZE "lu"
+# define E_FMT_ISIZE "li"
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
 
 /* macro utils ****************************************************************/
 
-#ifndef E_STDC23
-# define nullptr NULL
-#endif // E_STDC23
-
-#define E_MACRO_STRINGIFY(x) E_MACRO_STRINGIFY_HELPER (x)
-#define E_MACRO_STRINGIFY_HELPER(x) #x
+#if E_CONFIG_MODULE_MACRO
+# define E_MACRO_STRINGIFY(x) E_MACRO_STRINGIFY_HELPER (x)
+# define E_MACRO_STRINGIFY_HELPER(x) #x
+#endif /* E_CONFIG_MODULE_MACRO */
 
 /* common types ***************************************************************/
 
 typedef int8_t i8;
 typedef int16_t i16;
-typedef int32_t i32;
-typedef int64_t i64;
 typedef uint8_t u8;
 typedef uint16_t u16;
+typedef int32_t i32;
 typedef uint32_t u32;
+typedef int64_t i64;
 typedef uint64_t u64;
+#if E_CONFIG_HAS_INT_128
+typedef signed __int128 i128;
+typedef unsigned __int128 u128;
+#endif /* E_CONFIG_HAS_INT_128 */
+
 typedef signed char ichar;
-typedef signed long long llong;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
-typedef unsigned long long ullong;
 typedef size_t usize;
 typedef ssize_t isize;
-typedef intptr_t iptr;
-typedef uintptr_t uptr;
+
+#if E_STDC_VERSION >= E_STDC_VERSION_C99
+typedef signed long long llong;
+typedef unsigned long long ullong;
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+
+#if E_CONFIG_HAS_FLOAT
 typedef float f32;
+#endif /* E_CONFIG_HAS_FLOAT */
+#if E_CONFIG_HAS_DOUBLE
 typedef double f64;
+#endif /* E_CONFIG_HAS_DOUBLE */
+#if E_CONFIG_HAS_LONG_DOUBLE
 typedef long double f128;
+#endif /* E_CONFIG_HAS_LONG_DOUBLE */
 
 /* results ********************************************************************/
+
+#if E_CONFIG_MODULE_RESULT
 
 typedef isize e_result_t;
 
@@ -200,47 +301,57 @@ enum {
 	E_ERR_OWNER_DIED                = -EOWNERDEAD,
 	E_ERR_NOT_RECOVERABLE           = -ENOTRECOVERABLE,
 	E_ERR_RFKILL                    = -ERFKILL,
-	E_ERR_HARDWARE_ERROR            = -EHWPOISON,
+	E_ERR_HARDWARE_ERROR            = -EHWPOISON
 };
+
+#endif /* E_CONFIG_MODULE_RESULT */
 
 /* logging ********************************************************************/
 
-#ifdef E_STDC23
+#if E_CONFIG_MODULE_LOG
 
-# define e_log_debug(fmt, ...) fprintf (stderr, "\x1b[35mDEBUG \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
-# define e_log_info(fmt, ...)  fprintf (stderr, "\x1b[32mINFO  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
-# define e_log_warn(fmt, ...)  fprintf (stderr, "\x1b[33mWARN  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
-# define e_log_error(fmt, ...) fprintf (stderr, "\x1b[31mERROR \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
-# define e_die(fmt, ...)                                                       \
+# if E_STDC_VERSION >= E_STDC_VERSION_C23
+#  define e_log_debug(fmt, ...) fprintf (stderr, "\x1b[35mDEBUG \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+#  define e_log_info(fmt, ...)  fprintf (stderr, "\x1b[32mINFO  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+#  define e_log_warn(fmt, ...)  fprintf (stderr, "\x1b[33mWARN  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+#  define e_log_error(fmt, ...) fprintf (stderr, "\x1b[31mERROR \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+#  define e_die(fmt, ...)                                                       \
 	do {                                                                   \
 		e_log_error (fmt __VA_OPT__ (,) __VA_ARGS__);                  \
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
-
-#else // E_STDC23
-
-# define e_log_debug(...) __e_log_impl (__E_LOG_LEVEL_DEBUG, " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
-# define e_log_info(...)  __e_log_impl (__E_LOG_LEVEL_INFO,  " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
-# define e_log_warn(...)  __e_log_impl (__E_LOG_LEVEL_WARN,  " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
-# define e_log_error(...) __e_log_impl (__E_LOG_LEVEL_ERROR, " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
-# define e_die(...)                                                            \
-	do {                                                                   \
-		e_log_error (__VA_ARGS__);                                     \
-		exit (EXIT_FAILURE);                                           \
-	} while (0)
-
+# else /* E_STDC_VERSION >= E_STDC_VERSION_C23 */
 enum __e_log_level {
 	__E_LOG_LEVEL_DEBUG,
 	__E_LOG_LEVEL_INFO,
 	__E_LOG_LEVEL_WARN,
-	__E_LOG_LEVEL_ERROR,
+	__E_LOG_LEVEL_ERROR
 };
-
+#  if E_STDC_VERSION >= E_STDC_VERSION_C99
+#   define e_log_debug(...) __e_log_impl (__E_LOG_LEVEL_DEBUG, " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
+#   define e_log_info(...)  __e_log_impl (__E_LOG_LEVEL_INFO,  " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
+#   define e_log_warn(...)  __e_log_impl (__E_LOG_LEVEL_WARN,  " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
+#   define e_log_error(...) __e_log_impl (__E_LOG_LEVEL_ERROR, " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n", __VA_ARGS__)
+#   define e_die(...)                                                            \
+	do {                                                                   \
+		e_log_error (__VA_ARGS__);                                     \
+		exit (EXIT_FAILURE);                                           \
+	} while (0)
 void __e_log_impl (enum __e_log_level level, const char *formatted_file_pos, const char *fmt, ...);
+#  else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+void e_log_debug (const char *fmt, ...);
+void e_log_info (const char *fmt, ...);
+void e_log_warn (const char *fmt, ...);
+void e_log_error (const char *fmt, ...);
+void e_die (const char *fmt, ...);
+#  endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+# endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 */
 
-#endif // E_STDC23
+#endif /* E_CONFIG_MODULE_LOG */
 
-/* strings ********************************************************************/
+/* cstr ***********************************************************************/
+
+#if E_CONFIG_MODULE_CSTR
 
 typedef int (* e_char_predicate_t) (int c);
 
@@ -256,10 +367,18 @@ char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 
 int e_char_is_ascii (int c);
 
+#endif /* E_CONFIG_MODULE_CSTR */
+
 /* debugging utilities ********************************************************/
 
-#ifdef E_STDC11
-# define E_DEBUG_AUTO_FMT(value) _Generic ((value),                            \
+#if E_CONFIG_MODULE_DEBUG
+
+# if E_STDC_VERSION >= E_STDC_VERSION_C11
+#  if !E_CONFIG_MODULE_MACRO
+#   error "module e_debug depends on: e_macro"
+#  endif /* !E_CONFIG_MODULE_MACRO */
+
+#  define E_DEBUG_AUTO_FMT(value) _Generic ((value),                           \
 		i8: "%" PRIi8,                                                 \
 		i16: "%" PRIi16,                                               \
 		i32: "%" PRIi32,                                               \
@@ -273,7 +392,7 @@ int e_char_is_ascii (int c);
 		bool: "%d",                                                    \
 		default: "%p")
 
-# define e_debug(value)                                                        \
+#  define e_debug(value)                                                        \
 	do {                                                                   \
 		fprintf (stderr, "\x1b[35mDEBUG \x1b[0m"                       \
 		         E_MACRO_STRINGIFY (value) " = \x1b[35m");             \
@@ -281,25 +400,33 @@ int e_char_is_ascii (int c);
 		fprintf (stderr, "\x1b[0m \x1b[90m(" __FILE__ ":"              \
 		         E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n");           \
 	} while (0)
-#endif // E_STDC11
+# endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
 
-/* memory utilities ***********************************************************/
+#endif /* E_CONFIG_MODULE_DEBUG */
 
-#define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
-#define e_alloc_size(size) __e_mem_alloc ((size))
-#define e_alloc_zero(type, nmemb) __e_mem_calloc ((nmemb), sizeof (type))
-#define e_alloc_zero_size(size, nmemb) __e_mem_calloc ((nmemb), (size))
-#define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
-#define e_realloc_size(ptr, size) __e_mem_realloc ((ptr), (size))
-#define e_free(ptr) free ((ptr))
-#define e_new(type) e_alloc (type, 1)
-#define e_new_zero(type) e_alloc_zero (type, 1)
+/* alloc **********************************************************************/
+
+#if E_CONFIG_MODULE_ALLOC
+
+# define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
+# define e_alloc_size(size) __e_mem_alloc ((size))
+# define e_alloc_zero(type, nmemb) __e_mem_calloc ((nmemb), sizeof (type))
+# define e_alloc_zero_size(size, nmemb) __e_mem_calloc ((nmemb), (size))
+# define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
+# define e_realloc_size(ptr, size) __e_mem_realloc ((ptr), (size))
+# define e_free(ptr) free ((ptr))
+# define e_new(type) e_alloc (type, 1)
+# define e_new_zero(type) e_alloc_zero (type, 1)
 
 void *__e_mem_alloc (usize size);
 void *__e_mem_calloc (usize nmemb, usize size);
 void *__e_mem_realloc (void *ptr, usize size);
 
+#endif /* E_CONFIG_MODULE_ALLOC */
+
 /* testing ********************************************************************/
+
+#if E_CONFIG_MODULE_TEST
 
 struct __e_test_result {
 	usize success;
@@ -308,22 +435,20 @@ struct __e_test_result {
 
 extern struct __e_test_result __e_global_test;
 
-#ifdef E_TEST_MAIN
-struct __e_test_result __e_global_test = {0};
-#endif
+# define E_TEST_MAIN() struct __e_test_result __e_global_test = {0}
 
-#define __E_TEST_ASSERT_FMT(name) "\x1b[31mfail\x1b[0m \x1b[33m" name "\x1b[0m (" __FILE__ ":%d) "
-#define __E_TEST_SPACE "                                                                      "
-#define __E_TEST_PRINT_ASSERT_FN(name) fprintf (stderr, "\x1b[35m%s\x1b[0m ", name)
+# define __E_TEST_ASSERT_FMT(name) "\x1b[31mfail\x1b[0m \x1b[33m" name "\x1b[0m (" __FILE__ ":%d) "
+# define __E_TEST_SPACE "                                                                      "
+# define __E_TEST_PRINT_ASSERT_FN(name) fprintf (stderr, "\x1b[35m%s\x1b[0m ", name)
 
-#define __e_test_assert(type, name, expr)                                      \
+# define __e_test_assert(type, name, expr)                                     \
 	do {                                                                   \
 		type success = (expr);                                         \
 		if (success) {                                                 \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__); \
+			                 __LINE__);                            \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l, __E_TEST_SPACE);           \
 			__E_TEST_PRINT_ASSERT_FN ("assert");                   \
@@ -332,7 +457,7 @@ struct __e_test_result __e_global_test = {0};
 		}                                                              \
 	} while (0)
 
-#define __e_test_assert_eq(type, type_cast, name, expr, check)                 \
+# define __e_test_assert_eq(type, type_cast, name, expr, check)                \
 	do {                                                                   \
 		type result = (expr);                                          \
 		type other = (type_cast) (check);                              \
@@ -354,7 +479,7 @@ struct __e_test_result __e_global_test = {0};
 		}                                                              \
 	} while (0)
 
-#define __e_test_assert_str_eq(name, expr, check)                              \
+# define __e_test_assert_str_eq(name, expr, check)                             \
 	do {                                                                   \
 		const char *result = (expr);                                   \
 		const char *other = (check);                                   \
@@ -374,7 +499,7 @@ struct __e_test_result __e_global_test = {0};
 		}                                                              \
 	} while (0)                                                                                
 
-#define e_test_finish()                                                        \
+# define e_test_finish()                                                       \
 	do {                                                                   \
 		f64 total_perc = (f64) (__e_global_test.success +              \
 		                        __e_global_test.failure) / 100.0;      \
@@ -382,9 +507,9 @@ struct __e_test_result __e_global_test = {0};
 		f64 fail_rate = (f64) __e_global_test.failure / total_perc;    \
 		fprintf (stderr, "\n=======================================\n" \
 		         "TEST SUMMARY:"                                       \
-		         "\n - total:   %zu"                                   \
-			 "\n - \x1b[32msuccess: %zu (%.2f%%)\x1b[0m"           \
-			 "\n - \x1b[31mfailure: %zu (%.2f%%)\x1b[0m"           \
+		         "\n - total:   %"E_FMT_USIZE                          \
+			 "\n - \x1b[32msuccess: %"E_FMT_USIZE" (%.2f%%)\x1b[0m"\
+			 "\n - \x1b[31mfailure: %"E_FMT_USIZE" (%.2f%%)\x1b[0m"\
 		         "\n=======================================\n",        \
 			 __e_global_test.success + __e_global_test.failure,    \
 			 __e_global_test.success, succ_rate,                   \
@@ -393,20 +518,20 @@ struct __e_test_result __e_global_test = {0};
 		      EXIT_SUCCESS);                                           \
 	} while (0)
 
-#if defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
-# define e_test_assert(name, expr) __e_test_assert (auto, name, expr)
-# define e_test_assert_eq(name, expr, check) __e_test_assert_eq (auto, typeof (result), name, expr, check)
-# define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
-#else // defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
-# ifdef E_STDC11
+# if (E_STDC_VERSION >= E_STDC_VERSION_C23) && !E_CONFIG_TEST_TYPE_MACROS && !defined (E_CONFIG_TEST_TYPE_MACROS_OVERRIDE)
+#  define e_test_assert(name, expr) __e_test_assert (auto, name, expr)
+#  define e_test_assert_eq(name, expr, check) __e_test_assert_eq (auto, typeof (result), name, expr, check)
+#  define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
+# elif E_STDC_VERSION >= E_STDC_VERSION_C11 /* (E_STDC_VERSION >= E_STDC_VERSION_C23) && !E_CONFIG_TEST_TYPE_MACROS */
 #  define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
 #  define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (type, type, name, expr, check)
 #  define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
-# else // E_STDC11
+# else /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
 #  define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
 #  define e_test_assert_eq(name, type, expr, check) __e_test_assert (type, name, (expr) == (check))
 #  define e_test_assert_str_eq(name, expr, check) __e_test_assert_str_eq (name, expr, check)
-# endif // E_STDC11
-#endif // defined (E_STDC23) && !defined (E_TEST_TYPE_MACROS)
+# endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
 
-#endif // EMPOWER_H_
+#endif /* E_CONFIG_MODULE_TEST */
+
+#endif /* _EMPOWER_H_ */
