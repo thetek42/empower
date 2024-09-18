@@ -32,6 +32,11 @@ __e_mem_calloc (usize nmemb, usize size)
 void *
 __e_mem_realloc (void *ptr, usize size)
 {
+	if (size == 0) {
+		free (ptr);
+		return nullptr;
+	}
+
 	ptr = realloc (ptr, size);
 	if (ptr == nullptr) {
 		e_die ("failed to realloc %"E_FMT_USIZE" bytes", size);

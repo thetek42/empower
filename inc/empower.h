@@ -5,11 +5,18 @@
 
 /* c version checks ***********************************************************/
 
+/** docgen: collect
+ * Typical values for `__STDC_VERSION__` and `E_STDC_VERSION`.
+ */
 #define E_STDC_VERSION_C23 202000L /* to be replaced with 202311L in the future */
 #define E_STDC_VERSION_C11 201112L
 #define E_STDC_VERSION_C99 199901L
 #define E_STDC_VERSION_C89 198900L
+/* docgen: collect-end */
 
+/**
+ * Helper macro that contains the standard C version.
+ */
 #ifdef __STDC_VERSION__
 # define E_STDC_VERSION __STDC_VERSION__
 #else /* __STDC_VERSION__ */
@@ -44,8 +51,8 @@
 
 /* modules ********************************************************************/
 
-#include "e_backport.h"
 #include "e_macro.h"
+#include "e_compat.h"
 #include "e_types.h"
 #include "e_alloc.h"
 #include "e_cstr.h"

@@ -44,7 +44,8 @@ e_cstr_is_ascii (const char *s)
 bool
 e_cstr_matches_predicate (const char *s, e_char_predicate_t func)
 {
-	if (!s || !func) return true;
+	if (!s) return true;
+	if (!func) return false;
 	while (*s) {
 		if (!func (*s++)) return false;
 	}
@@ -82,22 +83,26 @@ e_cstr_to_ascii_upper (char *s)
 char *
 e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest)
 {
-	while (src && dest && *src) {
+	if (!src || !dest) return dest;
+	while (*src) {
 		*dest = isupper (*src) ? *src + 32 : *src;
 		src++;
 		dest++;
 	}
+	*dest = 0;
 	return dest;
 }
 
 char *
 e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 {
-	while (src && dest && *src) {
+	if (!src || !dest) return dest;
+	while (*src) {
 		*dest = islower (*src) ? *src - 32 : *src;
 		src++;
 		dest++;
 	}
+	*dest = 0;
 	return dest;
 }
 

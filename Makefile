@@ -6,7 +6,6 @@ CFLAGS := -std=$(STDC) -Iinc
 CFLAGS_WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -pedantic -fanalyzer
 CFLAGS_DEBUG := -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
 CFLAGS_RELEASE := -DNDEBUG -O3 -march=native
-CFLAGS_DEP = -MD -MP -MF $(<:src/%.c=obj/%.dep)
 
 SRC_FILES := $(wildcard src/*.c)
 OBJ_DEBUG := $(SRC_FILES:src/%.c=obj/%-debug-$(STDC).o)
@@ -43,15 +42,15 @@ $(LIB_RELEASE): $(OBJ_RELEASE)
 
 $(TEST_TARGET): $(TEST_FILES) $(LIB_DEBUG)
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) $(TEST_FILES) $(LIB_DEBUG) -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) $(TEST_FILES) $(LIB_DEBUG) -o $@ -MD -MP -MF obj/test.dep
 
 obj/%-debug-$(STDC).o: src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) -c $< -o $@ $(CFLAGS_DEP)
+	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) -c $< -o $@ -MD -MP -MF $(<:src/%.c=obj/%.dep)
 
 obj/%-release-$(STDC).o: src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_RELEASE) -c $< -o $@ $(CFLAGS_DEP)
+	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_RELEASE) -c $< -o $@ -MD -MP -MF $(<:src/%.c=obj/%.dep)
 
 
 -include $(DEP_FILES)
