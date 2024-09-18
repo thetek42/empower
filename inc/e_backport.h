@@ -26,16 +26,18 @@ typedef void *nullptr_t;
 
 #if E_STDC_VERSION < E_STDC_VERSION_C99
 
-#define restrict __restrict
+#if E_CONFIG_C89_HAS_RESTRICT
+# define restrict __restrict
+#else /* E_CONFIG_C89_HAS_RESTRICT */
+# define restrict
+#endif /* E_CONFIG_C89_HAS_RESTRICT */
 
 typedef signed char int8_t;
 typedef signed short int16_t;
-typedef signed int int32_t;
-typedef signed long int64_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
-typedef unsigned long uint64_t;
+typedef signed long intmax_t;
+typedef unsigned long uintmax_t;
 typedef ssize_t intptr_t;
 typedef size_t uintptr_t;
 
@@ -51,24 +53,43 @@ typedef size_t uintptr_t;
 #define PRIo16 "o"
 #define PRIx16 "x"
 #define PRIX16 "X"
-#define PRId32 "d"
-#define PRIi32 "i"
-#define PRIu32 "u"
-#define PRIo32 "o"
-#define PRIx32 "x"
-#define PRIX32 "X"
-#define PRId64 "ld"
-#define PRIi64 "li"
-#define PRIu64 "lu"
-#define PRIo64 "lo"
-#define PRIx64 "lx"
-#define PRIX64 "lX"
 #define PRIdPTR "ld"
 #define PRIiPTR "li"
 #define PRIuPTR "lu"
 #define PRIoPTR "lo"
 #define PRIxPTR "lx"
 #define PRIXPTR "lX"
+
+#if E_CONFIG_C89_INT_IS_32_BIT
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
+# define PRId32 "d"
+# define PRIi32 "i"
+# define PRIu32 "u"
+# define PRIo32 "o"
+# define PRIx32 "x"
+# define PRIX32 "X"
+#else /* E_CONFIG_C89_INT_IS_32_BIT */
+typedef signed long int32_t;
+typedef unsigned long uint32_t;
+# define PRId32 "ld"
+# define PRIi32 "li"
+# define PRIu32 "lu"
+# define PRIo32 "lo"
+# define PRIx32 "lx"
+# define PRIX32 "lX"
+#endif /* E_CONFIG_C89_INT_IS_32_BIT */
+
+#if E_CONFIG_C89_LONG_IS_64_BIT
+typedef signed long int64_t;
+typedef unsigned long uint64_t;
+# define PRId64 "ld"
+# define PRIi64 "li"
+# define PRIu64 "lu"
+# define PRIo64 "lo"
+# define PRIx64 "lx"
+# define PRIX64 "lX"
+#endif /* E_CONFIG_C89_LONG_IS_64_BIT */
 
 typedef uint8_t bool;
 #define false 0

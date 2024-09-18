@@ -1,7 +1,7 @@
 #ifndef _EMPOWER_H_
 #define _EMPOWER_H_
 
-#include "config.h"
+#include "empower_config.h"
 
 /* c version checks ***********************************************************/
 
