@@ -16,7 +16,7 @@ __e_log_impl (const char *formatted_file_pos, const char *fmt, ...)
 		va_start (ap, (fmt));
 		vfprintf (stderr, (fmt), ap);
 		va_end (ap);
-		fprintf (stderr, formatted_file_pos);
+		fprintf (stderr, "%s", formatted_file_pos);
 }
 
 # else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */

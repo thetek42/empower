@@ -74,7 +74,7 @@
  * @param ptr: The pointer to reallocate
  * @param type: A type or expression which works as an argument to `sizeof`
  * @param nmemb: The number of items to allocate space for
- * @return A pointer to the allocated memory
+ * @return A pointer to the allocated memory, or `nullptr` if \size is 0
  * @see `realloc`
  */
 #define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
@@ -87,7 +87,7 @@
  *
  * @param ptr: The pointer to reallocate
  * @param size: The number of bytes to rellocate
- * @return A pointer to the allocated memory
+ * @return A pointer to the allocated memory, or `nullptr` if \size is 0
  * @see `realloc`
  */
 #define e_realloc_size(ptr, size) __e_mem_realloc ((ptr), (size))
@@ -134,7 +134,6 @@ void *__e_mem_calloc (usize nmemb, usize size);
 
 E_ATTR_ALLOC_SIZE (2)
 E_ATTR_MALLOC_WITH_DEALLOC (free)
-E_ATTR_RETURNS_NONNULL
 void *__e_mem_realloc (void *ptr, usize size);
 
 #endif /* E_CONFIG_MODULE_ALLOC */

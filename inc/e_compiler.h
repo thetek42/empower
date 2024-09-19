@@ -74,20 +74,22 @@
 
 /* === common attributes ==================================================== */
 
-#if defined (E_COMPILER_CLANG) || defined (E_COMPILER_GCC)
-# define __E_ATTRIBUTE_COMMON(attr, msvc) __attribute__ ((attr))
-#elif defined (E_COMPILER_MSVC) /* defined (E_COMPILER_CLANG) || defined (E_COMPILER_GCC) */
-# define __E_ATTRIBUTE_COMMON(attr, msvc) __declspec (msvc)
+#if defined (E_COMPILER_GCC)
+# define __E_ATTRIBUTE_COMMON(gcc, clang, msvc) __attribute__ ((gcc))
+#elif defined (E_COMPILER_CLANG) /* defined (E_COMPILER_GCC) */
+# define __E_ATTRIBUTE_COMMON(gcc, clang, msvc) __attribute__ ((clang))
+#elif defined (E_COMPILER_MSVC) /* defined (E_COMPILER_CLANG) */
+# define __E_ATTRIBUTE_COMMON(gcc, clang, msvc) __declspec (msvc)
 #else /* defined (E_COMPILER_MSVC) */
-# define __E_ATTRIBUTE_COMMON(msvc)
+# define __E_ATTRIBUTE_COMMON(gcc, clang, msvc)
 #endif /* defined (E_COMPILER_MSVC) */
 
-#define E_ATTR_NOINLINE __E_ATTRIBUTE_COMMON (noinline, noinline)
-#define E_ATTR_MALLOC __E_ATTRIBUTE_COMMON (malloc, allocator)
-#define E_ATTR_MALLOC_WITH_DEALLOC(deallocator) __E_ATTRIBUTE_COMMON (malloc (deallocator), allocator)
-#define E_ATTR_MALLOC_WITH_DEALLOC_IDX(deallocator, ptr_idx) __E_ATTRIBUTE_COMMON (malloc (deallocator, ptr_idx), allocator)
-#define E_ATTR_UNAVAILABLE __E_ATTRIBUTE_COMMON (unavailable, deprecated)
-#define E_ATTR_UNAVAILABLE_MSG(msg) __E_ATTRIBUTE_COMMON (unavailable (msg), deprecated (msg))
+#define E_ATTR_NOINLINE __E_ATTRIBUTE_COMMON (noinline, noinline, noinline)
+#define E_ATTR_MALLOC __E_ATTRIBUTE_COMMON (malloc, malloc, allocator)
+#define E_ATTR_MALLOC_WITH_DEALLOC(deallocator) __E_ATTRIBUTE_COMMON (malloc (deallocator), malloc, allocator)
+#define E_ATTR_MALLOC_WITH_DEALLOC_IDX(deallocator, ptr_idx) __E_ATTRIBUTE_COMMON (malloc (deallocator, ptr_idx), malloc, allocator)
+#define E_ATTR_UNAVAILABLE __E_ATTRIBUTE_COMMON (unavailable, unavailable, deprecated)
+#define E_ATTR_UNAVAILABLE_MSG(msg) __E_ATTRIBUTE_COMMON (unavailable (msg), unavailable (msg), deprecated (msg))
 
 #if defined (E_COMPILER_CLANG) || defined (E_COMPILER_GCC)
 # define E_ATTR_ALWAYS_INLINE __attribute__ ((always_inline))
