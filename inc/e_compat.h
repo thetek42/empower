@@ -168,6 +168,19 @@ typedef uint8_t bool;
 #define true 1
 /* docgen: collect-end */
 
+/**
+ * `vsnprintf` from C99
+ *
+ * @param str: The output string
+ * @param size: The maximum output length
+ * @param format: The format specifier
+ * @param ap: The argument list to the format arguments
+ * @return The number of bytes written
+ * @note This is currently simply an alias for vsprintf and is NOT checked for
+ *       length.
+ */
+int vsnprintf (char *restrict str, size_t size, const char *restrict format, va_list ap);
+
 #endif /* E_STDC_VERSION < E_STDC_VERSION_C99 */
 
 /* === miscellaneous ========================================================= */
@@ -177,7 +190,7 @@ typedef uint8_t bool;
  * `ssize_t` from `<sys/types.h>`.
  */
 typedef ptrdiff_t ssize_t;
-static_assert (sizeof (isize) == sizeof (usize));
+static_assert (sizeof (isize) == sizeof (size_t));
 #endif /* !E_CONFIG_HAS_SYS_TYPES */
 
 #endif /* _EMPOWER_COMPAT_H_ */

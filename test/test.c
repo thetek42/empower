@@ -2,11 +2,8 @@
 #include "empower.h"
 #include <ctype.h>
 
-E_VEC_DECLARE (u16, e_vec_u16);
-E_VEC_IMPLEMENT (u16, e_vec_u16);
-
 static void test_cstr (void);
-static void test_vec (void);
+static void test_str (void);
 
 E_TEST_MAIN ();
 
@@ -17,7 +14,7 @@ main (int argc, char *argv[])
 	(void) argv;
 
 	test_cstr ();
-	test_vec ();
+	test_str ();
 
 	e_test_finish ();
 }
@@ -44,14 +41,42 @@ test_cstr (void)
 }
 
 static void
-test_vec (void)
+test_str (void)
 {
-	e_vec_u16_t vec;
-	u16 slice[] = { 1, 2, 3, 4, 5 };
+	e_str_t str;
+	usize len_ret;
 
-	vec = e_vec_u16_init ();
-	e_vec_u16_append (&vec, 42);
-	e_vec_u16_append (&vec, 69);
-	e_vec_u16_append_slice (&vec, &slice[0], 5);
-	e_vec_u16_deinit (&vec);
+	str = e_str_init ();
+
+	len_ret = e_str_append_cstr (&str, "Hello, World");
+	e_test_assert_str_eq ("e_str_append_cstr", str.ptr, "Hello, World");
+	e_test_assert_eq ("e_str_append_cstr len", usize, str.len, strlen ("Hello, World"));
+	e_test_assert_eq ("e_str_append_cstr len_ret", usize, len_ret, strlen ("Hello, World"));
+
+	e_str_append_char (&str, '!');
+	e_test_assert_str_eq ("e_str_append_char", str.ptr, "Hello, World!");
+	e_test_assert_eq ("e_str_append_char len", usize, str.len, strlen ("Hello, World!"));
+
+	e_str_append_slice (&str, " 12345", 4);
+	e_test_assert_str_eq ("e_str_append_slice", str.ptr, "Hello, World! 123");
+	e_test_assert_eq ("e_str_append_char len", usize, str.len, strlen ("Hello, World! 123"));
+
+	len_ret = e_str_append_fmt (&str, 32, " dec:%d,hex:%x", 42, 42);
+	e_test_assert_str_eq ("e_str_append_fmt", str.ptr, "Hello, World! 123 dec:42,hex:2a");
+	e_test_assert_eq ("e_str_append_fmt len", usize, str.len, strlen ("Hello, World! 123 dec:42,hex:2a"));
+	e_test_assert_eq ("e_str_append_fmt len_ret", usize, len_ret, strlen (" dec:42,hex:2a"));
+
+#if E_STDC_VERSION >= E_STDC_VERSION_C99
+	len_ret = e_str_append_fmt (&str, 4, " %d", 12345);
+	e_test_assert_str_eq ("e_str_append_fmt capped", str.ptr, "Hello, World! 123 dec:42,hex:2a 123");
+	e_test_assert_eq ("e_str_append_fmt capped len", usize, str.len, strlen ("Hello, World! 123 dec:42,hex:2a 123"));
+	e_test_assert_eq ("e_str_append_fmt capped len_ret", usize, len_ret, 6);
+
+	len_ret = e_str_append_fmt_all (&str, " %d", 12345);
+	e_test_assert_str_eq ("e_str_append_fmt_all", str.ptr, "Hello, World! 123 dec:42,hex:2a 123 12345");
+	e_test_assert_eq ("e_str_append_fmt_all len", usize, str.len, strlen ("Hello, World! 123 dec:42,hex:2a 123 12345"));
+	e_test_assert_eq ("e_str_append_fmt_all len_ret", usize, len_ret, 6);
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+
+	e_str_deinit (&str);
 }

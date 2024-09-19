@@ -39,6 +39,7 @@
  * @node This should go into a `.h` file.
  * @see \E_VEC_IMPLEMENT
  */
+/* docgen: define(vec_type_prefix, e_vec) */
 #define E_VEC_DECLARE(T, vec_type_prefix)                                      \
                                                                                \
 	/**                                                                    \
@@ -57,7 +58,7 @@
 	} vec_type_prefix##_t;                                                 \
                                                                                \
 	/**                                                                    \
-	 * Initialize a vector with capacity 0. This function does not perform \
+	 * Initialise a vector with capacity 0. This function does not perform \
 	 * an allocation.                                                      \
 	 *                                                                     \
 	 * @return The new vector                                              \
@@ -65,17 +66,18 @@
 	vec_type_prefix##_t vec_type_prefix##_init (void);                     \
                                                                                \
 	/**                                                                    \
-	 * Initialize a vector with a given capacity. This function allocates  \
-	 * enough memory to store `cap` items.                                 \
+	 * Initialise a vector with a given capacity. This function allocates  \
+	 * enough memory to store \cap items.                                  \
 	 *                                                                     \
+	 * @param cap: The capacity of the vector                              \
 	 * @return The new vector.                                             \
 	 */                                                                    \
 	vec_type_prefix##_t vec_type_prefix##_init_with_cap (usize cap);       \
                                                                                \
 	/**                                                                    \
-	 * Deinitialize a vector and free the memory occupied by it.           \
+	 * Deinitialise a vector and free the memory occupied by it.           \
 	 *                                                                     \
-	 * @param vec: The vector to deinitialize                              \
+	 * @param vec: The vector to deinitialise                              \
 	 */                                                                    \
 	void vec_type_prefix##_deinit (vec_type_prefix##_t *vec);              \
                                                                                \
@@ -88,6 +90,7 @@
 	 * @param vec: The vector to grow                                      \
 	 * @param cap: The lower bound for the new capacity                    \
 	 */                                                                    \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void vec_type_prefix##_grow (vec_type_prefix##_t *vec, usize cap);     \
                                                                                \
 	/**                                                                    \
@@ -98,6 +101,7 @@
 	 * @param vec: The vector to append to                                 \
 	 * @param item: The item to add                                        \
 	 */                                                                    \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void vec_type_prefix##_append (vec_type_prefix##_t *vec, T item);      \
                                                                                \
 	/**                                                                    \
@@ -110,10 +114,13 @@
 	 * @param slice_len: The number of items to add                        \
 	 * @note \slice must have at least \slice_len items.                   \
 	 */                                                                    \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
+	E_ATTR_ACCESS_READ_ONLY (2)                                            \
 	void vec_type_prefix##_append_slice (vec_type_prefix##_t *vec,         \
 	                                     const T *slice, usize slice_len); \
                                                                                \
 	static_assert (true, "")
+/* docgen: undef(vec_type_prefix) */
 
 /**
  * Implement the functions required for a vector of type \T with type and
@@ -124,6 +131,7 @@
  * @node This should go into a `.c` file.
  * @see \E_VEC_DECLARE
  */
+/* docgen: define(vec_type_prefix, e_vec) */
 #define E_VEC_IMPLEMENT(T, vec_type_prefix)                                    \
                                                                                \
 	vec_type_prefix##_t                                                    \
@@ -154,6 +162,7 @@
 		}                                                              \
 	}                                                                      \
                                                                                \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void                                                                   \
 	vec_type_prefix##_grow (vec_type_prefix##_t *vec, usize cap)           \
 	{                                                                      \
@@ -163,6 +172,7 @@
 		vec->ptr = e_realloc (vec->ptr, T, vec->cap);                  \
 	}                                                                      \
                                                                                \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void                                                                   \
 	vec_type_prefix##_append (vec_type_prefix##_t *vec, T item)            \
 	{                                                                      \
@@ -174,6 +184,8 @@
 		vec->len += 1;                                                 \
 	}                                                                      \
                                                                                \
+	E_ATTR_ACCESS_READ_WRITE (1)                                           \
+	E_ATTR_ACCESS_READ_ONLY (2)                                            \
 	void                                                                   \
 	vec_type_prefix##_append_slice (vec_type_prefix##_t *vec,              \
 	                                const T *slice, usize slice_len)       \
@@ -187,6 +199,7 @@
 	}                                                                      \
                                                                                \
 	static_assert (true, "")
+/* docgen: undef(vec_type_prefix) */
 
 #endif /* E_CONFIG_MODULE_VEC */
 #endif /* _EMPOWER_VEC_H_ */

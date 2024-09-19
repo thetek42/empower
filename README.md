@@ -19,6 +19,7 @@ standards. :white_check_mark: = full support, :construction: = partial support, 
 | **e_log**      | Logging                        | :construction:     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_macro**    | Macro helpers                  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_result**   | Result type                    | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| **e_str**      | Dynamically sized string       | :construction:     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_test**     | Testing                        | :construction:     | :construction:     | :construction:     | :white_check_mark: |
 | **e_types**    | Common type aliases            | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_vec**      | Vectors / dynamic arrays       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
