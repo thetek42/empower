@@ -40,17 +40,23 @@
 
 #if E_STDC_VERSION >= E_STDC_VERSION_C99
 # include <inttypes.h>
-# if E_STDC_VERSION < E_STDC_VERSION_C23
-#  include <stdbool.h>
-# endif /* E_STDC_VERSION < E_STDC_VERSION_C23 */
 #endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+
+#if E_STDC_VERSION >= E_STDC_VERSION_C23
+# include <stdbit.h>
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 */
+
+#if (E_STDC_VERSION >= E_STDC_VERSION_C99) && (E_STDC_VERSION < E_STDC_VERSION_C23)
+# include <stdbool.h>
+#endif /* (E_STDC_VERSION >= E_STDC_VERSION_C99) && (E_STDC_VERSION < E_STDC_VERSION_C23) */
+
 #if (E_STDC_VERSION >= E_STDC_VERSION_C11) && (E_STDC_VERSION < E_STDC_VERSION_C23)
 # include <stdnoreturn.h>
 #endif /* (E_STDC_VERSION >= E_STDC_VERSION_C11) && (E_STDC_VERSION < E_STDC_VERSION_C23) */
 
 #if E_CONFIG_HAS_SYS_TYPES
 # include <sys/types.h>
-#endif
+#endif /* E_CONFIG_HAS_SYS_TYPES */
 
 /* modules ********************************************************************/
 
@@ -64,5 +70,6 @@
 #include "e_log.h"
 #include "e_result.h"
 #include "e_test.h"
+#include "e_vec.h"
 
 #endif /* _EMPOWER_H_ */

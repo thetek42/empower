@@ -22,6 +22,28 @@
  */
 #define nullptr NULL
 
+/* TODO: more stdbit.h */
+
+#if defined (E_COMPILER_GCC) || defined (E_COMPILER_CLANG)
+# define stdc_bit_ceil(n) __builtin_stdc_bit_ceil (n)
+#else /* defined (E_COMPILER_GCC) || defined (E_COMPILER_CLANG) */
+static inline ulong
+stdc_bit_ceil (ulong n)
+{
+	n--;
+	n |= n >> 1;
+	n |= n >> 2;
+	n |= n >> 4;
+	n |= n >> 8;
+	n |= n >> 16;
+#if E_CONFIG_LONG_IS_64_BIT
+	n |= n >> 32;
+#endif /* E_CONFIG_LONG_IS_64_BIT */
+	n++;
+	return n;
+}
+#endif /* defined (E_COMPILER_GCC) || defined (E_COMPILER_CLANG) */
+
 #endif /* E_STDC_VERSION < E_STDC_VERSION_C23 */
 
 /* === c11 features ========================================================= */

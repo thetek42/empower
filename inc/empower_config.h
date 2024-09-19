@@ -8,6 +8,7 @@
 #define E_CONFIG_MODULE_LOG				1
 #define E_CONFIG_MODULE_RESULT				1
 #define E_CONFIG_MODULE_TEST				1
+#define E_CONFIG_MODULE_VEC				1
 
 /* library settings ***********************************************************/
 #define E_CONFIG_TEST_TYPE_MACROS			0
