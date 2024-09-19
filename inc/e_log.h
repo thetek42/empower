@@ -30,8 +30,6 @@
  *
  ******************************************************************************/
 
-/* TODO: attrs */
-
 #if E_STDC_VERSION >= E_STDC_VERSION_C23
 
 /** docgen: collect
@@ -90,6 +88,7 @@
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
 
+E_ATTR_FORMAT (printf, 2, 3)
 void __e_log_impl (const char *formatted_file_pos, const char *fmt, ...);
 
 #else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
@@ -101,10 +100,10 @@ void __e_log_impl (const char *formatted_file_pos, const char *fmt, ...);
  * @param ...: The format arguments
  * @see `fprintf`
  */
-void e_log_debug (const char *fmt, ...);
-void e_log_info (const char *fmt, ...);
-void e_log_warn (const char *fmt, ...);
-void e_log_error (const char *fmt, ...);
+E_ATTR_FORMAT (printf, 1, 2) void e_log_debug (const char *fmt, ...);
+E_ATTR_FORMAT (printf, 1, 2) void e_log_info (const char *fmt, ...);
+E_ATTR_FORMAT (printf, 1, 2) void e_log_warn (const char *fmt, ...);
+E_ATTR_FORMAT (printf, 1, 2) void e_log_error (const char *fmt, ...);
 /* docgen: collect-end */
 
 /**
@@ -115,7 +114,9 @@ void e_log_error (const char *fmt, ...);
  * @return #noreturn
  * @see `fprintf`
  */
-void e_die (const char *fmt, ...); /* TODO: noreturn */
+E_ATTR_NORETURN
+E_ATTR_FORMAT (printf, 1, 2) 
+void e_die (const char *fmt, ...);
 
 #endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
 

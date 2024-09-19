@@ -28,6 +28,8 @@ typedef int (* e_char_predicate_t) (int c);
  * @param c: The character to search for
  * @return The number of occurances of \c in \s, or 0 if \s is `nullptr`.
  */
+E_ATTR_PURE
+E_ATTR_ACCESS_READ_ONLY (1)
 usize e_cstr_count_char (const char *s, char c);
 
 /**
@@ -38,6 +40,7 @@ usize e_cstr_count_char (const char *s, char c);
  * @return The number of matches of \func in \s, or 0 if either \s or \func is
  *         `nullptr`.
  */
+E_ATTR_ACCESS_READ_ONLY (1)
 usize e_cstr_count_func (const char *s, e_char_predicate_t func);
 
 /**
@@ -46,6 +49,8 @@ usize e_cstr_count_func (const char *s, e_char_predicate_t func);
  * @param s #cstr: The nul-terminated string to check
  * @return `true` when \s is `nullptr` or only consists of ASCII characters
  */
+E_ATTR_PURE
+E_ATTR_ACCESS_READ_ONLY (1)
 bool e_cstr_is_ascii (const char *s);
 
 /**
@@ -55,6 +60,8 @@ bool e_cstr_is_ascii (const char *s);
  * @return `true` when \s is `nullptr` or only consists of whitespace
  * @see `isspace`
  */
+E_ATTR_PURE
+E_ATTR_ACCESS_READ_ONLY (1)
 bool e_cstr_is_blank (const char *s);
 
 /**
@@ -65,6 +72,7 @@ bool e_cstr_is_blank (const char *s);
  * @return `true` when \s is `nullptr` or only consists of characters that were
  *         accepted by \func, `false` when \func is `nullptr` or did not match.
  */
+E_ATTR_ACCESS_READ_ONLY (1)
 bool e_cstr_matches_predicate (const char *s, e_char_predicate_t func);
 
 /**
@@ -74,6 +82,7 @@ bool e_cstr_matches_predicate (const char *s, e_char_predicate_t func);
  * @param s #cstr: The nul-terminated string to convert
  * @return \s
  */
+E_ATTR_ACCESS_READ_WRITE (1)
 char *e_cstr_to_ascii_lower (char *s);
 
 /**
@@ -83,6 +92,7 @@ char *e_cstr_to_ascii_lower (char *s);
  * @param s #cstr: The nul-terminated string to convert
  * @return \s
  */
+E_ATTR_ACCESS_READ_WRITE (1)
 char *e_cstr_to_ascii_upper (char *s);
 
 /**
@@ -96,6 +106,8 @@ char *e_cstr_to_ascii_upper (char *s);
  * @note \dest must have enough space to store all of \src, including the
  *       terminating nul byte.
  */
+E_ATTR_ACCESS_READ_ONLY (1)
+E_ATTR_ACCESS_WRITE_ONLY (2)
 char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
 
 /**
@@ -109,6 +121,8 @@ char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
  * @note \dest must have enough space to store all of \src, including the
  *       terminating nul byte.
  */
+E_ATTR_ACCESS_READ_ONLY (1)
+E_ATTR_ACCESS_WRITE_ONLY (2)
 char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 
 /**
@@ -118,6 +132,7 @@ char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
  * @return 0 if \c is ASCII, a different number otherwise.
  * @see `isascii` from `<ctype.h>` on POSIX systems
  */
+E_ATTR_CONST
 int e_char_is_ascii (int c);
 
 #endif /* E_CONFIG_MODULE_CSTR */

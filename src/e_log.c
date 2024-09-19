@@ -7,6 +7,7 @@
 #if E_STDC_VERSION < E_STDC_VERSION_C23
 # if E_STDC_VERSION >= E_STDC_VERSION_C99
 
+E_ATTR_FORMAT (printf, 2, 3) 
 void
 __e_log_impl (const char *formatted_file_pos, const char *fmt, ...)
 {
@@ -30,30 +31,36 @@ __e_log_impl (const char *formatted_file_pos, const char *fmt, ...)
 		fprintf (stderr, (suffix));                                    \
 	} while (0)
 
+E_ATTR_FORMAT (printf, 1, 2) 
 void
 e_log_debug (const char *fmt, ...)
 {
 	LOG_IMPL ("\x1b[35mDEBUG \x1b[0m", fmt, "\n");
 }
 
+E_ATTR_FORMAT (printf, 1, 2) 
 void
 e_log_info (const char *fmt, ...)
 {
 	LOG_IMPL ("\x1b[32mINFO  \x1b[0m", fmt, "\n");
 }
 
+E_ATTR_FORMAT (printf, 1, 2) 
 void
 e_log_warn (const char *fmt, ...)
 {
 	LOG_IMPL ("\x1b[33mWARN  \x1b[0m", fmt, "\n");
 }
 
+E_ATTR_FORMAT (printf, 1, 2) 
 void
 e_log_error (const char *fmt, ...)
 {
 	LOG_IMPL ("\x1b[31mERROR \x1b[0m", fmt, "\n");
 }
 
+E_ATTR_NORETURN
+E_ATTR_FORMAT (printf, 1, 2) 
 void
 e_die (const char *fmt, ...)
 {

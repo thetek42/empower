@@ -44,6 +44,9 @@
 #  include <stdbool.h>
 # endif /* E_STDC_VERSION < E_STDC_VERSION_C23 */
 #endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
+#if (E_STDC_VERSION >= E_STDC_VERSION_C11) && (E_STDC_VERSION < E_STDC_VERSION_C23)
+# include <stdnoreturn.h>
+#endif /* (E_STDC_VERSION >= E_STDC_VERSION_C11) && (E_STDC_VERSION < E_STDC_VERSION_C23) */
 
 #if E_CONFIG_HAS_SYS_TYPES
 # include <sys/types.h>
@@ -52,6 +55,7 @@
 /* modules ********************************************************************/
 
 #include "e_macro.h"
+#include "e_compiler.h"
 #include "e_compat.h"
 #include "e_types.h"
 #include "e_alloc.h"

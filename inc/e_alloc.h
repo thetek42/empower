@@ -28,7 +28,7 @@
  *
  * @param type: A type or expression which works as an argument to `sizeof`
  * @param nmemb: The number of items to allocate space for
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `malloc`
  */
 #define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
@@ -38,7 +38,7 @@
  * message and terminate the programme.
  *
  * @param size: The number of bytes to allocate
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `malloc`
  */
 #define e_alloc_size(size) __e_mem_alloc ((size))
@@ -60,7 +60,7 @@
  * the allocation fails, it will print a message and terminate the programme.
  *
  * @param size: The number of bytes to allocate
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `calloc`
  */
 #define e_alloc_zero_size(size, nmemb) __e_mem_calloc ((nmemb), (size))
@@ -74,7 +74,7 @@
  * @param ptr: The pointer to reallocate
  * @param type: A type or expression which works as an argument to `sizeof`
  * @param nmemb: The number of items to allocate space for
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `realloc`
  */
 #define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
@@ -87,7 +87,7 @@
  *
  * @param ptr: The pointer to reallocate
  * @param size: The number of bytes to rellocate
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `realloc`
  */
 #define e_realloc_size(ptr, size) __e_mem_realloc ((ptr), (size))
@@ -106,7 +106,7 @@
  * will print a message and terminate the programme.
  *
  * @param type: A type or expression which works as an argument to `sizeof`
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `malloc`
  */
 #define e_new(type) e_alloc (type, 1)
@@ -117,13 +117,24 @@
  * programme.
  *
  * @param type: A type or expression which works as an argument to `sizeof`
- * @return #nonnull `void *`
+ * @return A pointer to the allocated memory
  * @see `malloc`
  */
 #define e_new_zero(type) e_alloc_zero (type, 1)
 
+E_ATTR_ALLOC_SIZE (1)
+E_ATTR_MALLOC_WITH_DEALLOC (free)
+E_ATTR_RETURNS_NONNULL
 void *__e_mem_alloc (usize size);
+
+E_ATTR_ALLOC_SIZE_MULT (1, 2)
+E_ATTR_MALLOC_WITH_DEALLOC (free)
+E_ATTR_RETURNS_NONNULL
 void *__e_mem_calloc (usize nmemb, usize size);
+
+E_ATTR_ALLOC_SIZE (2)
+E_ATTR_MALLOC_WITH_DEALLOC (free)
+E_ATTR_RETURNS_NONNULL
 void *__e_mem_realloc (void *ptr, usize size);
 
 #endif /* E_CONFIG_MODULE_ALLOC */
