@@ -3,7 +3,7 @@ AR := ar
 
 STDC ?= c23
 CFLAGS := -std=$(STDC) -Iinc
-CFLAGS_WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -pedantic -fanalyzer
+CFLAGS_WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-nonnull-compare -pedantic -fanalyzer
 CFLAGS_DEBUG := -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
 CFLAGS_RELEASE := -DNDEBUG -O3 -march=native
 

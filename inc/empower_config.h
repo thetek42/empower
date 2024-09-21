@@ -5,6 +5,7 @@
 #define E_CONFIG_MODULE_ALLOC				1
 #define E_CONFIG_MODULE_CSTR				1
 #define E_CONFIG_MODULE_DEBUG				1
+#define E_CONFIG_MODULE_FS				1
 #define E_CONFIG_MODULE_LOG				1
 #define E_CONFIG_MODULE_RESULT				1
 #define E_CONFIG_MODULE_STR				1

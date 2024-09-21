@@ -25,7 +25,9 @@ typedef usize e_result_t;
  * Pre-defined error codes
  */
 enum {
+	/* ok */
 	E_OK                            = 0,
+	/* errno */
 	E_ERR_NOT_PERMITTED             = EPERM,
 	E_ERR_NO_SUCH_FILE              = ENOENT,
 	E_ERR_NO_SUCH_PROCESS           = ESRCH,
@@ -158,7 +160,9 @@ enum {
 	E_ERR_OWNER_DIED                = EOWNERDEAD,
 	E_ERR_NOT_RECOVERABLE           = ENOTRECOVERABLE,
 	E_ERR_RFKILL                    = ERFKILL,
-	E_ERR_HARDWARE_ERROR            = EHWPOISON
+	E_ERR_HARDWARE_ERROR            = EHWPOISON,
+	/* custom */
+	E_ERR_FAIL,
 };
 
 #endif /* E_CONFIG_MODULE_RESULT */

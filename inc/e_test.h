@@ -89,6 +89,24 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)                                                                                
 
+#define e_test_assert_ok(name, expr)                                           \
+	do {                                                                   \
+		e_result_t result = (expr);                                    \
+		if (result == E_OK) {                                          \
+			__e_global_test.success += 1;                          \
+		} else {                                                       \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
+			                 __LINE__);                            \
+			int l = (int) strlen (__E_TEST_SPACE) - p;             \
+			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
+			         __E_TEST_SPACE);                              \
+			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
+			fprintf (stderr, #expr " \x1b[36mreturned error\x1b[0m"\
+			         " %" E_FMT_USIZE "\n", result);               \
+			__e_global_test.failure += 1;                          \
+		}                                                              \
+	} while (0)                                                                                
+
 /**
  * Finish the tests by printing out a summary of how many tests were successful
  * and how many tests failed.

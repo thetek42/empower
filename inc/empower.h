@@ -73,5 +73,6 @@
 #include "e_test.h"
 #include "e_vec.h"
 #include "e_str.h"
+#include "e_fs.h"
 
 #endif /* _EMPOWER_H_ */
