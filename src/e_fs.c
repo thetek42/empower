@@ -41,39 +41,52 @@ e_fs_file_close (e_fs_file_t *file)
 }
 
 e_result_t
-e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out)
+e_fs_file_get_size (e_fs_file_t *file, usize *size_out)
 {
-	e_result_t err;
-	usize count, offset;
 	long len;
 	int ret;
 
-	if (!file || !out) return E_ERR_INVALID_ARGUMENT;
+	if (!file || !size_out) return E_ERR_INVALID_ARGUMENT;
 
 	ret = fseek (file->handle, 0, SEEK_END);
 	if (ret < 0) {
-		err = (e_result_t) errno;
-		goto err;
+		*size_out = 0;
+		return (e_result_t) errno;
 	}
 
 	len = ftell (file->handle);
 	if (ret < 0) {
-		err = (e_result_t) errno;
-		goto err;
+		*size_out = 0;
+		return (e_result_t) errno;
 	}
 
 	ret = fseek (file->handle, 0, SEEK_SET);
 	if (ret < 0) {
-		err = (e_result_t) errno;
-		goto err;
+		*size_out = 0;
+		return (e_result_t) errno;
 	}
 
-	*out = e_alloc (char, (usize) len + 1);
+	*size_out = (usize) len;
+	return E_OK;
+}
+
+e_result_t
+e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out)
+{
+	e_result_t err;
+	usize len, count, offset;
+
+	if (!file || !out) return E_ERR_INVALID_ARGUMENT;
+
+	err = e_fs_file_get_size (file, &len);
+	if (err != E_OK) goto err;
+
+	*out = e_alloc (char, len + 1);
 	offset = 0;
 	while (offset < (usize) len) {
 		clearerr (file->handle);
 		count = fread (*out + offset, sizeof (char),
-		               (usize) len - offset, file->handle);
+		               len - offset, file->handle);
 		offset += count;
 		if (count > 0) continue;
 		if (feof (file->handle)) break;
@@ -93,4 +106,25 @@ err:
 	*out = nullptr;
 	if (len_out) *len_out = 0;
 	return err;
+}
+
+e_result_t
+e_fs_file_write (e_fs_file_t *file, const char *data, usize len)
+{
+	usize count, written;
+
+	if (!file) return E_ERR_INVALID_ARGUMENT;
+	if (!data || len == 0) return E_OK;
+
+	written = 0;
+	while (written < len) {
+		clearerr (file->handle);
+		count = fwrite (data + written, sizeof (char),
+		                len - written, file->handle);
+		written += count;
+		if (count > 0) continue;
+		if (ferror (file->handle) != 0) return E_ERR_FAIL;
+	}
+
+	return E_OK;
 }

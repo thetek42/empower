@@ -16,6 +16,7 @@ standards. :white_check_mark: = full support, :construction: = partial support, 
 | **e_compiler** | Compiler attributes and compat | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_cstr**     | String utility functions       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_debug**    | Debugging utilities            | :x:                | :x:                | :white_check_mark: | :white_check_mark: |
+| **e_fs**       | File handling functions        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_log**      | Logging                        | :construction:     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_macro**    | Macro helpers                  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **e_result**   | Result type                    | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |

@@ -53,6 +53,16 @@ e_result_t e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mo
 e_result_t e_fs_file_close (e_fs_file_t *file);
 
 /**
+ * Get the size of a file.
+ *
+ * @param file: The file to inspect
+ * @param size_out: The pointer to where to size should be stored. If an error
+ *                  occurs, the size will be set to 0.
+ * @return E_OK or error that occured during `fseek` or `ftell`.
+ */
+e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
+
+/**
  * Reads all content a file handle into a buffer. The required memory is
  * allocted using `e_alloc` and must be freed by the user using `e_free`. If an
  * error occurs, the memory is freed automatically.
@@ -80,6 +90,17 @@ e_result_t e_fs_file_close (e_fs_file_t *file);
  *         occurs during `fread`, it is reported as \E_ERR_FAIL.
  */
 e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
+
+/**
+ * Write bytes to a file.
+ *
+ * @param file: The file to write to
+ * @param data: A pointer to the data
+ * @param len: The length of \data.
+ * @return E_OK, E_ERR_INVALID_ARGUMENT, or in case the call to `fwrite` fails,
+ *         E_ERR_FAIL.
+ */
+e_result_t e_fs_file_write (e_fs_file_t *file, const char *data, usize len);
 
 #endif /* E_CONFIG_MODULE_FS */
 #endif /* _EMPOWER_FS_H_ */
