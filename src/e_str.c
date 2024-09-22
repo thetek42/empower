@@ -28,7 +28,6 @@ e_str_grow (e_str_t *str, usize cap)
 	__e_vec_char_grow (str, cap);
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
 void
 e_str_append_char (e_str_t *str, char c)
 {
@@ -43,22 +42,18 @@ e_str_append_char (e_str_t *str, char c)
 	str->len += 1;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
-E_ATTR_NUL_STRING_ARG (2)
 usize
 e_str_append_cstr (e_str_t *str, const char *s)
 {
 	usize len;
 
 	len = strlen (s);
-	e_str_append_slice (str, s, len);
+	e_str_append_slice (str, s, len + 1);
+	str->len -= 1; /* NOTE: this is here to circumvent a false positive warning */
 
 	return len;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
 void
 e_str_append_slice (e_str_t *str, const char *s, usize len)
 {
@@ -73,8 +68,6 @@ e_str_append_slice (e_str_t *str, const char *s, usize len)
 	str->len += len;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (3)
 E_ATTR_FORMAT (printf, 3, 4)
 usize
 e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
@@ -99,8 +92,6 @@ e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
 	return (usize) written;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
 E_ATTR_FORMAT (printf, 2, 3)
 usize
 e_str_append_fmt_all (e_str_t *str, const char *fmt, ...)

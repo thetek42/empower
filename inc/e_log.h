@@ -114,9 +114,8 @@ E_ATTR_FORMAT (printf, 1, 2) void e_log_error (const char *fmt, ...);
  * @return #noreturn
  * @see `fprintf`
  */
-E_ATTR_NORETURN
 E_ATTR_FORMAT (printf, 1, 2) 
-void e_die (const char *fmt, ...);
+noreturn void e_die (const char *fmt, ...);
 
 #endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
 

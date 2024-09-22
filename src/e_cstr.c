@@ -3,8 +3,7 @@
 
 #if E_CONFIG_MODULE_CSTR
 
-E_ATTR_PURE
-E_ATTR_ACCESS_READ_ONLY (1)
+E_ATTR_PURE ()
 usize
 e_cstr_count_char (const char *s, char c)
 {
@@ -18,7 +17,6 @@ e_cstr_count_char (const char *s, char c)
 	return r;
 }
 
-E_ATTR_ACCESS_READ_ONLY (1)
 usize
 e_cstr_count_func (const char *s, e_char_predicate_t func)
 {
@@ -32,23 +30,20 @@ e_cstr_count_func (const char *s, e_char_predicate_t func)
 	return r;
 }
 
-E_ATTR_PURE
-E_ATTR_ACCESS_READ_ONLY (1)
+E_ATTR_PURE ()
 bool
 e_cstr_is_ascii (const char *s)
 {
 	return e_cstr_matches_predicate (s, e_char_is_ascii);
 }
 
-E_ATTR_PURE
-E_ATTR_ACCESS_READ_ONLY (1)
+E_ATTR_PURE ()
 bool
 e_cstr_is_blank (const char *s)
 {
 	return e_cstr_matches_predicate (s, isspace);
 }
 
-E_ATTR_ACCESS_READ_ONLY (1)
 bool
 e_cstr_matches_predicate (const char *s, e_char_predicate_t func)
 {
@@ -60,7 +55,6 @@ e_cstr_matches_predicate (const char *s, e_char_predicate_t func)
 	return true;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
 char *
 e_cstr_to_ascii_lower (char *s)
 {
@@ -75,7 +69,6 @@ e_cstr_to_ascii_lower (char *s)
 	return s;
 }
 
-E_ATTR_ACCESS_READ_WRITE (1)
 char *
 e_cstr_to_ascii_upper (char *s)
 {
@@ -90,8 +83,6 @@ e_cstr_to_ascii_upper (char *s)
 	return s;
 }
 
-E_ATTR_ACCESS_READ_ONLY (1)
-E_ATTR_ACCESS_WRITE_ONLY (2)
 char *
 e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest)
 {
@@ -105,8 +96,6 @@ e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
-E_ATTR_ACCESS_READ_ONLY (1)
-E_ATTR_ACCESS_WRITE_ONLY (2)
 char *
 e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 {
@@ -120,7 +109,7 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
-E_ATTR_CONST
+E_ATTR_CONST ()
 int
 e_char_is_ascii (int c)
 {

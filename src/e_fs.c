@@ -9,10 +9,6 @@ static const char *const mode_str_table[] = {
 	"a+", /* E_FS_OPEN_MODE_READ_WRITE_APPEND */
 };
 
-E_ATTR_ACCESS_WRITE_ONLY (1)
-E_ATTR_ACCESS_READ_ONLY (2)
-E_ATTR_NUL_STRING_ARG (2)
-E_ATTR_NONNULL_2 (1, 2)
 e_result_t
 e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode)
 {
@@ -29,7 +25,6 @@ e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode)
 	return E_OK;
 }
 
-E_ATTR_NONNULL (1)
 e_result_t
 e_fs_file_close (e_fs_file_t *file)
 {
@@ -45,10 +40,6 @@ e_fs_file_close (e_fs_file_t *file)
 	return E_OK;
 }
 
-E_ATTR_ACCESS_WRITE_ONLY (2)
-E_ATTR_ACCESS_WRITE_ONLY (3)
-E_ATTR_ACCESS_READ_ONLY (1)
-E_ATTR_NONNULL_2 (1, 2)
 e_result_t
 e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out)
 {

@@ -122,18 +122,8 @@
  */
 #define e_new_zero(type) e_alloc_zero (type, 1)
 
-E_ATTR_ALLOC_SIZE (1)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
-E_ATTR_RETURNS_NONNULL
 void *__e_mem_alloc (usize size);
-
-E_ATTR_ALLOC_SIZE_MULT (1, 2)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
-E_ATTR_RETURNS_NONNULL
 void *__e_mem_calloc (usize nmemb, usize size);
-
-E_ATTR_ALLOC_SIZE (2)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
 void *__e_mem_realloc (void *ptr, usize size);
 
 #endif /* E_CONFIG_MODULE_ALLOC */

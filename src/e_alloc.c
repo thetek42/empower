@@ -3,9 +3,6 @@
 
 #if E_CONFIG_MODULE_ALLOC
 
-E_ATTR_ALLOC_SIZE (1)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
-E_ATTR_RETURNS_NONNULL
 void *
 __e_mem_alloc (usize size)
 {
@@ -19,9 +16,6 @@ __e_mem_alloc (usize size)
 	return ptr;
 }
 
-E_ATTR_ALLOC_SIZE_MULT (1, 2)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
-E_ATTR_RETURNS_NONNULL
 void *
 __e_mem_calloc (usize nmemb, usize size)
 {
@@ -35,8 +29,6 @@ __e_mem_calloc (usize nmemb, usize size)
 	return ptr;
 }
 
-E_ATTR_ALLOC_SIZE (2)
-E_ATTR_MALLOC_WITH_DEALLOC (free)
 void *
 __e_mem_realloc (void *ptr, usize size)
 {

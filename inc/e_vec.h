@@ -90,7 +90,6 @@
 	 * @param vec: The vector to grow                                      \
 	 * @param cap: The lower bound for the new capacity                    \
 	 */                                                                    \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void vec_type_prefix##_grow (vec_type_prefix##_t *vec, usize cap);     \
                                                                                \
 	/**                                                                    \
@@ -101,7 +100,6 @@
 	 * @param vec: The vector to append to                                 \
 	 * @param item: The item to add                                        \
 	 */                                                                    \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void vec_type_prefix##_append (vec_type_prefix##_t *vec, T item);      \
                                                                                \
 	/**                                                                    \
@@ -114,8 +112,6 @@
 	 * @param slice_len: The number of items to add                        \
 	 * @note \slice must have at least \slice_len items.                   \
 	 */                                                                    \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
-	E_ATTR_ACCESS_READ_ONLY (2)                                            \
 	void vec_type_prefix##_append_slice (vec_type_prefix##_t *vec,         \
 	                                     const T *slice, usize slice_len); \
                                                                                \
@@ -162,7 +158,6 @@
 		}                                                              \
 	}                                                                      \
                                                                                \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void                                                                   \
 	vec_type_prefix##_grow (vec_type_prefix##_t *vec, usize cap)           \
 	{                                                                      \
@@ -172,7 +167,6 @@
 		vec->ptr = e_realloc (vec->ptr, T, vec->cap);                  \
 	}                                                                      \
                                                                                \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
 	void                                                                   \
 	vec_type_prefix##_append (vec_type_prefix##_t *vec, T item)            \
 	{                                                                      \
@@ -184,8 +178,6 @@
 		vec->len += 1;                                                 \
 	}                                                                      \
                                                                                \
-	E_ATTR_ACCESS_READ_WRITE (1)                                           \
-	E_ATTR_ACCESS_READ_ONLY (2)                                            \
 	void                                                                   \
 	vec_type_prefix##_append_slice (vec_type_prefix##_t *vec,              \
 	                                const T *slice, usize slice_len)       \

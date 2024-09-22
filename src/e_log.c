@@ -59,9 +59,8 @@ e_log_error (const char *fmt, ...)
 	LOG_IMPL ("\x1b[31mERROR \x1b[0m", fmt, "\n");
 }
 
-E_ATTR_NORETURN
 E_ATTR_FORMAT (printf, 1, 2) 
-void
+noreturn void
 e_die (const char *fmt, ...)
 {
 	LOG_IMPL ("\x1b[31mERROR \x1b[0m", fmt, "\n");

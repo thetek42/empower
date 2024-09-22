@@ -13,6 +13,27 @@
  *
  ******************************************************************************/
 
+/**
+ * `inline` from C99
+ */
+#if E_STDC_VERSION < E_STDC_VERSION_C99
+# if defined (E_COMPILER_GCC) || defined (E_COMPILER_CLANG)
+#  define inline E_ATTR_ALWAYS_INLINE ()
+# elif defined (E_COMPILER_MSVC) /* defined (E_COMPILER_GCC) || defined (E_COMPILER_CLANG) */
+#  define inline __inline
+# else /* defined (E_COMPILER_MSVC) */
+#  define inline
+# endif /* defined (E_COMPILER_MSVC) */
+#endif /* E_STDC_VERSION < E_STDC_VERSION_C99 */
+
+/**
+ * `noreturn` from C11, but since `[[attribute]]`s are not available in C23, the
+ * regular old `noreturn` define is used.
+ */
+#ifndef noreturn
+# define noreturn E_ATTR_NORETURN ()
+#endif /* noreturn */
+
 /* === c23 features ========================================================= */
 
 #if E_STDC_VERSION < E_STDC_VERSION_C23

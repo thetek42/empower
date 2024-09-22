@@ -84,7 +84,6 @@ void e_str_grow (e_str_t *str, usize cap);
  * @param str: The string to change
  * @param c: The character to add
  */
-E_ATTR_ACCESS_READ_WRITE (1)
 void e_str_append_char (e_str_t *str, char c);
 
 /**
@@ -95,9 +94,6 @@ void e_str_append_char (e_str_t *str, char c);
  * @param s: The nul-terminated string to add
  * @return The length of \s as per `strlen`.
  */
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
-E_ATTR_NUL_STRING_ARG (2)
 usize e_str_append_cstr (e_str_t *str, const char *s);
 
 /**
@@ -109,8 +105,6 @@ usize e_str_append_cstr (e_str_t *str, const char *s);
  * @param len: The length of \s
  * @note \s must be at least \len bytes long.
  */
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
 void e_str_append_slice (e_str_t *str, const char *s, usize len);
 
 /**
@@ -130,8 +124,6 @@ void e_str_append_slice (e_str_t *str, const char *s, usize len);
  *       been implemented yet, writing more than \max_fmt_len bytes in C89 can
  *       lead to undefined behaviour.
  */
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (3)
 E_ATTR_FORMAT (printf, 3, 4)
 usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
 
@@ -147,8 +139,6 @@ usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
  *       been implemented yet, writing more than 1024 bytes in C89 can lead to
  *       undefined behaviour.
  */
-E_ATTR_ACCESS_READ_WRITE (1)
-E_ATTR_ACCESS_READ_ONLY (2)
 E_ATTR_FORMAT (printf, 2, 3)
 usize e_str_append_fmt_all (e_str_t *str, const char *fmt, ...);
 
