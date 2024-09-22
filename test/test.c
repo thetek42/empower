@@ -59,6 +59,13 @@ test_fs (void)
 	e_test_assert_str_eq ("e_fs_file_read_all out", buf, "Hello, World!\n");
 	e_test_assert_eq ("e_fs_file_read_all len", len, strlen ("Hello, World!\n"));
 
+	e_test_assert ("e_fs_path_exists true", e_fs_path_exists ("test/test.txt"));
+	e_test_assert ("e_fs_path_exists false", !e_fs_path_exists ("eierschale.docx"));
+	e_test_assert ("e_fs_is_file true", e_fs_is_file ("test/test.txt"));
+	e_test_assert ("e_fs_is_file false", !e_fs_is_file ("test"));
+	e_test_assert ("e_fs_is_dir true", e_fs_is_dir ("test"));
+	e_test_assert ("e_fs_is_dir false", !e_fs_is_dir ("test/test.txt"));
+
 	e_free (buf);
 }
 

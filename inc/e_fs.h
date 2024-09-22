@@ -107,5 +107,33 @@ e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
 [[nodiscard]]
 e_result_t e_fs_file_write (e_fs_file_t *file, const char *data, usize len);
 
+/**
+ * Check if a path exists.
+ *
+ * @param path: The path which should be checked
+ */
+bool e_fs_path_exists (const char *path);
+
+/**
+ * Check if a path points to a file.
+ *
+ * @param path: The path which should be checked
+ */
+bool e_fs_is_file (const char *path);
+
+/**
+ * Check if a path points to a file.
+ *
+ * @param path: The path which should be checked
+ */
+bool e_fs_is_dir (const char *path);
+
+/**
+ * Check if a path points to a file.
+ *
+ * @param path: The path which should be checked
+ */
+bool e_fs_is_link (const char *path);
+
 #endif /* E_CONFIG_MODULE_FS */
 #endif /* _EMPOWER_FS_H_ */

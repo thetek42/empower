@@ -131,4 +131,34 @@ e_fs_file_write (e_fs_file_t *file, const char *data, usize len)
 	return E_OK;
 }
 
+bool
+e_fs_path_exists (const char *path)
+{
+	return access (path, F_OK) == 0;
+}
+
+bool
+e_fs_is_file (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISREG (s.st_mode);
+}
+
+bool
+e_fs_is_dir (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISDIR (s.st_mode);
+}
+
+bool
+e_fs_is_link (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISLNK (s.st_mode);
+}
+
 #endif /* E_CONFIG_MODULE_FS */
