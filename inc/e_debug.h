@@ -49,5 +49,13 @@
 		         E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n");           \
 	} while (0)
 
+/**
+ * Print a hexdump of a region of memory.
+ *
+ * @param ptr: A pointer to the memory to print
+ * @param len: The amount of bytes to print
+ */
+void e_debug_hexdump (const void *ptr, usize len);
+
 #endif /* E_CONFIG_MODULE_DEBUG */
 #endif /* _EMPOWER_DEBUG_H_ */
