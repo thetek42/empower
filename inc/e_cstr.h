@@ -28,7 +28,7 @@ typedef int (* e_char_predicate_t) (int c);
  * @param c: The character to search for
  * @return The number of occurances of \c in \s, or 0 if \s is `nullptr`.
  */
-E_ATTR_PURE ()
+[[reproducible]]
 usize e_cstr_count_char (const char *s, char c);
 
 /**
@@ -47,7 +47,7 @@ usize e_cstr_count_func (const char *s, e_char_predicate_t func);
  * @param s #cstr: The nul-terminated string to check
  * @return `true` when \s is `nullptr` or only consists of ASCII characters
  */
-E_ATTR_PURE ()
+[[reproducible]]
 bool e_cstr_is_ascii (const char *s);
 
 /**
@@ -57,7 +57,7 @@ bool e_cstr_is_ascii (const char *s);
  * @return `true` when \s is `nullptr` or only consists of whitespace
  * @see `isspace`
  */
-E_ATTR_PURE ()
+[[reproducible]]
 bool e_cstr_is_blank (const char *s);
 
 /**
@@ -121,7 +121,7 @@ char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
  * @return 0 if \c is ASCII, a different number otherwise.
  * @see `isascii` from `<ctype.h>` on POSIX systems
  */
-E_ATTR_CONST ()
+[[unsequenced]]
 int e_char_is_ascii (int c);
 
 #endif /* E_CONFIG_MODULE_CSTR */

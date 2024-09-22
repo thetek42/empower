@@ -122,8 +122,13 @@
  */
 #define e_new_zero(type) e_alloc_zero (type, 1)
 
+[[nodiscard]]
 void *__e_mem_alloc (usize size);
+
+[[nodiscard]]
 void *__e_mem_calloc (usize nmemb, usize size);
+
+[[nodiscard]]
 void *__e_mem_realloc (void *ptr, usize size);
 
 #endif /* E_CONFIG_MODULE_ALLOC */

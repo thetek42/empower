@@ -27,7 +27,7 @@ typedef enum {
 	E_FS_OPEN_MODE_WRITE_APPEND, /* a */
 	E_FS_OPEN_MODE_READ_WRITE, /* r+ */
 	E_FS_OPEN_MODE_READ_WRITE_TRUNC, /* w+ */
-	E_FS_OPEN_MODE_READ_WRITE_APPEND /* a+ */
+	E_FS_OPEN_MODE_READ_WRITE_APPEND, /* a+ */
 } e_fs_open_mode_t;
 
 typedef struct {
@@ -42,6 +42,7 @@ typedef struct {
  * @param mode: The open mode (read, write, ...)
  * @return E_OK or error that occured during `fopen`.
  */
+[[nodiscard]]
 e_result_t e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode);
 
 /**
@@ -50,6 +51,7 @@ e_result_t e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mo
  * @param file: The file to close
  * @return E_OK or error that occured during `fclose`.
  */
+[[nodiscard]]
 e_result_t e_fs_file_close (e_fs_file_t *file);
 
 /**
@@ -60,6 +62,7 @@ e_result_t e_fs_file_close (e_fs_file_t *file);
  *                  occurs, the size will be set to 0.
  * @return E_OK or error that occured during `fseek` or `ftell`.
  */
+[[nodiscard]]
 e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
 
 /**
@@ -89,6 +92,7 @@ e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
  * @return E_OK or any error that occured during `fseek` or `ftell`. If an error
  *         occurs during `fread`, it is reported as \E_ERR_FAIL.
  */
+[[nodiscard]]
 e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
 
 /**
@@ -100,6 +104,7 @@ e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
  * @return E_OK, E_ERR_INVALID_ARGUMENT, or in case the call to `fwrite` fails,
  *         E_ERR_FAIL.
  */
+[[nodiscard]]
 e_result_t e_fs_file_write (e_fs_file_t *file, const char *data, usize len);
 
 #endif /* E_CONFIG_MODULE_FS */

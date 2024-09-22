@@ -13,16 +13,6 @@
 #define E_CONFIG_MODULE_VEC				1
 
 /* library settings ***********************************************************/
-#define E_CONFIG_TEST_TYPE_MACROS			0
-
-/* compiler and language specification ****************************************/
-#define E_CONFIG_HAS_SYS_TYPES				1
-#define E_CONFIG_HAS_INT_128				0
-#define E_CONFIG_HAS_FLOAT				1
-#define E_CONFIG_HAS_DOUBLE				1
-#define E_CONFIG_HAS_LONG_DOUBLE			1
-#define E_CONFIG_C89_HAS_RESTRICT			1
-#define E_CONFIG_C89_INT_IS_32_BIT			1
-#define E_CONFIG_C89_LONG_IS_64_BIT			1
+/* TODO */
 
 #endif /* _EMPOWER_CONFIG_H_ */

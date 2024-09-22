@@ -109,7 +109,7 @@ void e_str_append_slice (e_str_t *str, const char *s, usize len);
 
 /**
  * Append a formatted string to the string \str and reallocate if necessary.
- * This function works using C99's `vsnprintf`: \fmt serves as the formatting
+ * This function works using `vsnprintf`: \fmt serves as the formatting
  * specifier, and only up to \max_fmt_len bytes are actually written to the
  * string.
  *
@@ -120,11 +120,8 @@ void e_str_append_slice (e_str_t *str, const char *s, usize len);
  * @return The number of bytes that would have been written if the entire
  *         formatted string could have been appended. If the entire string was
  *         appended, this is equal to the number of bytes actually written.
- * @note Since `vsnprintf` is not available in C89 and no proper substitute has
- *       been implemented yet, writing more than \max_fmt_len bytes in C89 can
- *       lead to undefined behaviour.
  */
-E_ATTR_FORMAT (printf, 3, 4)
+[[gnu::format (printf, 3, 4)]]
 usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
 
 /**
@@ -135,11 +132,8 @@ usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
  * @param fmt: The format specifier for `vsnprintf`
  * @param ...: The format arguments for `vsnprintf`
  * @return The number of bytes that were written to the string.
- * @note Since `vsnprintf` is not available in C89 and no proper substitute has
- *       been implemented yet, writing more than 1024 bytes in C89 can lead to
- *       undefined behaviour.
  */
-E_ATTR_FORMAT (printf, 2, 3)
+[[gnu::format (printf, 2, 3)]]
 usize e_str_append_fmt_all (e_str_t *str, const char *fmt, ...);
 
 #endif /* E_CONFIG_MODULE_STR */

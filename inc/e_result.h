@@ -19,8 +19,6 @@
  */
 typedef usize e_result_t;
 
-/* TODO: make this portable */
-
 /**
  * Pre-defined error codes
  */
@@ -162,7 +160,7 @@ enum {
 	E_ERR_RFKILL                    = ERFKILL,
 	E_ERR_HARDWARE_ERROR            = EHWPOISON,
 	/* custom */
-	E_ERR_FAIL
+	E_ERR_FAIL,
 };
 
 #endif /* E_CONFIG_MODULE_RESULT */

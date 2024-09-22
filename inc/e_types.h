@@ -29,37 +29,20 @@ typedef ssize_t isize;
  * Convenience typedefs for traditional C integer types.
  */
 typedef signed char ichar;
+typedef signed long long llong;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
-#if E_STDC_VERSION >= E_STDC_VERSION_C99
-typedef signed long long llong;
 typedef unsigned long long ullong;
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
-/* docgen: collect-end */
-
-/** docgen: collect
- * Convenience typedefs for 128-bit integers.
- */
-#if E_CONFIG_HAS_INT_128
-typedef signed __int128 i128;
-typedef unsigned __int128 u128;
-#endif /* E_CONFIG_HAS_INT_128 */
 /* docgen: collect-end */
 
 /** docgen: collect
  * Convenience typedefs for floating point numbers.
  */
-#if E_CONFIG_HAS_FLOAT
 typedef float f32;
-#endif /* E_CONFIG_HAS_FLOAT */
-#if E_CONFIG_HAS_DOUBLE
 typedef double f64;
-#endif /* E_CONFIG_HAS_DOUBLE */
-#if E_CONFIG_HAS_LONG_DOUBLE
 typedef long double f128;
-#endif /* E_CONFIG_HAS_LONG_DOUBLE */
 /* docgen: collect-end */
 
 #endif /* _EMPOWER_TYPES_H_ */

@@ -1,9 +1,8 @@
 #include "empower.h"
-#include <ctype.h>
 
 #if E_CONFIG_MODULE_CSTR
 
-E_ATTR_PURE ()
+[[reproducible]]
 usize
 e_cstr_count_char (const char *s, char c)
 {
@@ -30,14 +29,14 @@ e_cstr_count_func (const char *s, e_char_predicate_t func)
 	return r;
 }
 
-E_ATTR_PURE ()
+[[reproducible]]
 bool
 e_cstr_is_ascii (const char *s)
 {
 	return e_cstr_matches_predicate (s, e_char_is_ascii);
 }
 
-E_ATTR_PURE ()
+[[reproducible]]
 bool
 e_cstr_is_blank (const char *s)
 {
@@ -109,7 +108,7 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
-E_ATTR_CONST ()
+[[unsequenced]]
 int
 e_char_is_ascii (int c)
 {

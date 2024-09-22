@@ -10,18 +10,6 @@
  *
  ******************************************************************************/
 
-/** docgen: collect
- * Helper macros for formatting of certain types.
- */
-#if E_STDC_VERSION >= E_STDC_VERSION_C99
-# define E_FMT_USIZE "zu"
-# define E_FMT_ISIZE "zi"
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
-# define E_FMT_USIZE "lu"
-# define E_FMT_ISIZE "li"
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
-/* docgen: collect-end */
-
 /**
  * Turn any expression into a string.
  *

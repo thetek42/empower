@@ -7,11 +7,8 @@
 
 /*! e_test ********************************************************************
  * 
- * This module provides basic functionality for unit testing using macros. When
- * C23 is used, types inference is used for cleaner code. This behaviour can be
- * deactivated in the config or by adding the following line before the include
- * statement of `empower.h`:
- * | #define E_CONFIG_TEST_TYPE_MACROS_OVERRIDE
+ * This module provides basic functionality for unit testing using macros. Type
+ * inference is used for cleaner code.
  *
  ******************************************************************************/
 
@@ -31,9 +28,9 @@ extern struct __e_test_result __e_global_test;
 #define __E_TEST_SPACE "                                                                      "
 #define __E_TEST_PRINT_ASSERT_FN(name) fprintf (stderr, "\x1b[35m%s\x1b[0m ", name)
 
-#define __e_test_assert(type, name, expr)                                      \
+#define e_test_assert(name, expr)                                              \
 	do {                                                                   \
-		type success = (expr);                                         \
+		auto success = (expr);                                         \
 		if (success) {                                                 \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
@@ -47,10 +44,10 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
-#define __e_test_assert_eq(type, type_cast, name, expr, check)                 \
+#define e_test_assert_eq(name, expr, check)                                    \
 	do {                                                                   \
-		type result = (expr);                                          \
-		type other = (type_cast) (check);                              \
+		auto result = (expr);                                          \
+		auto other = (typeof (result)) (check);                        \
 		if (result == other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
@@ -102,7 +99,7 @@ extern struct __e_test_result __e_global_test;
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
 			fprintf (stderr, #expr " \x1b[36mreturned error\x1b[0m"\
-			         " %" E_FMT_USIZE "\n", result);               \
+			         " %zu\n", result);                            \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)                                                                                
@@ -119,9 +116,9 @@ extern struct __e_test_result __e_global_test;
 		f64 fail_rate = (f64) __e_global_test.failure / total_perc;    \
 		fprintf (stderr, "\n=======================================\n" \
 		         "TEST SUMMARY:"                                       \
-		         "\n - total:   %"E_FMT_USIZE                          \
-			 "\n - \x1b[32msuccess: %"E_FMT_USIZE" (%.2f%%)\x1b[0m"\
-			 "\n - \x1b[31mfailure: %"E_FMT_USIZE" (%.2f%%)\x1b[0m"\
+		         "\n - total:   %zu"                                   \
+			 "\n - \x1b[32msuccess: %zu (%.2f%%)\x1b[0m"           \
+			 "\n - \x1b[31mfailure: %zu (%.2f%%)\x1b[0m"           \
 		         "\n=======================================\n",        \
 			 __e_global_test.success + __e_global_test.failure,    \
 			 __e_global_test.success, succ_rate,                   \
@@ -129,64 +126,6 @@ extern struct __e_test_result __e_global_test;
 		exit (__e_global_test.failure > 0 ? EXIT_FAILURE :             \
 		      EXIT_SUCCESS);                                           \
 	} while (0)
-
-#if (E_STDC_VERSION >= E_STDC_VERSION_C23) && !E_CONFIG_TEST_TYPE_MACROS && !defined (E_CONFIG_TEST_TYPE_MACROS_OVERRIDE)
-
-/**
- * Assert that a condition is truthy. The type is determined automatically.
- *
- * @param name: The name of the test
- * @param expr: The expression to test
- */
-# define e_test_assert(name, expr) __e_test_assert (auto, name, expr)
-
-/**
- * Assert that two values equal each other. The type is determined automatically.
- *
- * @param name: The name of the test
- * @param expr: The expression to check
- * @param check: The value it should have
- */
-# define e_test_assert_eq(name, expr, check) __e_test_assert_eq (auto, typeof (result), name, expr, check)
-
-#else /* (E_STDC_VERSION >= E_STDC_VERSION_C23) && !E_CONFIG_TEST_TYPE_MACROS */
-
-/**
- * Assert that a condition is truthy.
- *
- * @param name: The name of the test
- * @param type: The type of \expr
- * @param expr: The expression to test
- */
-#  define e_test_assert(name, type, expr) __e_test_assert (type, name, expr)
-
-# if E_STDC_VERSION >= E_STDC_VERSION_C11
-
-/**
- * Assert that two values equal each other.
- *
- * @param name: The name of the test
- * @param type: The type of \expr and \check
- * @param expr: The expression to check
- * @param check: The value it should have
- */
-#  define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (type, type, name, expr, check)
-
-# else /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
-
-/**
- * Assert that two values equal each other. Does not print the expected and got
- * value like in C11 and above due to limitations within the language.
- *
- * @param name: The name of the test
- * @param type: The type of \expr and \check
- * @param expr: The expression to check
- * @param check: The value it should have
- */
-#  define e_test_assert_eq(name, type, expr, check) __e_test_assert (type, name, (expr) == (check))
-
-# endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
-#endif /* (E_STDC_VERSION >= E_STDC_VERSION_C23) && !E_CONFIG_TEST_TYPE_MACROS */
 
 #endif /* E_CONFIG_MODULE_TEST */
 #endif /* _EMPOWER_TEST_H_ */

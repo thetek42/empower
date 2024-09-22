@@ -1,5 +1,7 @@
 #include "empower.h"
 
+#if E_CONFIG_MODULE_FS
+
 static const char *const mode_str_table[] = {
 	"r", /* E_FS_OPEN_MODE_READ_ONLY */
 	"w", /* E_FS_OPEN_MODE_WRITE_TRUNC */
@@ -128,3 +130,5 @@ e_fs_file_write (e_fs_file_t *file, const char *data, usize len)
 
 	return E_OK;
 }
+
+#endif /* E_CONFIG_MODULE_FS */

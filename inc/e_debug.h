@@ -11,15 +11,13 @@
  *
  ******************************************************************************/
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C11
-
 /**
  * Obtain the formatting argument for `printf`-like functions for the generic
  * argument \value. Works for regular integers, floats and pointers.
  *
  * @param value: The generic argument
  */
-# define E_DEBUG_AUTO_FMT(value) _Generic ((value),                            \
+#define E_DEBUG_AUTO_FMT(value) _Generic ((value),                             \
 		i8: "%" PRIi8,                                                 \
 		i16: "%" PRIi16,                                               \
 		i32: "%" PRIi32,                                               \
@@ -42,7 +40,7 @@
  *
  * @param value: The generic argument
  */
-# define e_debug(value)                                                        \
+#define e_debug(value)                                                         \
 	do {                                                                   \
 		fprintf (stderr, "\x1b[35mDEBUG \x1b[0m"                       \
 		         E_MACRO_STRINGIFY (value) " = \x1b[35m");             \
@@ -50,8 +48,6 @@
 		fprintf (stderr, "\x1b[0m \x1b[90m(" __FILE__ ":"              \
 		         E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n");           \
 	} while (0)
-
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
 
 #endif /* E_CONFIG_MODULE_DEBUG */
 #endif /* _EMPOWER_DEBUG_H_ */

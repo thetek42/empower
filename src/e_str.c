@@ -68,7 +68,7 @@ e_str_append_slice (e_str_t *str, const char *s, usize len)
 	str->len += len;
 }
 
-E_ATTR_FORMAT (printf, 3, 4)
+[[gnu::format (printf, 3, 4)]]
 usize
 e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
 {
@@ -92,7 +92,7 @@ e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
 	return (usize) written;
 }
 
-E_ATTR_FORMAT (printf, 2, 3)
+[[gnu::format (printf, 2, 3)]]
 usize
 e_str_append_fmt_all (e_str_t *str, const char *fmt, ...)
 {
@@ -101,13 +101,9 @@ e_str_append_fmt_all (e_str_t *str, const char *fmt, ...)
 
 	if (!str) return 0;
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C99
 	va_start (ap, fmt);
 	written = vsnprintf (nullptr, 0, fmt, ap);
 	va_end (ap);
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
-	written = 1024; /* TODO: properly implement vsnprintf in C89 */
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C99 */
 
 	if (str->len + (usize) written + 1 > str->cap) {
 		e_str_grow (str, str->len + (usize) written + 1);
