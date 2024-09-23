@@ -79,6 +79,15 @@ void e_str_deinit (E_Str *str);
 void e_str_grow (E_Str *str, usize cap);
 
 /**
+ * Clone a string. This function allocates memory which must be freed by the
+ * user using \e_str_free. If \str is `nullptr`, an string vector is returned.
+ *
+ * @param str: The string to clone
+ * @return A new string
+ */
+E_Str e_str_clone (E_Str *str);
+
+/**
  * Append a single character \c to the string \str and reallocate if necessary.
  *
  * @param str: The string to change

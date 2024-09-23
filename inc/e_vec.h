@@ -95,6 +95,16 @@
 	void prefix##_grow (type_name *vec, usize cap);                        \
                                                                                \
 	/**                                                                    \
+	 * Clone a vector. This function allocates memory which must be freed  \
+	 * by the user using \e_vec_free. If \vec is `nullptr`, an empty       \
+	 * vector is returned.                                                 \
+	 *                                                                     \
+	 * @param vec: The vector to clone                                     \
+	 * @return A new vector                                                \
+	 */                                                                    \
+	type_name prefix##_clone (type_name *vec);                             \
+                                                                               \
+	/**                                                                    \
 	 * Add the item \item to the end of the vector \vec. If the vector     \
 	 * does not have enough capacity, its data will be reallocated to      \
 	 * accommodate for the new item.                                       \
@@ -171,6 +181,23 @@
 		vec->cap = stdc_bit_ceil (cap);                                \
 		vec->ptr = e_realloc (vec->ptr, T, vec->cap);                  \
 	}                                                                      \
+                                                                               \
+	type_name                                                              \
+	prefix##_clone (type_name *vec);                                       \
+        {                                                                      \
+		T *ptr;                                                        \
+                                                                               \
+		if (!vec) return prefix##_init ();                             \
+                                                                               \
+		ptr = e_alloc (vec->cap);                                      \
+		memcpy (ptr, vec->ptr, vec->len);                              \
+		                                                               \
+		return (type_name) {                                           \
+			.ptr = ptr,                                            \
+			.cap = vec->cap,                                       \
+			.len = vec->len,                                       \
+		};                                                             \
+        }                                                                      \
                                                                                \
 	void                                                                   \
 	prefix##_append (type_name *vec, T item)                               \

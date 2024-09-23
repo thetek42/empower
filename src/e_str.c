@@ -28,6 +28,12 @@ e_str_grow (E_Str *str, usize cap)
 	__e_vec_char_grow (str, cap);
 }
 
+E_Str
+e_str_clone (E_Str *str)
+{
+	return __e_vec_char_clone (str);
+}
+
 void
 e_str_append_char (E_Str *str, char c)
 {
