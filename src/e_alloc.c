@@ -45,4 +45,18 @@ __e_mem_realloc (void *ptr, usize size)
 	return ptr;
 }
 
+[[nodiscard]]
+char *
+e_mem_strdup (const char *s)
+{
+	char *res;
+
+	res = strdup (s);
+	if (res == nullptr) {
+		e_die ("failed to strdup");
+	}
+
+	return res;
+}
+
 #endif /* E_CONFIG_MODULE_ALLOC */

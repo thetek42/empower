@@ -114,15 +114,5 @@ char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
  */
 char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 
-/**
- * Check if the character \c is ASCII.
- *
- * @param c: The character to check
- * @return 0 if \c is ASCII, a different number otherwise.
- * @see `isascii` from `<ctype.h>` on POSIX systems
- */
-[[unsequenced]]
-int e_char_is_ascii (int c);
-
 #endif /* E_CONFIG_MODULE_CSTR */
 #endif /* _EMPOWER_CSTR_H_ */

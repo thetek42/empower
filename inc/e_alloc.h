@@ -122,6 +122,18 @@
  */
 #define e_new_zero(type) e_alloc_zero (type, 1)
 
+/**
+ * Duplicate a string. This is equivalent to `strdup`, except that it terminates
+ * the programme in case the memory allocation fails. This function only returns
+ * `nullptr` if \s is `nullptr`. The allocated memory must be freed by the user
+ * using `e_free`.
+ *
+ * @param s: The string to duplicate
+ * @return The pointer to the duplicated string
+ */
+[[nodiscard]]
+char *e_mem_strdup (const char *s);
+
 [[nodiscard]]
 void *__e_mem_alloc (usize size);
 

@@ -33,7 +33,7 @@ e_cstr_count_func (const char *s, E_Char_Predicate func)
 bool
 e_cstr_is_ascii (const char *s)
 {
-	return e_cstr_matches_predicate (s, e_char_is_ascii);
+	return e_cstr_matches_predicate (s, isascii);
 }
 
 [[reproducible]]
@@ -106,13 +106,6 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	}
 	*dest = 0;
 	return dest;
-}
-
-[[unsequenced]]
-int
-e_char_is_ascii (int c)
-{
-	return 0 <= c && c <= 0x7F;
 }
 
 #endif /* E_CONFIG_MODULE_CSTR */
