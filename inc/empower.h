@@ -11,6 +11,7 @@
 
 /* includes *******************************************************************/
 
+#define _XOPEN_SOURCE
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -23,6 +24,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 
 /* modules ********************************************************************/
@@ -33,6 +35,7 @@
 #include "e_cstr.h"
 #include "e_debug.h"
 #include "e_log.h"
+#include "e_math.h"
 #include "e_result.h"
 #include "e_test.h"
 #include "e_vec.h"
