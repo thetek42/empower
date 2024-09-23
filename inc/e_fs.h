@@ -28,11 +28,11 @@ typedef enum {
 	E_FS_OPEN_MODE_READ_WRITE, /* r+ */
 	E_FS_OPEN_MODE_READ_WRITE_TRUNC, /* w+ */
 	E_FS_OPEN_MODE_READ_WRITE_APPEND, /* a+ */
-} e_fs_open_mode_t;
+} E_Fs_Open_Mode;
 
 typedef struct {
 	FILE *handle;
-} e_fs_file_t;
+} E_Fs_File;
 
 /**
  * Open a file handle. This function is essentially a wrapper around `fopen`.
@@ -43,7 +43,7 @@ typedef struct {
  * @return E_OK or error that occured during `fopen`.
  */
 [[nodiscard]]
-e_result_t e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode);
+E_Result e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode);
 
 /**
  * Close a file handle. This function is essentially a wrapper around `fclose`.
@@ -52,7 +52,7 @@ e_result_t e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mo
  * @return E_OK or error that occured during `fclose`.
  */
 [[nodiscard]]
-e_result_t e_fs_file_close (e_fs_file_t *file);
+E_Result e_fs_file_close (E_Fs_File *file);
 
 /**
  * Get the size of a file.
@@ -63,7 +63,7 @@ e_result_t e_fs_file_close (e_fs_file_t *file);
  * @return E_OK or error that occured during `fseek` or `ftell`.
  */
 [[nodiscard]]
-e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
+E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
 
 /**
  * Reads all content a file handle into a buffer. The required memory is
@@ -71,7 +71,7 @@ e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
  * error occurs, the memory is freed automatically.
  *
  * Example (without error handling, indicated by `(void)`):
- * | e_fs_file_t file;
+ * | E_Fs_File file;
  * | char *buf;
  * | usize len;
  * | (void) e_fs_file_open (&file, "data.txt", E_FS_OPEN_MODE_READ_ONLY);
@@ -93,7 +93,7 @@ e_result_t e_fs_file_get_size (e_fs_file_t *file, usize *size_out);
  *         occurs during `fread`, it is reported as \E_ERR_FAIL.
  */
 [[nodiscard]]
-e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
+E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
 
 /**
  * Write bytes to a file.
@@ -105,7 +105,7 @@ e_result_t e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out);
  *         E_ERR_FAIL.
  */
 [[nodiscard]]
-e_result_t e_fs_file_write (e_fs_file_t *file, const char *data, usize len);
+E_Result e_fs_file_write (E_Fs_File *file, const char *data, usize len);
 
 /**
  * Check if a path exists.

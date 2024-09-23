@@ -17,7 +17,7 @@
  * returned an error. Errors are indicated with non-zero values; success is
  * indicated with zero.
  */
-typedef usize e_result_t;
+typedef usize E_Result;
 
 /**
  * Pre-defined error codes

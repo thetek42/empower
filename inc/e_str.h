@@ -22,7 +22,7 @@
  *
  ******************************************************************************/
 
-E_VEC_DECLARE (char, __e_vec_char);
+E_VEC_DECLARE (char, __E_Vec_Char, __e_vec_char);
 
 /**
  * A dynamically sized string type, internally represented as a \e_vec_t of type
@@ -35,7 +35,7 @@ E_VEC_DECLARE (char, __e_vec_char);
  *             the terminating nul character) it can store befor reallocating.
  *             `cap` is guaranteed to be greater than `len`.
  */
-typedef __e_vec_char_t e_str_t;
+typedef __E_Vec_Char E_Str;
 
 /**
  * Initialise a dynamically sized string with capacity 0. This function does not
@@ -44,7 +44,7 @@ typedef __e_vec_char_t e_str_t;
  * @return The new string.
  * @see \e_vec_init
  */
-e_str_t e_str_init (void);
+E_Str e_str_init (void);
 
 /**
  * Initialise a dynamically sized string with a given capacity. This function
@@ -55,7 +55,7 @@ e_str_t e_str_init (void);
  * @return The new string.
  * @see \e_vec_init_with_cap
  */
-e_str_t e_str_init_with_cap (usize cap);
+E_Str e_str_init_with_cap (usize cap);
 
 /**
  * Deinitialise a dynamically sized string and free the memory occupied by it.
@@ -63,7 +63,7 @@ e_str_t e_str_init_with_cap (usize cap);
  * @param str: The string to deinitialise
  * @see \e_vec_deinit
  */
-void e_str_deinit (e_str_t *str);
+void e_str_deinit (E_Str *str);
 
 /**
  * Grow the memory of a dynamically sized string \str to at least \cap items
@@ -76,7 +76,7 @@ void e_str_deinit (e_str_t *str);
  * @param cap: The lowe bound for the new capacity
  * @see \e_vec_grow
  */
-void e_str_grow (e_str_t *str, usize cap);
+void e_str_grow (E_Str *str, usize cap);
 
 /**
  * Append a single character \c to the string \str and reallocate if necessary.
@@ -84,7 +84,7 @@ void e_str_grow (e_str_t *str, usize cap);
  * @param str: The string to change
  * @param c: The character to add
  */
-void e_str_append_char (e_str_t *str, char c);
+void e_str_append_char (E_Str *str, char c);
 
 /**
  * Append a nul-terminated string \s to the string \str and reallocate if
@@ -94,7 +94,7 @@ void e_str_append_char (e_str_t *str, char c);
  * @param s: The nul-terminated string to add
  * @return The length of \s as per `strlen`.
  */
-usize e_str_append_cstr (e_str_t *str, const char *s);
+usize e_str_append_cstr (E_Str *str, const char *s);
 
 /**
  * Append a string \s of length \len to the string \str and reallocate if
@@ -105,7 +105,7 @@ usize e_str_append_cstr (e_str_t *str, const char *s);
  * @param len: The length of \s
  * @note \s must be at least \len bytes long.
  */
-void e_str_append_slice (e_str_t *str, const char *s, usize len);
+void e_str_append_slice (E_Str *str, const char *s, usize len);
 
 /**
  * Append a formatted string to the string \str and reallocate if necessary.
@@ -122,7 +122,7 @@ void e_str_append_slice (e_str_t *str, const char *s, usize len);
  *         appended, this is equal to the number of bytes actually written.
  */
 [[gnu::format (printf, 3, 4)]]
-usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
+usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
 
 /**
  * Append a formatted string to the string \str. The required space is
@@ -134,7 +134,7 @@ usize e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...);
  * @return The number of bytes that were written to the string.
  */
 [[gnu::format (printf, 2, 3)]]
-usize e_str_append_fmt_all (e_str_t *str, const char *fmt, ...);
+usize e_str_append_fmt_all (E_Str *str, const char *fmt, ...);
 
 #endif /* E_CONFIG_MODULE_STR */
 #endif /* _EMPOWER_STR_H_ */

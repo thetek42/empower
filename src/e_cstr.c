@@ -17,7 +17,7 @@ e_cstr_count_char (const char *s, char c)
 }
 
 usize
-e_cstr_count_func (const char *s, e_char_predicate_t func)
+e_cstr_count_func (const char *s, E_Char_Predicate func)
 {
 	usize r;
 
@@ -44,7 +44,7 @@ e_cstr_is_blank (const char *s)
 }
 
 bool
-e_cstr_matches_predicate (const char *s, e_char_predicate_t func)
+e_cstr_matches_predicate (const char *s, E_Char_Predicate func)
 {
 	if (!s) return true;
 	if (!func) return false;

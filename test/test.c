@@ -43,7 +43,7 @@ test_cstr (void)
 static void
 test_fs (void)
 {
-	e_fs_file_t file;
+	E_Fs_File file;
 	char *buf;
 	usize len;
 
@@ -72,7 +72,7 @@ test_fs (void)
 static void
 test_str (void)
 {
-	e_str_t str;
+	E_Str str;
 	usize len_ret;
 
 	str = e_str_init ();

@@ -19,7 +19,7 @@
  * @param c: The character to check
  * @return 0 when \c is accepted, a different number otherwise.
  */
-typedef int (* e_char_predicate_t) (int c);
+typedef int (* E_Char_Predicate) (int c);
 
 /**
  * Count the number of occurances of a character \c in the string \s.
@@ -32,14 +32,14 @@ typedef int (* e_char_predicate_t) (int c);
 usize e_cstr_count_char (const char *s, char c);
 
 /**
- * Count the number of matches of a \e_char_predicate_t \func in the string \s.
+ * Count the number of matches of a \E_Char_Predicate \func in the string \s.
  *
  * @param s #cstr: The nul-terminated string to check
  * @param c: The predicate for which characters to count
  * @return The number of matches of \func in \s, or 0 if either \s or \func is
  *         `nullptr`.
  */
-usize e_cstr_count_func (const char *s, e_char_predicate_t func);
+usize e_cstr_count_func (const char *s, E_Char_Predicate func);
 
 /**
  * Check if the string \s is ASCII.
@@ -61,14 +61,14 @@ bool e_cstr_is_ascii (const char *s);
 bool e_cstr_is_blank (const char *s);
 
 /**
- * Check if the string \s matches the \e_char_predicate_t \func.
+ * Check if the string \s matches the \E_Char_Predicate \func.
  *
  * @param s #cstr: The nul-terminated string to check
  * @param func: The predicate for which characters are accepted
  * @return `true` when \s is `nullptr` or only consists of characters that were
  *         accepted by \func, `false` when \func is `nullptr` or did not match.
  */
-bool e_cstr_matches_predicate (const char *s, e_char_predicate_t func);
+bool e_cstr_matches_predicate (const char *s, E_Char_Predicate func);
 
 /**
  * Convert uppercase ASCII characters the string \s to lowercase in-place. When

@@ -88,7 +88,7 @@ extern struct __e_test_result __e_global_test;
 
 #define e_test_assert_ok(name, expr)                                           \
 	do {                                                                   \
-		e_result_t result = (expr);                                    \
+		E_Result result = (expr);                                      \
 		if (result == E_OK) {                                          \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
@@ -104,10 +104,6 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)                                                                                
 
-/**
- * Finish the tests by printing out a summary of how many tests were successful
- * and how many tests failed.
- */
 #define e_test_finish()                                                        \
 	do {                                                                   \
 		f64 total_perc = (f64) (__e_global_test.success +              \

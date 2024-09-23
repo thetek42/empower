@@ -11,8 +11,8 @@ static const char *const mode_str_table[] = {
 	"a+", /* E_FS_OPEN_MODE_READ_WRITE_APPEND */
 };
 
-e_result_t
-e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode)
+E_Result
+e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode)
 {
 	FILE *handle;
 
@@ -20,15 +20,15 @@ e_fs_file_open (e_fs_file_t *file_out, const char *path, e_fs_open_mode_t mode)
 
 	handle = fopen (path, mode_str_table[mode]);
 	if (handle == nullptr) {
-		return (e_result_t) errno;
+		return (E_Result) errno;
 	}
 
 	file_out->handle = handle;
 	return E_OK;
 }
 
-e_result_t
-e_fs_file_close (e_fs_file_t *file)
+E_Result
+e_fs_file_close (E_Fs_File *file)
 {
 	int ret;
 
@@ -36,14 +36,14 @@ e_fs_file_close (e_fs_file_t *file)
 
 	ret = fclose (file->handle);
 	if (ret != 0) {
-		return (e_result_t) errno;
+		return (E_Result) errno;
 	}
 
 	return E_OK;
 }
 
-e_result_t
-e_fs_file_get_size (e_fs_file_t *file, usize *size_out)
+E_Result
+e_fs_file_get_size (E_Fs_File *file, usize *size_out)
 {
 	long len;
 	int ret;
@@ -53,29 +53,29 @@ e_fs_file_get_size (e_fs_file_t *file, usize *size_out)
 	ret = fseek (file->handle, 0, SEEK_END);
 	if (ret < 0) {
 		*size_out = 0;
-		return (e_result_t) errno;
+		return (E_Result) errno;
 	}
 
 	len = ftell (file->handle);
 	if (ret < 0) {
 		*size_out = 0;
-		return (e_result_t) errno;
+		return (E_Result) errno;
 	}
 
 	ret = fseek (file->handle, 0, SEEK_SET);
 	if (ret < 0) {
 		*size_out = 0;
-		return (e_result_t) errno;
+		return (E_Result) errno;
 	}
 
 	*size_out = (usize) len;
 	return E_OK;
 }
 
-e_result_t
-e_fs_file_read_all (e_fs_file_t *file, char **out, usize *len_out)
+E_Result
+e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 {
-	e_result_t err;
+	E_Result err;
 	usize len, count, offset;
 
 	if (!file || !out) return E_ERR_INVALID_ARGUMENT;
@@ -110,8 +110,8 @@ err:
 	return err;
 }
 
-e_result_t
-e_fs_file_write (e_fs_file_t *file, const char *data, usize len)
+E_Result
+e_fs_file_write (E_Fs_File *file, const char *data, usize len)
 {
 	usize count, written;
 

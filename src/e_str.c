@@ -2,34 +2,34 @@
 
 #if E_CONFIG_MODULE_STR
 
-E_VEC_IMPLEMENT (char, __e_vec_char);
+E_VEC_IMPLEMENT (char, __E_Vec_Char, __e_vec_char);
 
-e_str_t
+E_Str
 e_str_init (void)
 {
 	return __e_vec_char_init ();
 }
 
-e_str_t
+E_Str
 e_str_init_with_cap (usize cap)
 {
 	return __e_vec_char_init_with_cap (cap);
 }
 
 void
-e_str_deinit (e_str_t *str)
+e_str_deinit (E_Str *str)
 {
 	__e_vec_char_deinit (str);
 }
 
 void
-e_str_grow (e_str_t *str, usize cap)
+e_str_grow (E_Str *str, usize cap)
 {
 	__e_vec_char_grow (str, cap);
 }
 
 void
-e_str_append_char (e_str_t *str, char c)
+e_str_append_char (E_Str *str, char c)
 {
 	if (!str) return;
 
@@ -43,7 +43,7 @@ e_str_append_char (e_str_t *str, char c)
 }
 
 usize
-e_str_append_cstr (e_str_t *str, const char *s)
+e_str_append_cstr (E_Str *str, const char *s)
 {
 	usize len;
 
@@ -55,7 +55,7 @@ e_str_append_cstr (e_str_t *str, const char *s)
 }
 
 void
-e_str_append_slice (e_str_t *str, const char *s, usize len)
+e_str_append_slice (E_Str *str, const char *s, usize len)
 {
 	if (!str) return;
 
@@ -70,7 +70,7 @@ e_str_append_slice (e_str_t *str, const char *s, usize len)
 
 [[gnu::format (printf, 3, 4)]]
 usize
-e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
+e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...)
 {
 	int written;
 	va_list ap;
@@ -94,7 +94,7 @@ e_str_append_fmt (e_str_t *str, usize max_fmt_len, const char *fmt, ...)
 
 [[gnu::format (printf, 2, 3)]]
 usize
-e_str_append_fmt_all (e_str_t *str, const char *fmt, ...)
+e_str_append_fmt_all (E_Str *str, const char *fmt, ...)
 {
 	int written;
 	va_list ap;
