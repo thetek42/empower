@@ -6,7 +6,7 @@
 #if E_CONFIG_MODULE_STR
 
 #if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_VEC
-# error "module e_alloc depends on: e_cstr, e_vec"
+# error "module e_str depends on: e_cstr, e_vec"
 #endif /* !E_CONFIG_MODULE_VEC */
 
 /*! e_str *********************************************************************

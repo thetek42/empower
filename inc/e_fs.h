@@ -6,7 +6,7 @@
 #if E_CONFIG_MODULE_FS
 
 #if !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_RESULT
-# error "module e_alloc depends on: e_alloc"
+# error "module e_fs depends on: e_alloc"
 #endif /* !E_CONFIG_MODULE_ALLOC */
 
 /*! e_fs **********************************************************************

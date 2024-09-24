@@ -6,7 +6,7 @@
 #if E_CONFIG_MODULE_VEC
 
 #if !E_CONFIG_MODULE_ALLOC
-# error "module e_alloc depends on: e_alloc"
+# error "module e_vec depends on: e_alloc"
 #endif /* !E_CONFIG_MODULE_ALLOC */
 
 /*! e_vec *********************************************************************
@@ -183,13 +183,13 @@
 	}                                                                      \
                                                                                \
 	type_name                                                              \
-	prefix##_clone (type_name *vec);                                       \
+	prefix##_clone (type_name *vec)                                        \
         {                                                                      \
 		T *ptr;                                                        \
                                                                                \
 		if (!vec) return prefix##_init ();                             \
                                                                                \
-		ptr = e_alloc (vec->cap);                                      \
+		ptr = e_alloc (T, vec->cap);                                   \
 		memcpy (ptr, vec->ptr, vec->len);                              \
 		                                                               \
 		return (type_name) {                                           \

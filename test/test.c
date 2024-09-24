@@ -1,6 +1,7 @@
 #include "empower.h"
 
 static void test_cstr (void);
+static void test_enc (void);
 static void test_fs (void);
 static void test_str (void);
 
@@ -13,6 +14,7 @@ main (int argc, char *argv[])
 	(void) argv;
 
 	test_cstr ();
+	test_enc ();
 	test_fs ();
 	test_str ();
 
@@ -38,6 +40,22 @@ test_cstr (void)
 	e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate (s3, isdigit));
 	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
 	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
+}
+
+static void
+test_enc (void)
+{
+	char *plain = "Many hands make light work.";
+	char *encoded, *plain_out;
+
+	encoded = e_base64_enc_alloc (plain, strlen (plain));
+	plain_out = e_base64_dec_alloc (encoded, strlen (encoded));
+
+	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+	e_test_assert_str_eq ("e_base64_dec", plain_out, plain);
+
+	e_free (encoded);
+	e_free (plain_out);
 }
 
 static void

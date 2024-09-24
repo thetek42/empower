@@ -34,6 +34,7 @@
 #include "e_alloc.h"
 #include "e_cstr.h"
 #include "e_debug.h"
+#include "e_enc.h"
 #include "e_log.h"
 #include "e_math.h"
 #include "e_result.h"
