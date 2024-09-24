@@ -4,6 +4,7 @@ static void test_arena (void);
 static void test_cstr (void);
 static void test_enc (void);
 static void test_fs (void);
+static void test_ini (void);
 static void test_str (void);
 
 E_TEST_MAIN ();
@@ -18,6 +19,7 @@ main (int argc, char *argv[])
 	test_cstr ();
 	test_enc ();
 	test_fs ();
+	test_ini ();
 	test_str ();
 
 	e_test_finish ();
@@ -119,6 +121,20 @@ test_fs (void)
 	e_test_assert ("e_fs_is_dir false", !e_fs_is_dir ("test/test.txt"));
 
 	e_free (buf);
+}
+
+static void
+test_ini (void)
+{
+	E_Ini ini;
+
+	e_test_assert_ok ("e_ini_parse_file", e_ini_parse_file (&ini, "test/test.ini"));
+	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, nullptr, "no_section")->value, "123");
+	e_test_assert_str_eq ("e_ini_get_entry section", e_ini_get_entry (&ini, "bar", "rab")->value, "zab");
+	e_test_assert_str_eq ("e_ini_get_entry empty", e_ini_get_entry (&ini, "foo", "qux")->value, "");
+	e_test_assert_eq ("e_ini_get_entry invalid section", (void *) e_ini_get_entry (&ini, "kjfadsf", "foo"), nullptr);
+	e_test_assert_eq ("e_ini_get_entry invalid key", (void *) e_ini_get_entry (&ini, "foo", "kjfadsf"), nullptr);
+	e_ini_deinit (&ini);
 }
 
 static void

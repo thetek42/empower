@@ -108,4 +108,25 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
+const char *
+e_cstr_find_matching (const char *s, E_Char_Predicate func)
+{
+	if (!s || !func) return s;
+
+	while (*s) {
+		if (func (*s)) return s;
+		s++;
+	}
+
+	return nullptr;
+}
+
+bool
+e_cstr_eq (const char *a, const char *b)
+{
+	if ((!a && b) || (a && !b)) return false;
+	if (!a && !b) return true;
+	return !strcmp (a, b);
+}
+
 #endif /* E_CONFIG_MODULE_CSTR */

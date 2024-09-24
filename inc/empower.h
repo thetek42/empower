@@ -43,5 +43,6 @@
 #include "e_arena.h"
 #include "e_fs.h"
 #include "e_str.h"
+#include "e_ini.h"
 
 #endif /* _EMPOWER_H_ */

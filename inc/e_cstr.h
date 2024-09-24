@@ -85,5 +85,20 @@ char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
  */
 char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 
+/**
+ * Find the next character in the nul-terminated string \s which matches the
+ * predicate \func. If no match is found within the string, `nullptr` is
+ * returned. Otherwise, a pointer to the matched character is returned. If \s or
+ * \func are `nullptr`, `nullptr` is returned.
+ */
+const char *e_cstr_find_matching (const char *s, E_Char_Predicate func);
+
+/**
+ * Checks if two strings \a and \b are equal. If both \a and \b are `nullptr`,
+ * `true` is returned. If either \a or \b is a `nullptr`, `false` is returned.
+ * Otherwise, `strcmp` is used to check if they are equal.
+ */
+bool e_cstr_eq (const char *a, const char *b);
+
 #endif /* E_CONFIG_MODULE_CSTR */
 #endif /* _EMPOWER_CSTR_H_ */

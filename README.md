@@ -9,12 +9,11 @@ C applications for POSIX systems faster and with more joy.
 | -------------- | ------------------------------ |
 | **e_alloc**    | Memory allocation              |
 | **e_arena**    | Arena allocator                |
-| **e_compat**   | C standard compatibility       |
-| **e_compiler** | Compiler attributes and compat |
 | **e_cstr**     | String utility functions       |
 | **e_debug**    | Debugging utilities            |
 | **e_enc**      | Encoding and Encrypting        |
 | **e_fs**       | File handling functions        |
+| **e_ini**      | INI file parsing               |
 | **e_log**      | Logging                        |
 | **e_macro**    | Macro helpers                  |
 | **e_math**     | Math-related functions         |
