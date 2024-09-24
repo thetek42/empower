@@ -40,7 +40,8 @@
 #include "e_result.h"
 #include "e_test.h"
 #include "e_vec.h"
-#include "e_str.h"
+#include "e_arena.h"
 #include "e_fs.h"
+#include "e_str.h"
 
 #endif /* _EMPOWER_H_ */

@@ -3,6 +3,7 @@
 
 /* modules ********************************************************************/
 #define E_CONFIG_MODULE_ALLOC				1
+#define E_CONFIG_MODULE_ARENA				1
 #define E_CONFIG_MODULE_CSTR				1
 #define E_CONFIG_MODULE_DEBUG				1
 #define E_CONFIG_MODULE_ENC				1
