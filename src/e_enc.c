@@ -17,12 +17,12 @@ static const char base64_dec_lut[] = {
 };
 
 usize
-e_base64_get_enc_len (usize plain_len)
+e_base64_get_enc_len (const char *plain)
 {
-	usize ret;
+	usize ret, len;
 
-	ret = plain_len;
-	ret += plain_len % 3 ? 3 - plain_len % 3 : 0;
+	ret = len = strlen (plain);
+	ret += len % 3 ? 3 - len % 3 : 0;
 	ret = ret / 3 * 4;
 
 	return ret;
@@ -47,30 +47,31 @@ e_base64_get_dec_len (const char *encoded)
 }
 
 void
-e_base64_enc (const char *plain, char *encoded_out, usize plain_len)
+e_base64_enc (const char *plain, char *encoded_out)
 {
-	usize i, j;
+	usize i, j, len;
 	u32 n;
 
 	if (!encoded_out) return;
-	if (!plain || plain_len == 0) {
+	if (!plain) {
 		encoded_out[0] = 0;
 		return;
 	}
 
-	for (i = 0, j = 0; i < plain_len; i += 3, j += 4) {
+	len = strlen (plain);
+	for (i = 0, j = 0; i < len; i += 3, j += 4) {
 		n = (u32) plain[i];
-		n = i + 1 < plain_len ? n << 8 | (u32) plain[i + 1] : n << 8;
-		n = i + 2 < plain_len ? n << 8 | (u32) plain[i + 2] : n << 8;
+		n = i + 1 < len ? n << 8 | (u32) plain[i + 1] : n << 8;
+		n = i + 2 < len ? n << 8 | (u32) plain[i + 2] : n << 8;
 
 		encoded_out[j] = base64_enc_lut[(n >> 18) & 0x3F];
 		encoded_out[j + 1] = base64_enc_lut[(n >> 12) & 0x3F];
-		if (i + 1 < plain_len) {
+		if (i + 1 < len) {
 			encoded_out[j + 2] = base64_enc_lut[(n >> 6) & 0x3F];
 		} else {
 			encoded_out[j + 2] = '=';
 		}
-		if (i + 2 < plain_len) {
+		if (i + 2 < len) {
 			encoded_out[j + 3] = base64_enc_lut[n & 0x3F];
 		} else {
 			encoded_out[j + 3] = '=';
@@ -80,19 +81,21 @@ e_base64_enc (const char *plain, char *encoded_out, usize plain_len)
 }
 
 bool
-e_base64_dec (const char *encoded, char *plain_out, usize encoded_len)
+e_base64_dec (const char *encoded, char *plain_out)
 {
-	usize i, j;
+	usize i, j, len;
 	u32 n;
 
 	if (!plain_out) return false;
-	if (!encoded || encoded_len == 0) {
+	if (!encoded) {
 		plain_out[0] = 0;
 		return true;
 	}
-	if (encoded_len % 4 != 0) return false;
 
-	for (i = 0, j = 0; i < encoded_len; i += 4, j += 3) {
+	len = strlen (encoded);
+	if (len % 4 != 0) return false;
+
+	for (i = 0, j = 0; i < len; i += 4, j += 3) {
 		if (!base64_is_valid_char(encoded[i])) return false;
 
 		n = (u32) base64_dec_lut[(u8) encoded[i]];
@@ -110,24 +113,24 @@ e_base64_dec (const char *encoded, char *plain_out, usize encoded_len)
 }
 
 char *
-e_base64_enc_alloc (const char *plain, usize plain_len)
+e_base64_enc_alloc (const char *plain)
 {
 	char *ret;
 
-	ret = e_alloc (char, e_base64_get_enc_len (plain_len) + 1);
-	e_base64_enc (plain, ret, plain_len);
+	ret = e_alloc (char, e_base64_get_enc_len (plain) + 1);
+	e_base64_enc (plain, ret);
 
 	return ret;
 }
 
 char *
-e_base64_dec_alloc (const char *encoded, usize encoded_len)
+e_base64_dec_alloc (const char *encoded)
 {
 	bool success;
 	char *ret;
 
 	ret = e_alloc (char, e_base64_get_dec_len (encoded) + 1);
-	success = e_base64_dec (encoded, ret, encoded_len);
+	success = e_base64_dec (encoded, ret);
 	if (!success) {
 		e_free (ret);
 		ret = nullptr;

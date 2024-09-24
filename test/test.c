@@ -48,8 +48,8 @@ test_enc (void)
 	char *plain = "Many hands make light work.";
 	char *encoded, *plain_out;
 
-	encoded = e_base64_enc_alloc (plain, strlen (plain));
-	plain_out = e_base64_dec_alloc (encoded, strlen (encoded));
+	encoded = e_base64_enc_alloc (plain);
+	plain_out = e_base64_dec_alloc (encoded);
 
 	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
 	e_test_assert_str_eq ("e_base64_dec", plain_out, plain);

@@ -5,8 +5,8 @@
 #endif /* _EMPOWER_H_ */
 #if E_CONFIG_MODULE_ALLOC
 
+/* TODO: make e_log an optional dependency */
 #if !E_CONFIG_MODULE_LOG
-// TODO: make e_log an optional dependency
 # error "module e_alloc depends on: e_log"
 #endif /* !E_CONFIG_MODULE_LOG */
 
@@ -23,102 +23,63 @@
  ******************************************************************************/
 
 /**
- * Allocates enough memory for \nmemb items of type \type. When the allocation
- * fails, it will print a message and terminate the programme.
- *
- * @param type: A type or expression which works as an argument to `sizeof`
- * @param nmemb: The number of items to allocate space for
- * @return A pointer to the allocated memory
- * @see `malloc`
+ * Allocates enough memory for \nmemb items of type \type using `malloc`. When
+ * the allocation fails, it will print a message and terminate the programme.
  */
 #define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
 
 /**
- * Allocates \size bytes of memory. When the allocation fails, it will print a
- * message and terminate the programme.
- *
- * @param size: The number of bytes to allocate
- * @return A pointer to the allocated memory
- * @see `malloc`
+ * Allocates \size bytes of memory using `malloc`. When the allocation fails, it
+ * will print a message and terminate the programme.
  */
 #define e_alloc_size(size) __e_mem_alloc ((size))
 
 /**
- * Allocates enough memory for \nmemb items of type \type and initialises the
- * memory with zeroes. When the allocation fails, it will print a message and
- * terminate the programme.
- *
- * @param type: A type or expression which works as an argument to `sizeof`
- * @param nmemb: The number of items to allocate space for
- * @return #nonnull void
- * @see `calloc`
+ * Allocates enough memory for \nmemb items of type \type using `calloc` and
+ * initialises the memory with zeroes. When the allocation fails, it will print
+ * a message and terminate the programme.
  */
 #define e_alloc_zero(type, nmemb) __e_mem_calloc ((nmemb), sizeof (type))
 
 /**
- * Allocates \size bytes of memory and initialises the memory with zeroes. When
- * the allocation fails, it will print a message and terminate the programme.
- *
- * @param size: The number of bytes to allocate
- * @return A pointer to the allocated memory
- * @see `calloc`
+ * Allocates \size bytes of memory using `calloc` and initialises the memory
+ * with zeroes. When the allocation fails, it will print a message and terminate
+ * the programme.
  */
 #define e_alloc_zero_size(size, nmemb) __e_mem_calloc ((nmemb), (size))
 
 /**
- * Reallocates \ptr to enough memory that fits \nmemb items of type \type. When
- * the allocation fails, it will print a message and terminate the programme.
- * When \nmemb is zero, the call is equivalent to \e_free. When \ptr is
- * `nullptr`, the call is equivalent to \e_alloc.
- *
- * @param ptr: The pointer to reallocate
- * @param type: A type or expression which works as an argument to `sizeof`
- * @param nmemb: The number of items to allocate space for
- * @return A pointer to the allocated memory, or `nullptr` if \size is 0
- * @see `realloc`
+ * Reallocates \ptr to enough memory that fits \nmemb items of type \type using
+ * `realloc`. When the allocation fails, it will print a message and terminate
+ * the programme. When \nmemb is zero, the call is equivalent to `e_free` and
+ * the function returns `nullptr`. When \ptr is `nullptr`, the call is
+ * equivalent to `e_alloc`.
  */
 #define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
 
 /**
- * Reallocates \ptr to \size bytes. When the allocation fails, it will print a
- * message and terminate the programme. When \nmemb is zero, the call is
- * equivalent to \e_free. When \ptr is `nullptr`, the call is equivalent to
- * \e_alloc.
- *
- * @param ptr: The pointer to reallocate
- * @param size: The number of bytes to rellocate
- * @return A pointer to the allocated memory, or `nullptr` if \size is 0
- * @see `realloc`
+ * Reallocates \ptr to \size bytes using `realloc`. When the allocation fails,
+ * it will print a message and terminate the programme. When \size is zero, the
+ * call is equivalent to `e_free` and the function returns `nullptr`. When \ptr
+ * is `nullptr`, the call is equivalent to `e_alloc`.
  */
 #define e_realloc_size(ptr, size) __e_mem_realloc ((ptr), (size))
 
 /**
- * Frees the memory pointed to by \ptr.
- *
- * @param ptr: The pointer to the memory that should be freed
- * @return void
- * @see `free`
+ * Frees the memory pointed to by \ptr using `free`.
  */
 #define e_free(ptr) free ((ptr))
 
 /**
- * Allocates memory for 1 element of type \type. When the allocation fails, it
- * will print a message and terminate the programme.
- *
- * @param type: A type or expression which works as an argument to `sizeof`
- * @return A pointer to the allocated memory
- * @see `malloc`
+ * Allocates memory for 1 element of type \type using `malloc`. When the
+ * allocation fails, it will print a message and terminate the programme.
  */
 #define e_new(type) e_alloc (type, 1)
 
 /**
- * Allocates memory for 1 element of type \type and initialises the memory with
- * zeroes. When the allocation fails, it will print a message and terminate the
- * programme.
- *
- * @param type: A type or expression which works as an argument to `sizeof`
- * @return A pointer to the allocated memory
- * @see `malloc`
+ * Allocates memory for 1 element of type \type using `calloc` and initialises
+ * the memory with zeroes. When the allocation fails, it will print a message
+ * and terminate the programme.
  */
 #define e_new_zero(type) e_alloc_zero (type, 1)
 
@@ -127,9 +88,6 @@
  * the programme in case the memory allocation fails. This function only returns
  * `nullptr` if \s is `nullptr`. The allocated memory must be freed by the user
  * using `e_free`.
- *
- * @param s: The string to duplicate
- * @return The pointer to the duplicated string
  */
 [[nodiscard]]
 char *e_mem_strdup (const char *s);

@@ -18,26 +18,28 @@
  *
  ******************************************************************************/
 
-/** docgen: collect
- * Logging macros.
- *
- * @param fmt: The format string as used by `fprintf`
- * @param ...: The format arguments
- * @see `fprintf`
+/**
+ * Log a message with debug level.
  */
 #define e_log_debug(fmt, ...) fprintf (stderr, "\x1b[35mDEBUG \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+
+/**
+ * Log a message with info level.
+ */
 #define e_log_info(fmt, ...)  fprintf (stderr, "\x1b[32mINFO  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+
+/**
+ * Log a message with warning level.
+ */
 #define e_log_warn(fmt, ...)  fprintf (stderr, "\x1b[33mWARN  \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
+
+/**
+ * Log a message with error level.
+ */
 #define e_log_error(fmt, ...) fprintf (stderr, "\x1b[31mERROR \x1b[0m" fmt " \x1b[90m(" __FILE__ ":" E_MACRO_STRINGIFY (__LINE__) ")\x1b[0m\n" __VA_OPT__ (,) __VA_ARGS__)
-/* docgen: collect-end */
 
 /**
  * Log an error message and terminate the programme.
- *
- * @param fmt: The format string as used by `fprintf`
- * @param ...: The format arguments
- * @return #noreturn
- * @see `fprintf`
  */
 #define e_die(fmt, ...)                                                        \
 	do {                                                                   \

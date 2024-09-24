@@ -30,45 +30,44 @@ typedef enum {
 	E_FS_OPEN_MODE_READ_WRITE_APPEND, /* a+ */
 } E_Fs_Open_Mode;
 
+/**
+ * A wrapper for a `FILE` handle.
+ */
 typedef struct {
 	FILE *handle;
 } E_Fs_File;
 
 /**
- * Open a file handle. This function is essentially a wrapper around `fopen`.
- *
- * @param file: The file handle output
- * @param path: The path to the file
- * @param mode: The open mode (read, write, ...)
- * @return E_OK or error that occured during `fopen`.
+ * Open a file handle for the file located at \path using the open mode \mode.
+ * This function is essentially a wrapper around `fopen`. The file handle will
+ * be put into \file. The function returns an `E_Result` with E_OK in case of
+ * success and an error in case `fopen` failed.
  */
 [[nodiscard]]
 E_Result e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode);
 
 /**
- * Close a file handle. This function is essentially a wrapper around `fclose`.
- *
- * @param file: The file to close
- * @return E_OK or error that occured during `fclose`.
+ * Close the file handle \file. This function is essentially a wrapper around
+ * `fclose`. Returns E_OK or the error that occured during `fclose`.
  */
 [[nodiscard]]
 E_Result e_fs_file_close (E_Fs_File *file);
 
 /**
- * Get the size of a file.
- *
- * @param file: The file to inspect
- * @param size_out: The pointer to where to size should be stored. If an error
- *                  occurs, the size will be set to 0.
- * @return E_OK or error that occured during `fseek` or `ftell`.
+ * Get the size of the file \file and store it in \size_out. Returns E_OK or an
+ * error that occured during `fseek` or `ftell`.
  */
 [[nodiscard]]
 E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
 
 /**
- * Reads all content a file handle into a buffer. The required memory is
- * allocted using `e_alloc` and must be freed by the user using `e_free`. If an
- * error occurs, the memory is freed automatically.
+ * Reads all content the file handle \file into a buffer pointed to by \out. A
+ * terminating nul byte will be written. The length (excluding the terminating
+ * nul byte) will be stored in \len_out. If the length is not required, \len_out
+ * can be `nullptr`. The required memory is allocted using `e_alloc` and must be
+ * freed by the user using `e_free`. If an error occurs, the memory is freed
+ * automatically, \out is set to `nullptr`, \len_out is set to 0 and an error is
+ * returned.
  *
  * Example (without error handling, indicated by `(void)`):
  * | E_Fs_File file;
@@ -77,61 +76,36 @@ E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
  * | (void) e_fs_file_open (&file, "data.txt", E_FS_OPEN_MODE_READ_ONLY);
  * | (void) e_fs_file_read_all (&file, &buf, &len);
  * | (void) e_fs_file_close (&file);
- * | printf ("len: %zu, contents:\n%s", len, buf);
+ * | printf ("len: %zu, contents:\n%s\n", len, buf);
  * | e_free (buf);
- *
- * @param file: The file to read from
- * @param out: A pointer to the pointer which will be set to the allocated
- *             memory location. After the read succeeds, this will contain the
- *             file contents and a terminating nul byte. In case of an error, it
- *             will be set to `nullptr`.
- * @param len_out: A pointer to the variable which will be set to the length of
- *                 the file contents (excluding terminating nul byte in the
- *                 output). In case of an error, it will be set to 0. `len_out`
- *                 can be set to `nullptr` if the length is not needed.
- * @return E_OK or any error that occured during `fseek` or `ftell`. If an error
- *         occurs during `fread`, it is reported as \E_ERR_FAIL.
  */
 [[nodiscard]]
 E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
 
 /**
- * Write bytes to a file.
- *
- * @param file: The file to write to
- * @param data: A pointer to the data
- * @param len: The length of \data.
- * @return E_OK, E_ERR_INVALID_ARGUMENT, or in case the call to `fwrite` fails,
- *         E_ERR_FAIL.
+ * Write \len bytes of data pointed to by \data to a file \file. Returns E_OK on
+ * success, and an error on failure.
  */
 [[nodiscard]]
 E_Result e_fs_file_write (E_Fs_File *file, const char *data, usize len);
 
 /**
  * Check if a path exists.
- *
- * @param path: The path which should be checked
  */
 bool e_fs_path_exists (const char *path);
 
 /**
  * Check if a path points to a file.
- *
- * @param path: The path which should be checked
  */
 bool e_fs_is_file (const char *path);
 
 /**
  * Check if a path points to a file.
- *
- * @param path: The path which should be checked
  */
 bool e_fs_is_dir (const char *path);
 
 /**
  * Check if a path points to a file.
- *
- * @param path: The path which should be checked
  */
 bool e_fs_is_link (const char *path);
 

@@ -14,8 +14,6 @@
 /**
  * Obtain the formatting argument for `printf`-like functions for the generic
  * argument \value. Works for regular integers, floats and pointers.
- *
- * @param value: The generic argument
  */
 #define E_DEBUG_AUTO_FMT(value) _Generic ((value),                             \
 		i8: "%" PRIi8,                                                 \
@@ -37,8 +35,6 @@
  * it will print `x + y = 42` with the regular debug format from e_log, where 42
  * is the result of the addition. Works with every type that is accepted by
  * `E_DEBUG_AUTO_FMT`.
- *
- * @param value: The generic argument
  */
 #define e_debug(value)                                                         \
 	do {                                                                   \
@@ -51,9 +47,6 @@
 
 /**
  * Print a hexdump of a region of memory.
- *
- * @param ptr: A pointer to the memory to print
- * @param len: The amount of bytes to print
  */
 void e_debug_hexdump (const void *ptr, usize len);
 

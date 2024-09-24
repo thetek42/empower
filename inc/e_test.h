@@ -28,6 +28,10 @@ extern struct __e_test_result __e_global_test;
 #define __E_TEST_SPACE "                                                                      "
 #define __E_TEST_PRINT_ASSERT_FN(name) fprintf (stderr, "\x1b[35m%s\x1b[0m ", name)
 
+/**
+ * Assert that a condition is truthy and update the global test statistics. If
+ * the check fails, an error message will be printed.
+ */
 #define e_test_assert(name, expr)                                              \
 	do {                                                                   \
 		auto success = (expr);                                         \
@@ -44,6 +48,11 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
+/**
+ * Assert that two values equal each other and update the global test
+ * statistics. The types of the values are determined automatically. If the
+ * check fails, an error message will be printed.
+ */
 #define e_test_assert_eq(name, expr, check)                                    \
 	do {                                                                   \
 		auto result = (expr);                                          \
@@ -66,6 +75,10 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
+/**
+ * Assert that two strings equal each other and update the global test
+ * statistics. If the check fails, an error message will be printed.
+ */
 #define e_test_assert_str_eq(name, expr, check)                                \
 	do {                                                                   \
 		const char *result = (expr);                                   \
@@ -86,6 +99,10 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)                                                                                
 
+/**
+ * Assert that an `E_Result` is `E_OK` and update the global test statistics. If
+ * the check fails, an error message will be printed.
+ */
 #define e_test_assert_ok(name, expr)                                           \
 	do {                                                                   \
 		E_Result result = (expr);                                      \
@@ -104,6 +121,9 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)                                                                                
 
+/**
+ * Finish the tests and print the test statistics.
+ */
 #define e_test_finish()                                                        \
 	do {                                                                   \
 		f64 total_perc = (f64) (__e_global_test.success +              \

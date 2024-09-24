@@ -14,103 +14,74 @@
 
 /**
  * A pointer to a function that evaulates whether the ASCII character \c matches
- * a certain predicate. The functions from `<ctype.h>` have this type.
- *
- * @param c: The character to check
- * @return 0 when \c is accepted, a different number otherwise.
+ * a certain predicate. It returns 0 if \c does not match, and non-zero if it
+ * does. The functions from `<ctype.h>` have this type.
  */
 typedef int (* E_Char_Predicate) (int c);
 
 /**
- * Count the number of occurances of a character \c in the string \s.
- *
- * @param s #cstr: The nul-terminated string to check
- * @param c: The character to search for
- * @return The number of occurances of \c in \s, or 0 if \s is `nullptr`.
+ * Count the number of occurances of a character \c in the nul-terminated string
+ * \s. When \s is `nullptr`, it returns 0.
  */
 [[reproducible]]
 usize e_cstr_count_char (const char *s, char c);
 
 /**
- * Count the number of matches of a \E_Char_Predicate \func in the string \s.
- *
- * @param s #cstr: The nul-terminated string to check
- * @param c: The predicate for which characters to count
- * @return The number of matches of \func in \s, or 0 if either \s or \func is
- *         `nullptr`.
+ * Count the number of matches of a `E_Char_Predicate` \func in the
+ * nul-terminated string \s. When \s or \func are `nullptr`, it returns 0.
  */
 usize e_cstr_count_func (const char *s, E_Char_Predicate func);
 
 /**
- * Check if the string \s is ASCII.
- *
- * @param s #cstr: The nul-terminated string to check
- * @return `true` when \s is `nullptr` or only consists of ASCII characters
+ * Check if the nul-terminated string \s is ASCII. Returns `true` when \s only
+ * consists of ASCII characters or if \s is `nullptr`.
  */
 [[reproducible]]
 bool e_cstr_is_ascii (const char *s);
 
 /**
- * Check if the string \s only consists of whitespace characters.
- *
- * @param s #cstr: The nul-terminated string to check
- * @return `true` when \s is `nullptr` or only consists of whitespace
- * @see `isspace`
+ * Check if the nul-terminated string \s only consists of whitespace characters
+ * as per `isspace`. Returns `true` when \s only consists of whitespace or if \s
+ * is `nullptr`.
  */
 [[reproducible]]
 bool e_cstr_is_blank (const char *s);
 
 /**
- * Check if the string \s matches the \E_Char_Predicate \func.
- *
- * @param s #cstr: The nul-terminated string to check
- * @param func: The predicate for which characters are accepted
- * @return `true` when \s is `nullptr` or only consists of characters that were
- *         accepted by \func, `false` when \func is `nullptr` or did not match.
+ * Check if the nul-terminated string \s matches the `E_Char_Predicate` \func.
+ * Returns `true` when \s only consists of characters that were accepted by
+ * \func or if \s is `nullptr`, and returns false if \func is `nullptr` or did
+ * not match.
  */
 bool e_cstr_matches_predicate (const char *s, E_Char_Predicate func);
 
 /**
- * Convert uppercase ASCII characters the string \s to lowercase in-place. When
- * \s is a `nullptr`, no action is performed.
- *
- * @param s #cstr: The nul-terminated string to convert
- * @return \s
+ * Convert uppercase ASCII characters the nul-terminated string \s to lowercase
+ * in-place. When \s is a `nullptr`, no action is performed. Returns \s.
  */
 char *e_cstr_to_ascii_lower (char *s);
 
 /**
- * Convert lowercase ASCII characters the string \s to uppercase in-place. When
- * \s is a `nullptr`, no action is performed.
- *
- * @param s #cstr: The nul-terminated string to convert
- * @return \s
+ * Convert lowercase ASCII characters the nul-terminated string \s to uppercase
+ * in-place. When \s is a `nullptr`, no action is performed. Returns \s.
  */
 char *e_cstr_to_ascii_upper (char *s);
 
 /**
- * Convert uppercase ASCII characters the string \src to lowercase and store
- * them in \dest. The terminating nul byte in \dest is written. When \src or
- * \dest are `nullptr`s, no action is performed.
- *
- * @param src #cstr: The nul-terminated string source
- * @param dest: The destination for the converted string
- * @return \dest
- * @note \dest must have enough space to store all of \src, including the
- *       terminating nul byte.
+ * Convert uppercase ASCII characters the nul-terminated string \src to
+ * lowercase and store them in \dest. The terminating nul byte in \dest is
+ * written. When \src or \dest are `nullptr`s, no action is performed. \dest
+ * must have enough space to store all of \src, including the terminating nul
+ * byte.
  */
 char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
 
 /**
- * Convert uppercase ASCII characters the string \src to lowercase and store
- * them in \dest. The terminating nul byte in \dest is written. When \src or
- * \dest are `nullptr`s, no action is performed.
- *
- * @param src #cstr: The nul-terminated string source
- * @param dest: The destination for the converted string
- * @return \dest
- * @note \dest must have enough space to store all of \src, including the
- *       terminating nul byte.
+ * Convert uppercase ASCII characters the nul-terminated string \src to
+ * lowercase and store them in \dest. The terminating nul byte in \dest is
+ * written. When \src or \dest are `nullptr`s, no action is performed. \dest
+ * must have enough space to store all of \src, including the terminating nul
+ * byte.
  */
 char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 

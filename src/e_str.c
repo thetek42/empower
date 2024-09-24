@@ -7,13 +7,23 @@ E_VEC_IMPLEMENT (char, __E_Vec_Char, __e_vec_char);
 E_Str
 e_str_init (void)
 {
-	return __e_vec_char_init ();
+	E_Str str;
+
+	str = __e_vec_char_init_with_cap (1);
+	str.ptr[0] = 0;
+
+	return str;
 }
 
 E_Str
 e_str_init_with_cap (usize cap)
 {
-	return __e_vec_char_init_with_cap (cap);
+	E_Str str;
+
+	str = __e_vec_char_init_with_cap (cap > 0 ? cap : 1);
+	str.ptr[0] = 0;
+
+	return str;
 }
 
 void
