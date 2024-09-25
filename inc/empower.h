@@ -11,7 +11,8 @@
 
 /* includes *******************************************************************/
 
-#define _XOPEN_SOURCE
+#define _XOPEN_SOURCE 600
+#define _POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
