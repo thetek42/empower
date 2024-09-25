@@ -100,5 +100,50 @@ const char *e_cstr_find_matching (const char *s, E_Char_Predicate func);
  */
 bool e_cstr_eq (const char *a, const char *b);
 
+/**
+ * Trim whitespace from the start of the nul-terminated string \s. Returns a
+ * pointer to the start of the trimmed string. If \s only consists of
+ * whitespace, the return value will point to the nul terminator. If `s` is
+ * `nullptr`, `nullptr` is returned.
+ */
+[[reproducible]]
+const char *e_cstr_trim_start (const char *s);
+
+/**
+ * Trim whitespace at the end of the nul-terminated string \s. Returns the
+ * length of the trimmed string. If \s is `nullptr`, 0 is returned.
+ */
+[[reproducible]]
+usize e_cstr_trim_end (const char *s);
+
+/**
+ * Trim whitespace at the end of the nul-terminated string \s with a given
+ * length \len. \len must be equal to `strlen (s)`. Returns the length of the
+ * trimmed string. If \s is `nullptr`, 0 is returned.
+ */
+[[reproducible]]
+usize e_cstr_trim_end_with_len (const char *s, usize len);
+
+/**
+ * Trim whitespace at the start and end of the nul-terminated string \s. Returns
+ * a pointer to the start of the trimmed string. \len will be set to the length
+ * of the trimmed string. If \len is `nullptr`, it will not be filled and this
+ * call is essentially equivalent to `e_cstr_trim_start`. If \s is `nullptr`,
+ * `nullptr` is returned and \len is set to 0.
+ */
+[[reproducible]]
+const char *e_cstr_trim (const char *s, usize *len);
+
+/**
+ * Trim whitespace at the start and end of the nul-terminated string \s of
+ * length \len. \len must be equal to `strlen (s)`. Returns a pointer to the
+ * start of the trimmed string. \len will be set to the length of the trimmed
+ * string. If \len is `nullptr`, it will not be filled and this call is
+ * essentially equivalent to `e_cstr_trim_start`. If \s is `nullptr`, `nullptr`
+ * is returned and \len is set to 0.
+ */
+[[reproducible]]
+const char *e_cstr_trim_with_len (const char *s, usize *len);
+
 #endif /* E_CONFIG_MODULE_CSTR */
 #endif /* _EMPOWER_CSTR_H_ */

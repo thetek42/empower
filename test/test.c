@@ -64,6 +64,9 @@ test_cstr (void)
 	char s2[] = " \n\t \f \v    \r ";
 	char s3[] = "1337";
 	char s4[] = "Dosenöffner";
+	char s5[] = "  foo   ";
+	char s6[] = "";
+	usize len;
 
 	e_test_assert_eq ("e_cstr_count_char", e_cstr_count_char (s1, 'l'), 3);
 	e_test_assert_eq ("e_cstr_count_char nul", e_cstr_count_char (s1, '\0'), 0);
@@ -76,6 +79,14 @@ test_cstr (void)
 	e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate (s3, isdigit));
 	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
 	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
+	e_test_assert_str_eq ("e_cstr_trim_start", e_cstr_trim_start (s5), s5 + 2);
+	e_test_assert_str_eq ("e_cstr_trim_start empty", e_cstr_trim_start (s6), s6);
+	e_test_assert_eq ("e_cstr_trim_end", e_cstr_trim_end (s5), strlen (s5) - 3);
+	e_test_assert_eq ("e_cstr_trim_end empty", e_cstr_trim_end (s6), 0);
+	e_test_assert_str_eq ("e_cstr_trim", e_cstr_trim (s5, &len), s5 + 2);
+	e_test_assert_eq ("e_cstr_trim len", len, 3);
+	e_test_assert_str_eq ("e_cstr_trim empty", e_cstr_trim (s6, &len), s6);
+	e_test_assert_eq ("e_cstr_trim empty len", len, 0);
 }
 
 static void

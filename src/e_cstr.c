@@ -129,4 +129,70 @@ e_cstr_eq (const char *a, const char *b)
 	return !strcmp (a, b);
 }
 
+[[reproducible]]
+const char *
+e_cstr_trim_start (const char *s)
+{
+	if (!s) return s;
+	while (isspace (*s)) s += 1;
+	return s;
+}
+
+[[reproducible]]
+usize
+e_cstr_trim_end (const char *s)
+{
+	if (!s) return 0;
+	return e_cstr_trim_end_with_len (s, strlen (s));
+}
+
+[[reproducible]]
+usize
+e_cstr_trim_end_with_len (const char *s, usize len)
+{
+	if (!s) return 0;
+	while (len > 0 && isspace (s[len - 1])) len -= 1;
+	return len;
+}
+
+[[reproducible]]
+const char *
+e_cstr_trim (const char *s, usize *len)
+{
+	usize l;
+
+	if (!len) return e_cstr_trim_start (s);
+	if (!s) {
+		*len = 0;
+		return s;
+	}
+
+	l = strlen (s);
+	s = e_cstr_trim_with_len (s, &l);
+	*len = l;
+
+	return s;
+}
+
+[[reproducible]]
+const char *
+e_cstr_trim_with_len (const char *s, usize *len)
+{
+	const char *start;
+	usize l;
+
+	if (!len) return e_cstr_trim_start (s);
+	if (!s) {
+		*len = 0;
+		return s;
+	}
+
+	start = e_cstr_trim_start (s);
+	l = *len - (start - s);
+	l = e_cstr_trim_end_with_len (start, l);
+	*len = l;
+
+	return start;
+}
+
 #endif /* E_CONFIG_MODULE_CSTR */
