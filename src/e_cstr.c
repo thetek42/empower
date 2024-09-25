@@ -121,6 +121,22 @@ e_cstr_find_matching (const char *s, E_Char_Predicate func)
 	return nullptr;
 }
 
+[[reproducible]]
+const char *
+e_cstr_find_char (const char *s, char c)
+{
+	if (!s) return s;
+	return strchr (s, (int) c);
+}
+
+[[reproducible]]
+const char *
+e_cstr_find_str (const char *haystack, const char *needle)
+{
+	if (!haystack || !needle) return haystack;
+	return strstr (haystack, needle);
+}
+
 bool
 e_cstr_eq (const char *a, const char *b)
 {

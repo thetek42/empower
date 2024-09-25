@@ -86,7 +86,28 @@ char *e_cstr_to_ascii_lower_buf (const char *restrict src, char *restrict dest);
 char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 
 /**
- * Find the next character in the nul-terminated string \s which matches the
+ * Find the character \c in the nul-terminated string \s. If no match is found
+ * within the string, `nullptr` is returned. Otherwise, a pointer to the matched
+ * character is returned. If \s is `nullptr`, `nullptr` is returned. This is
+ * essentially like `strchr`, except that it allows for `nullptr` (which would
+ * cause undefined behaviour in `strchr`).
+ */
+[[reproducible]]
+const char *e_cstr_find_char (const char *s, char c);
+
+/**
+ * Find the substring \needle in the nul-terminated string \haystack. If no
+ * match is found within the string, `nullptr` is returned. Otherwise, a pointer
+ * to the matched substring is returned. If \haystack is `nullptr`, `nullptr` is
+ * returned. If \needle is `nullptr`, \haystack is returned. This is essentially
+ * like `strstr`, except that it allows for `nullptr` (which would cause
+ * undefined behaviour in `strstr`).
+ */
+[[reproducible]]
+const char *e_cstr_find_str (const char *haystack, const char *needle);
+
+/**
+ * Find the first character in the nul-terminated string \s which matches the
  * predicate \func. If no match is found within the string, `nullptr` is
  * returned. Otherwise, a pointer to the matched character is returned. If \s or
  * \func are `nullptr`, `nullptr` is returned.
@@ -96,7 +117,9 @@ const char *e_cstr_find_matching (const char *s, E_Char_Predicate func);
 /**
  * Checks if two strings \a and \b are equal. If both \a and \b are `nullptr`,
  * `true` is returned. If either \a or \b is a `nullptr`, `false` is returned.
- * Otherwise, `strcmp` is used to check if they are equal.
+ * Otherwise, `strcmp` is used to check if they are equal. This is essentially
+ * like using `strcmp() == 0`, except that it allows for `nullptr` (which would
+ * cause undefined behaviour in `strcmp`).
  */
 bool e_cstr_eq (const char *a, const char *b);
 
