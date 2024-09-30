@@ -17,6 +17,7 @@
 #define E_CONFIG_MODULE_VEC				1
 
 /* library settings ***********************************************************/
-/* TODO */
+#define E_CONFIG_LOG_COLOURED				1
+#define E_CONFIG_LOG_WITH_FILE_LINE			1
 
 #endif /* _EMPOWER_CONFIG_H_ */
