@@ -47,11 +47,25 @@ __e_mem_realloc (void *ptr, usize size)
 
 [[nodiscard]]
 char *
-e_mem_strdup (const char *s)
+e_alloc_strdup (const char *s)
 {
 	char *res;
 
 	res = strdup (s);
+	if (res == nullptr) {
+		e_die ("failed to strdup");
+	}
+
+	return res;
+}
+
+[[nodiscard]]
+char *
+e_alloc_strndup (const char *s, usize n)
+{
+	char *res;
+
+	res = strndup (s, n);
 	if (res == nullptr) {
 		e_die ("failed to strdup");
 	}

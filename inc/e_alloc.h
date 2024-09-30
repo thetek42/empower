@@ -90,7 +90,16 @@
  * using `e_free`.
  */
 [[nodiscard]]
-char *e_mem_strdup (const char *s);
+char *e_alloc_strdup (const char *s);
+
+/**
+ * Duplicate up to \n characters of a string \s. This is equivalent to
+ * `strndup`, except that it terminates the programme in case the memory
+ * allocation fails. This function only returns `nullptr` if \s is `nullptr`.
+ * The allocated memory must be freed by the user using `e_free`.
+ */
+[[nodiscard]]
+char *e_alloc_strndup (const char *s, usize n);
 
 [[nodiscard]]
 void *__e_mem_alloc (usize size);
