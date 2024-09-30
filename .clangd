@@ -1,0 +1,13 @@
+Diagnostics:
+  UnusedIncludes: None
+
+---
+
+If:
+  PathExclude: ["inc/empower.h"]
+CompileFlags:
+  Add:
+    - -include
+    - inc/empower.h
+
+# vi: ft=yaml sw=2 ts=2 et
