@@ -5,13 +5,7 @@
 E_VEC_IMPLEMENT (u8, __E_Vec_Byte, __e_vec_byte);
 
 E_Arena
-e_arena_init (void)
-{
-	return __e_vec_byte_init ();
-}
-
-E_Arena
-e_arena_init_with_cap (usize cap)
+e_arena_init (usize cap)
 {
 	return __e_vec_byte_init_with_cap (cap);
 }
@@ -22,12 +16,6 @@ e_arena_deinit (E_Arena *arena)
 	__e_vec_byte_deinit (arena);
 }
 
-void
-e_arena_grow (E_Arena *arena, usize cap)
-{
-	__e_vec_byte_grow (arena, cap);
-}
-
 void *
 __e_arena_alloc (E_Arena *arena, usize size, usize align)
 {
@@ -36,10 +24,12 @@ __e_arena_alloc (E_Arena *arena, usize size, usize align)
 	if (!arena) return nullptr;
 
 	if (arena->len % align > 0) {
-		arena->len += + align - arena->len % align;
+		arena->len += align - arena->len % align;
 	}
 	if (arena->len + size > arena->cap) {
-		e_arena_grow (arena, arena->len + size);
+		e_die ("failed to alloc %zu bytes with alignment %zu in arena "
+		       "of capacity %zu and %zu used bytes", size, align,
+		       arena->cap, arena->len);
 	}
 	ptr = arena->ptr + arena->len;
 	arena->len += size;

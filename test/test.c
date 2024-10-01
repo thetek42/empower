@@ -33,7 +33,7 @@ test_arena (void)
 	E_Arena arena;
 	void *ptr;
 
-	arena = e_arena_init ();
+	arena = e_arena_init (16);
 
 	ptr = e_arena_alloc (&arena, u32, 1);
 	unalignment = (uintptr_t) ptr % 4;
