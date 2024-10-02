@@ -100,7 +100,7 @@
 	                            usize slice_len);                          \
                                                                                \
 	/**                                                                    \
-	 * Pop the last itm from the vector \vec. The item will be stored in   \
+	 * Pop the last item from the vector \vec. The item will be stored in  \
 	 * \item_out. If \vec is empty or `nullptr`, \item_out will be set to  \
 	 * `nullptr`. The length field of the vector will be decremented. If   \
 	 * \item_out is `nullptr`, the item will be popped and the length      \
@@ -110,6 +110,24 @@
 	 * to data, the user must free this memory, as it is not done here.    \
 	 */                                                                    \
 	void prefix##_pop (type_name *vec, T **item_out);                      \
+                                                                               \
+	/**                                                                    \
+	 * Pop the last items from the vector \vec. \max_len represents the    \
+	 * maxmimum number of items that should be popped. The number of items \
+	 * which were actually popped is returned. \slice_out will be set to   \
+	 * point to the first of the popped items. If \vec is empty or         \
+	 * `nullptr`, \slice_out will be set to `nullptr` and 0 will be        \
+	 * returned. The length field of the vector will be decremented by the \
+	 * number of popped items. If \slice_out is `nullptr`, the items will  \
+	 * be popped, the length field will be updated and the number of       \
+	 * popped items will be returned, but \slice_out will not be filled.   \
+	 * The memory of \slice_out will remain valid until the vector buffer  \
+	 * is reallocated. If the vector is used for storing allocated         \
+	 * pointers to data, the user must free this memory, as it is not done \
+	 * here.                                                               \
+	 */                                                                    \
+	usize prefix##_pop_slice (type_name *vec, T **slice_out,               \
+	                          usize max_len);                              \
                                                                                \
 	static_assert (true, "")
 
@@ -203,11 +221,33 @@
 			if (item_out) *item_out = nullptr;                     \
 			return;                                                \
 		}                                                              \
+                                                                               \
 		if (vec->len > 0) {                                            \
 			vec->len -= 1;                                         \
 			if (item_out) *item_out = &vec->ptr[vec->len];         \
 		} else {                                                       \
 			if (item_out) *item_out = nullptr;                     \
+		}                                                              \
+	}                                                                      \
+                                                                               \
+	usize                                                                  \
+	prefix##_pop_slice (type_name *vec, T **slice_out, usize max_len)      \
+	{                                                                      \
+		usize slice_len;                                               \
+                                                                               \
+		if (!vec) {                                                    \
+			if (slice_out) *slice_out = nullptr;                   \
+			return 0;                                              \
+		}                                                              \
+                                                                               \
+		if (vec->len > 0) {                                            \
+			slice_len = vec->len < max_len ? vec->len : max_len;   \
+			vec->len -= slice_len;                                 \
+			if (slice_out) *slice_out = &vec->ptr[vec->len];       \
+			return slice_len;                                      \
+		} else {                                                       \
+			if (slice_out) *slice_out = nullptr;                   \
+			return 0;                                              \
 		}                                                              \
 	}                                                                      \
                                                                                \

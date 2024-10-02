@@ -198,6 +198,7 @@ test_vec (void)
 	E_Vec_Int vec;
 	int slice[] = { 4, 5, 6, 7, 8 };
 	int *popped;
+	usize len;
 
 	vec = e_vec_int_init ();
 	e_test_assert_eq ("e_vec_init ptr", (void *) vec.ptr, nullptr);
@@ -239,6 +240,23 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_append 4 ptr[6]", vec.ptr[6], 9);
 	e_test_assert_eq ("e_vec_append 4 len", vec.len, 7);
 	e_test_assert_eq ("e_vec_append 4 cap", vec.cap, 8);
+
+	len = e_vec_int_pop_slice (&vec, &popped, 5);
+	e_test_assert_eq ("e_vec_pop_slice 1 item", *popped, 3);
+	e_test_assert_eq ("e_vec_pop_slice 1 len", vec.len, 2);
+	e_test_assert_eq ("e_vec_pop_slice 1 cap", vec.cap, 8);
+	e_test_assert_eq ("e_vec_pop_slice 1 returned len", len, 5);
+
+	e_vec_int_append (&vec, 10);
+	e_test_assert_eq ("e_vec_append 5 ptr[2]", vec.ptr[2], 10);
+	e_test_assert_eq ("e_vec_append 5 len", vec.len, 3);
+	e_test_assert_eq ("e_vec_append 5 cap", vec.cap, 8);
+
+	len = e_vec_int_pop_slice (&vec, &popped, 5);
+	e_test_assert_eq ("e_vec_pop_slice 2 item", *popped, 1);
+	e_test_assert_eq ("e_vec_pop_slice 2 len", vec.len, 0);
+	e_test_assert_eq ("e_vec_pop_slice 2 cap", vec.cap, 8);
+	e_test_assert_eq ("e_vec_pop_slice 2 returned len", len, 3);
 
 	e_vec_int_deinit (&vec);
 }
