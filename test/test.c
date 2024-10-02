@@ -1,11 +1,15 @@
 #include "empower.h"
 
+E_VEC_DECLARE (int, E_Vec_Int, e_vec_int);
+E_VEC_IMPLEMENT (int, E_Vec_Int, e_vec_int);
+
 static void test_arena (void);
 static void test_cstr (void);
 static void test_enc (void);
 static void test_fs (void);
 static void test_ini (void);
 static void test_str (void);
+static void test_vec (void);
 
 E_TEST_MAIN ();
 
@@ -21,6 +25,7 @@ main (int argc, char *argv[])
 	test_fs ();
 	test_ini ();
 	test_str ();
+	test_vec ();
 
 	e_test_finish ();
 }
@@ -185,4 +190,55 @@ test_str (void)
 	e_test_assert_eq ("e_str_append_fmt_all len_ret", len_ret, 6);
 
 	e_str_deinit (&str);
+}
+
+static void
+test_vec (void)
+{
+	E_Vec_Int vec;
+	int slice[] = { 4, 5, 6, 7, 8 };
+	int *popped;
+
+	vec = e_vec_int_init ();
+	e_test_assert_eq ("e_vec_init ptr", (void *) vec.ptr, nullptr);
+	e_test_assert_eq ("e_vec_init len", vec.len, 0);
+	e_test_assert_eq ("e_vec_init cap", vec.cap, 0);
+
+	e_vec_int_append (&vec, 1);
+	e_test_assert_eq ("e_vec_append 1 ptr[0]", vec.ptr[0], 1);
+	e_test_assert_eq ("e_vec_append 1 len", vec.len, 1);
+	e_test_assert_eq ("e_vec_append 1 cap", vec.cap, 1);
+
+	e_vec_int_append (&vec, 2);
+	e_test_assert_eq ("e_vec_append 2 ptr[1]", vec.ptr[1], 2);
+	e_test_assert_eq ("e_vec_append 2 len", vec.len, 2);
+	e_test_assert_eq ("e_vec_append 2 cap", vec.cap, 2);
+
+	e_vec_int_append (&vec, 3);
+	e_test_assert_eq ("e_vec_append 3 ptr[2]", vec.ptr[2], 3);
+	e_test_assert_eq ("e_vec_append 3 len", vec.len, 3);
+	e_test_assert_eq ("e_vec_append 3 cap", vec.cap, 4);
+
+	e_vec_int_append_slice (&vec, slice, 5);
+	e_test_assert_eq ("e_vec_append_slice ptr[3]", vec.ptr[3], 4);
+	e_test_assert_eq ("e_vec_append_slice ptr[7]", vec.ptr[7], 8);
+	e_test_assert_eq ("e_vec_append_slice len", vec.len, 8);
+	e_test_assert_eq ("e_vec_append_slice cap", vec.cap, 8);
+
+	e_vec_int_pop (&vec, &popped);
+	e_test_assert_eq ("e_vec_pop 1 item", *popped, 8);
+	e_test_assert_eq ("e_vec_pop 1 len", vec.len, 7);
+	e_test_assert_eq ("e_vec_pop 1 cap", vec.cap, 8);
+
+	e_vec_int_pop (&vec, &popped);
+	e_test_assert_eq ("e_vec_pop 2 item", *popped, 7);
+	e_test_assert_eq ("e_vec_pop 2 len", vec.len, 6);
+	e_test_assert_eq ("e_vec_pop 2 cap", vec.cap, 8);
+
+	e_vec_int_append (&vec, 9);
+	e_test_assert_eq ("e_vec_append 4 ptr[6]", vec.ptr[6], 9);
+	e_test_assert_eq ("e_vec_append 4 len", vec.len, 7);
+	e_test_assert_eq ("e_vec_append 4 cap", vec.cap, 8);
+
+	e_vec_int_deinit (&vec);
 }

@@ -63,7 +63,9 @@
 	type_name prefix##_init_with_cap (usize cap);                          \
                                                                                \
 	/**                                                                    \
-	 * Deinitialise a vector and free the memory occupied by it.           \
+	 * Deinitialise a vector and free the memory occupied by it. If the    \
+	 * vector is used for storing allocated pointers to data, the user     \
+	 * must free this memory, as it is not done here.                      \
 	 */                                                                    \
 	void prefix##_deinit (type_name *vec);                                 \
                                                                                \
@@ -96,6 +98,18 @@
 	 */                                                                    \
 	void prefix##_append_slice (type_name *vec, const T *slice,            \
 	                            usize slice_len);                          \
+                                                                               \
+	/**                                                                    \
+	 * Pop the last itm from the vector \vec. The item will be stored in   \
+	 * \item_out. If \vec is empty or `nullptr`, \item_out will be set to  \
+	 * `nullptr`. The length field of the vector will be decremented. If   \
+	 * \item_out is `nullptr`, the item will be popped and the length      \
+	 * field will be updated, but \item_out will not be filled. The memory \
+	 * of \item_out will remain valid until the vector buffer is           \
+	 * reallocated. If the vector is used for storing allocated pointers   \
+	 * to data, the user must free this memory, as it is not done here.    \
+	 */                                                                    \
+	void prefix##_pop (type_name *vec, T **item_out);                      \
                                                                                \
 	static_assert (true, "")
 
@@ -176,10 +190,25 @@
 	{                                                                      \
 		if (!vec) return;                                              \
 		if (vec->len + slice_len > vec->cap) {                         \
-			prefix##_grow (vec, vec->cap + slice_len);             \
+			prefix##_grow (vec, vec->len + slice_len);             \
 		}                                                              \
 		memcpy (&vec->ptr[vec->len], slice, slice_len * sizeof (T));   \
 		vec->len += slice_len;                                         \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_pop (type_name *vec, T **item_out)                            \
+	{                                                                      \
+		if (!vec) {                                                    \
+			if (item_out) *item_out = nullptr;                     \
+			return;                                                \
+		}                                                              \
+		if (vec->len > 0) {                                            \
+			vec->len -= 1;                                         \
+			if (item_out) *item_out = &vec->ptr[vec->len];         \
+		} else {                                                       \
+			if (item_out) *item_out = nullptr;                     \
+		}                                                              \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")
