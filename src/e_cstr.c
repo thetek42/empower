@@ -17,7 +17,7 @@ e_cstr_count_char (const char *s, char c)
 }
 
 usize
-e_cstr_count_func (const char *s, E_Char_Predicate func)
+e_cstr_count_char_matching (const char *s, E_Char_Predicate func)
 {
 	usize r;
 
@@ -27,6 +27,28 @@ e_cstr_count_func (const char *s, E_Char_Predicate func)
 		if (func (*s++)) r += 1;
 	}
 	return r;
+}
+
+usize
+e_cstr_count_str (const char *haystack, const char *needle)
+{
+	usize haystack_len, needle_len, count;
+
+	if (!haystack || !needle) return 0;
+
+	haystack_len = strlen (haystack);
+	needle_len = strlen (needle);
+	count = 0;
+
+	while (needle_len < haystack_len) {
+		if (strncmp (haystack, needle, needle_len) == 0) {
+			count += 1;
+		}
+		haystack += 1;
+		haystack_len -= 1;
+	}
+
+	return count;
 }
 
 [[reproducible]]
@@ -108,8 +130,16 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
+[[reproducible]]
 const char *
-e_cstr_find_matching (const char *s, E_Char_Predicate func)
+e_cstr_find_char (const char *s, char c)
+{
+	if (!s) return s;
+	return strchr (s, (int) c);
+}
+
+const char *
+e_cstr_find_char_matching (const char *s, E_Char_Predicate func)
 {
 	if (!s || !func) return s;
 
@@ -123,14 +153,6 @@ e_cstr_find_matching (const char *s, E_Char_Predicate func)
 
 [[reproducible]]
 const char *
-e_cstr_find_char (const char *s, char c)
-{
-	if (!s) return s;
-	return strchr (s, (int) c);
-}
-
-[[reproducible]]
-const char *
 e_cstr_find_str (const char *haystack, const char *needle)
 {
 	if (!haystack || !needle) return haystack;
@@ -140,8 +162,8 @@ e_cstr_find_str (const char *haystack, const char *needle)
 bool
 e_cstr_eq (const char *a, const char *b)
 {
-	if ((!a && b) || (a && !b)) return false;
-	if (!a && !b) return true;
+	if (a == b) return true;
+	if (!a || !b) return false;
 	return !strcmp (a, b);
 }
 

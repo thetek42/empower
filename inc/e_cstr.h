@@ -30,7 +30,15 @@ usize e_cstr_count_char (const char *s, char c);
  * Count the number of matches of a `E_Char_Predicate` \func in the
  * nul-terminated string \s. When \s or \func are `nullptr`, it returns 0.
  */
-usize e_cstr_count_func (const char *s, E_Char_Predicate func);
+usize e_cstr_count_char_matching (const char *s, E_Char_Predicate func);
+
+/**
+ * Count the number of occurances of a nul-terminated string \needle in the
+ * nul-terminated string \haystack. When \haystack or \needle is `nullptr`, it
+ * returns 0.
+ */
+[[reproducible]]
+usize e_cstr_count_str (const char *haystack, const char *needle);
 
 /**
  * Check if the nul-terminated string \s is ASCII. Returns `true` when \s only
@@ -96,6 +104,14 @@ char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
 const char *e_cstr_find_char (const char *s, char c);
 
 /**
+ * Find the first character in the nul-terminated string \s which matches the
+ * predicate \func. If no match is found within the string, `nullptr` is
+ * returned. Otherwise, a pointer to the matched character is returned. If \s or
+ * \func are `nullptr`, `nullptr` is returned.
+ */
+const char *e_cstr_find_char_matching (const char *s, E_Char_Predicate func);
+
+/**
  * Find the substring \needle in the nul-terminated string \haystack. If no
  * match is found within the string, `nullptr` is returned. Otherwise, a pointer
  * to the matched substring is returned. If \haystack is `nullptr`, `nullptr` is
@@ -105,14 +121,6 @@ const char *e_cstr_find_char (const char *s, char c);
  */
 [[reproducible]]
 const char *e_cstr_find_str (const char *haystack, const char *needle);
-
-/**
- * Find the first character in the nul-terminated string \s which matches the
- * predicate \func. If no match is found within the string, `nullptr` is
- * returned. Otherwise, a pointer to the matched character is returned. If \s or
- * \func are `nullptr`, `nullptr` is returned.
- */
-const char *e_cstr_find_matching (const char *s, E_Char_Predicate func);
 
 /**
  * Checks if two strings \a and \b are equal. If both \a and \b are `nullptr`,

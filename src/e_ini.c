@@ -107,7 +107,7 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 		}
 
 		if (*str == '[') {
-			end = e_cstr_find_matching (str, is_rbacket_or_nl);
+			end = e_cstr_find_char_matching (str, is_rbacket_or_nl);
 			if (!end || *end != ']') {
 				e_log_error ("ini: unexpected eof (expected `]`) in line %zu", line);
 				goto err;
@@ -151,7 +151,7 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 			goto err;
 		}
 
-		end = e_cstr_find_matching (str, is_eq_or_nl);
+		end = e_cstr_find_char_matching (str, is_eq_or_nl);
 		if (!end) {
 			e_log_error ("ini: unexpected eof (expected `=`) in line %zu", line);
 			goto err;
