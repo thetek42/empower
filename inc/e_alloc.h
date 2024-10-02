@@ -90,7 +90,7 @@
  * using `e_free`.
  */
 [[nodiscard]]
-char *e_alloc_strdup (const char *s);
+char *e_mem_strdup (const char *s);
 
 /**
  * Duplicate up to \n characters of a string \s. This is equivalent to
@@ -99,7 +99,7 @@ char *e_alloc_strdup (const char *s);
  * The allocated memory must be freed by the user using `e_free`.
  */
 [[nodiscard]]
-char *e_alloc_strndup (const char *s, usize n);
+char *e_mem_strndup (const char *s, usize n);
 
 [[nodiscard]]
 void *__e_mem_alloc (usize size);

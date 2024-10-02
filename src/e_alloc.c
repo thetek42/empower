@@ -47,7 +47,7 @@ __e_mem_realloc (void *ptr, usize size)
 
 [[nodiscard]]
 char *
-e_alloc_strdup (const char *s)
+e_mem_strdup (const char *s)
 {
 	char *res;
 
@@ -61,7 +61,7 @@ e_alloc_strdup (const char *s)
 
 [[nodiscard]]
 char *
-e_alloc_strndup (const char *s, usize n)
+e_mem_strndup (const char *s, usize n)
 {
 	char *res;
 
