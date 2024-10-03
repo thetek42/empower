@@ -2,7 +2,7 @@
 
 #if E_CONFIG_MODULE_CSTR
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize
 e_cstr_count_char (const char *s, char c)
 {
@@ -51,14 +51,14 @@ e_cstr_count_str (const char *haystack, const char *needle)
 	return count;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 bool
 e_cstr_is_ascii (const char *s)
 {
 	return e_cstr_matches_predicate (s, isascii);
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 bool
 e_cstr_is_blank (const char *s)
 {
@@ -130,7 +130,7 @@ e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest)
 	return dest;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_find_char (const char *s, char c)
 {
@@ -151,7 +151,7 @@ e_cstr_find_char_matching (const char *s, E_Char_Predicate func)
 	return nullptr;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_find_str (const char *haystack, const char *needle)
 {
@@ -167,7 +167,7 @@ e_cstr_eq (const char *a, const char *b)
 	return !strcmp (a, b);
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_trim_start (const char *s)
 {
@@ -176,7 +176,7 @@ e_cstr_trim_start (const char *s)
 	return s;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize
 e_cstr_trim_end (const char *s)
 {
@@ -184,7 +184,7 @@ e_cstr_trim_end (const char *s)
 	return e_cstr_trim_end_with_len (s, strlen (s));
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize
 e_cstr_trim_end_with_len (const char *s, usize len)
 {
@@ -193,7 +193,7 @@ e_cstr_trim_end_with_len (const char *s, usize len)
 	return len;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_trim (const char *s, usize *len)
 {
@@ -212,7 +212,7 @@ e_cstr_trim (const char *s, usize *len)
 	return s;
 }
 
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_trim_with_len (const char *s, usize *len)
 {

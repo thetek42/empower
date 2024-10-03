@@ -1,55 +1,85 @@
-CC := cc
-AR := ar
+# TODO: this makefile is a mess.
 
-CFLAGS := -std=c23 -Iinc
-CFLAGS_WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-attributes -pedantic
-CFLAGS_DEBUG := -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
-CFLAGS_RELEASE := -DNDEBUG -O3 -march=native
+AR ?= ar
+CC ?= gcc
+STDC ?= c23
+MODE ?= debug
 
-SRC_FILES := $(wildcard src/*.c)
-OBJ_DEBUG := $(SRC_FILES:src/%.c=obj/%-debug.o)
-OBJ_RELEASE := $(SRC_FILES:src/%.c=obj/%-release.o)
-DEP_FILES := $(SRC_FILES:src/%.c=obj/%.dep)
-LIB_DEBUG := bin/empower-debug.a
-LIB_RELEASE := bin/empower.a
-TEST_FILES := $(wildcard test/test.c)
-TEST_TARGET := bin/empower-test
+ifeq ($(CC),cc)
+CC := gcc
+endif
+
+ifeq ($(CC),gcc)
+
+CFLAGS := -std=$(STDC) -Iinc
+CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-attributes -pedantic
+CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
+
+ifeq ($(STDC),release)
+CFLAGS += -DNDEBUG -O3 -march=native
+else ifeq ($(STDC),release-safe)
+CFLAGS += -DNDEBUG -O3 -march=native -fsanitize=undefined,address,leak
+else
+CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
+endif
+
+else ifeq ($(CC),clang)
+
+CFLAGS := -std=$(STDC) -Iinc
+CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-unknown-attributes -pedantic
+CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
+
+ifeq ($(STDC),release)
+CFLAGS += -DNDEBUG -O3 -march=native
+else ifeq ($(STDC),release-safe)
+CFLAGS += -DNDEBUG -O3 -march=native -fsanitize=undefined,address,leak
+else
+CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
+endif
+
+else
+# TODO: support other compilers (mostly msvc i guess?)
+endif
+
+IDENT := $(CC)-$(STDC)-$(MODE)
+
+LIB_SRC := $(wildcard src/*.c)
+LIB_OBJ := $(LIB_SRC:src/%.c=obj/$(IDENT)/%.o)
+LIB_DEP := $(LIB_SRC:src/%.c=obj/$(IDENT)/%.dep)
+LIB_BIN := bin/$(IDENT)/empower.a
+TEST_SRC := $(wildcard test/*.c)
+TEST_OBJ := $(TEST_SRC:test/%.c=obj/test-$(IDENT)/%.o)
+TEST_DEP := $(TEST_SRC:test/%.c=obj/test-$(IDENT)/%.dep)
+TEST_BIN := bin/$(IDENT)/empower-test
 
 
-all: $(LIB_DEBUG) $(LIB_RELEASE)
+all: $(LIB_BIN)
 
 clean:
 	rm -rf obj/ bin/
 
-debug: $(LIB_DEBUG)
-
-release: $(LIB_RELEASE)
-
-test: $(TEST_TARGET)
-	./$(TEST_TARGET)
+test: $(TEST_BIN)
+	./$(TEST_BIN)
 
 .PHONY: all clean test
 
 
-$(LIB_DEBUG): $(OBJ_DEBUG)
+$(LIB_BIN): $(LIB_OBJ)
 	@mkdir -p $(@D)
-	$(AR) rcs $@ $(OBJ_DEBUG)
+	$(AR) rcs $@ $(LIB_OBJ)
 
-$(LIB_RELEASE): $(OBJ_RELEASE)
+$(TEST_BIN): $(TEST_OBJ) $(LIB_BIN)
 	@mkdir -p $(@D)
-	$(AR) rcs $@ $(OBJ_RELEASE)
+	$(CC) $(CFLAGS) $(TEST_OBJ) $(LIB_BIN) -o $@
 
-$(TEST_TARGET): $(TEST_FILES) $(LIB_DEBUG)
+obj/$(IDENT)/%.o: src/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) $(TEST_FILES) $(LIB_DEBUG) -o $@ -MD -MP -MF obj/test.dep
+	$(CC) $(CFLAGS) -c $< -o $@ $(CFLAGS_DEP)
 
-obj/%-debug.o: src/%.c
+obj/test-$(IDENT)/%.o: test/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_DEBUG) -c $< -o $@ -MD -MP -MF $(<:src/%.c=obj/%.dep)
-
-obj/%-release.o: src/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CFLAGS_WARN) $(CFLAGS_RELEASE) -c $< -o $@ -MD -MP -MF $(<:src/%.c=obj/%.dep)
+	$(CC) $(CFLAGS) -c $< -o $@ $(CFLAGS_DEP)
 
 
--include $(DEP_FILES)
+-include $(LIB_DEP)
+-include $(TEST_DEP)

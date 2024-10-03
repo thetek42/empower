@@ -23,7 +23,7 @@ typedef int (* E_Char_Predicate) (int c);
  * Count the number of occurances of a character \c in the nul-terminated string
  * \s. When \s is `nullptr`, it returns 0.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize e_cstr_count_char (const char *s, char c);
 
 /**
@@ -37,14 +37,14 @@ usize e_cstr_count_char_matching (const char *s, E_Char_Predicate func);
  * nul-terminated string \haystack. When \haystack or \needle is `nullptr`, it
  * returns 0.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize e_cstr_count_str (const char *haystack, const char *needle);
 
 /**
  * Check if the nul-terminated string \s is ASCII. Returns `true` when \s only
  * consists of ASCII characters or if \s is `nullptr`.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 bool e_cstr_is_ascii (const char *s);
 
 /**
@@ -52,7 +52,7 @@ bool e_cstr_is_ascii (const char *s);
  * as per `isspace`. Returns `true` when \s only consists of whitespace or if \s
  * is `nullptr`.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 bool e_cstr_is_blank (const char *s);
 
 /**
@@ -100,7 +100,7 @@ char *e_cstr_to_ascii_upper_buf (const char *restrict src, char *restrict dest);
  * essentially like `strchr`, except that it allows for `nullptr` (which would
  * cause undefined behaviour in `strchr`).
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *e_cstr_find_char (const char *s, char c);
 
 /**
@@ -119,7 +119,7 @@ const char *e_cstr_find_char_matching (const char *s, E_Char_Predicate func);
  * like `strstr`, except that it allows for `nullptr` (which would cause
  * undefined behaviour in `strstr`).
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *e_cstr_find_str (const char *haystack, const char *needle);
 
 /**
@@ -137,14 +137,14 @@ bool e_cstr_eq (const char *a, const char *b);
  * whitespace, the return value will point to the nul terminator. If `s` is
  * `nullptr`, `nullptr` is returned.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *e_cstr_trim_start (const char *s);
 
 /**
  * Trim whitespace at the end of the nul-terminated string \s. Returns the
  * length of the trimmed string. If \s is `nullptr`, 0 is returned.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize e_cstr_trim_end (const char *s);
 
 /**
@@ -152,7 +152,7 @@ usize e_cstr_trim_end (const char *s);
  * length \len. \len must be equal to `strlen (s)`. Returns the length of the
  * trimmed string. If \s is `nullptr`, 0 is returned.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 usize e_cstr_trim_end_with_len (const char *s, usize len);
 
 /**
@@ -162,7 +162,7 @@ usize e_cstr_trim_end_with_len (const char *s, usize len);
  * call is essentially equivalent to `e_cstr_trim_start`. If \s is `nullptr`,
  * `nullptr` is returned and \len is set to 0.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *e_cstr_trim (const char *s, usize *len);
 
 /**
@@ -173,7 +173,7 @@ const char *e_cstr_trim (const char *s, usize *len);
  * essentially equivalent to `e_cstr_trim_start`. If \s is `nullptr`, `nullptr`
  * is returned and \len is set to 0.
  */
-[[reproducible]]
+E_ATTR_REPRODUCIBLE
 const char *e_cstr_trim_with_len (const char *s, usize *len);
 
 #endif /* E_CONFIG_MODULE_CSTR */

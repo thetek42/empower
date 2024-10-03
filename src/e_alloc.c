@@ -3,6 +3,7 @@
 
 #if E_CONFIG_MODULE_ALLOC
 
+E_ATTR_NODISCARD ("e_mem_alloc allocates memory which must be freed")
 void *
 __e_mem_alloc (usize size)
 {
@@ -16,6 +17,7 @@ __e_mem_alloc (usize size)
 	return ptr;
 }
 
+E_ATTR_NODISCARD ("e_mem_calloc allocates memory which must be freed")
 void *
 __e_mem_calloc (usize nmemb, usize size)
 {
@@ -29,6 +31,7 @@ __e_mem_calloc (usize nmemb, usize size)
 	return ptr;
 }
 
+E_ATTR_NODISCARD ("e_mem_realloc allocates memory which must be freed")
 void *
 __e_mem_realloc (void *ptr, usize size)
 {
@@ -45,7 +48,7 @@ __e_mem_realloc (void *ptr, usize size)
 	return ptr;
 }
 
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_strdup allocates memory which must be freed")
 char *
 e_mem_strdup (const char *s)
 {
@@ -59,7 +62,7 @@ e_mem_strdup (const char *s)
 	return res;
 }
 
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
 char *
 e_mem_strndup (const char *s, usize n)
 {

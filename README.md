@@ -5,23 +5,25 @@ C applications faster and with more joy.
 
 ## Modules
 
-| Module         | Description                    |
-| -------------- | ------------------------------ |
-| **e_alloc**    | Memory allocation              |
-| **e_arena**    | Arena allocator                |
-| **e_cstr**     | String utility functions       |
-| **e_debug**    | Debugging utilities            |
-| **e_enc**      | Encoding and Encrypting        |
-| **e_fs**       | File handling functions        |
-| **e_ini**      | INI file parsing               |
-| **e_log**      | Logging                        |
-| **e_macro**    | Macro helpers                  |
-| **e_math**     | Math-related functions         |
-| **e_result**   | Result type                    |
-| **e_str**      | Dynamically sized string       |
-| **e_test**     | Testing                        |
-| **e_types**    | Common type aliases            |
-| **e_vec**      | Vectors / dynamic arrays       |
+| Module         | Description              |
+| -------------- | ------------------------ |
+| **e_alloc**    | Memory allocation        |
+| **e_arena**    | Arena allocator          |
+| **e_attrs**    | Attribute helpers        |
+| **e_compat**   | C standard compatibility |
+| **e_cstr**     | String utility functions |
+| **e_debug**    | Debugging utilities      |
+| **e_enc**      | Encoding and Encrypting  |
+| **e_fs**       | File handling functions  |
+| **e_ini**      | INI file parsing         |
+| **e_log**      | Logging                  |
+| **e_macro**    | Macro helpers            |
+| **e_math**     | Math-related functions   |
+| **e_result**   | Result type              |
+| **e_str**      | Dynamically sized string |
+| **e_test**     | Testing                  |
+| **e_types**    | Common type aliases      |
+| **e_vec**      | Vectors / dynamic arrays |
 
 ## Requirements
 
@@ -34,7 +36,7 @@ library portable in its infancy stage.
 ## Usage
 
 1. Download the library, e.g. to `lib/empower`
-2. Optional: Modify the configuration file in `lib/empower/inc/empower-config.h`
+2. Optional: Modify the configuration file in `lib/empower/inc/empower_config.h`
 3. Optional: Modify `lib/empower/Makefile` if you need a different compiler or different flags
 4. Adapt your build system:
    - Build the libraries by calling `make -C lib/empower [debug|release]`

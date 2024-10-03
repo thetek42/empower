@@ -94,7 +94,7 @@ void e_str_append_slice (E_Str *str, const char *s, usize len);
  * entire formatted string could have been appended. If the entire string was
  * appended, this is equal to the number of bytes actually written.
  */
-[[gnu::format (printf, 3, 4)]]
+E_ATTR_FORMAT (printf, 3, 4)
 usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
 
 /**
@@ -102,7 +102,7 @@ usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
  * determined automatically and the string is resized accordingly. tReturns he
  * number of bytes that were written to the string.
  */
-[[gnu::format (printf, 2, 3)]]
+E_ATTR_FORMAT (printf, 2, 3)
 usize e_str_append_fmt_all (E_Str *str, const char *fmt, ...);
 
 #endif /* E_CONFIG_MODULE_STR */

@@ -84,7 +84,7 @@ e_str_append_slice (E_Str *str, const char *s, usize len)
 	str->len += len;
 }
 
-[[gnu::format (printf, 3, 4)]]
+E_ATTR_FORMAT (printf, 3, 4)
 usize
 e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...)
 {
@@ -108,7 +108,7 @@ e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...)
 	return (usize) written;
 }
 
-[[gnu::format (printf, 2, 3)]]
+E_ATTR_FORMAT (printf, 2, 3)
 usize
 e_str_append_fmt_all (E_Str *str, const char *fmt, ...)
 {

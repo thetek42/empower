@@ -89,7 +89,7 @@
  * `nullptr` if \s is `nullptr`. The allocated memory must be freed by the user
  * using `e_free`.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_strdup allocates memory which must be freed")
 char *e_mem_strdup (const char *s);
 
 /**
@@ -98,16 +98,16 @@ char *e_mem_strdup (const char *s);
  * allocation fails. This function only returns `nullptr` if \s is `nullptr`.
  * The allocated memory must be freed by the user using `e_free`.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
 char *e_mem_strndup (const char *s, usize n);
 
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_alloc allocates memory which must be freed")
 void *__e_mem_alloc (usize size);
 
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_calloc allocates memory which must be freed")
 void *__e_mem_calloc (usize nmemb, usize size);
 
-[[nodiscard]]
+E_ATTR_NODISCARD ("e_mem_realloc allocates memory which must be freed")
 void *__e_mem_realloc (void *ptr, usize size);
 
 #endif /* E_CONFIG_MODULE_ALLOC */

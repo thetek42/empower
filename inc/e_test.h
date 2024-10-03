@@ -8,7 +8,10 @@
 /*! e_test ********************************************************************
  * 
  * This module provides basic functionality for unit testing using macros. Type
- * inference is used for cleaner code.
+ * inference can be used in C23 for cleaner code.
+ *
+ * Configuration options:
+ *  - TYPE_INFERENCE: Enable type inference in C23
  *
  ******************************************************************************/
 
@@ -32,9 +35,9 @@ extern struct __e_test_result __e_global_test;
  * Assert that a condition is truthy and update the global test statistics. If
  * the check fails, an error message will be printed.
  */
-#define e_test_assert(name, expr)                                              \
+#define __e_test_assert(name, type, expr)                                      \
 	do {                                                                   \
-		auto success = (expr);                                         \
+		type success = (expr);                                         \
 		if (success) {                                                 \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
@@ -48,15 +51,28 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
+#if E_STDC_VERSION >= E_STDC_VERSION_C11
+# define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, result, other)                  \
+	do {                                                                   \
+		fprintf (stderr, "%s \x1b[36mgot\x1b[0m ", #expr);             \
+		fprintf (stderr, E_DEBUG_AUTO_FMT (result), result);           \
+		fprintf (stderr, " \x1b[36mwant\x1b[0m ");                     \
+		fprintf (stderr, E_DEBUG_AUTO_FMT (other), other);             \
+	} while (0)
+#else /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
+# define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, a, b)                           \
+	fprintf (stderr, "\x1b[36mfailed\x1b[0m")
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
+
 /**
  * Assert that two values equal each other and update the global test
  * statistics. The types of the values are determined automatically. If the
  * check fails, an error message will be printed.
  */
-#define e_test_assert_eq(name, expr, check)                                    \
+#define __e_test_assert_eq(name, type, expr, check)                            \
 	do {                                                                   \
-		auto result = (expr);                                          \
-		auto other = (typeof (result)) (check);                        \
+		type result = (expr);                                          \
+		type other = (check);                                          \
 		if (result == other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
@@ -66,11 +82,32 @@ extern struct __e_test_result __e_global_test;
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_eq");                \
-			fprintf (stderr, #expr " \x1b[36mgot\x1b[0m ");        \
-			fprintf (stderr, E_DEBUG_AUTO_FMT (result), result);   \
-			fprintf (stderr, " \x1b[36mwant\x1b[0m ");             \
-			fprintf (stderr, E_DEBUG_AUTO_FMT (other), other);     \
+			__E_TEST_ASSERT_EQ_PRINT_VALUES (expr, result, other); \
 			fprintf (stderr, "\n");                                \
+			__e_global_test.failure += 1;                          \
+		}                                                              \
+	} while (0)
+
+/**
+ * Assert that two pointers equal each other and update the global test
+ * statistics. If the check fails, an error message will be printed.
+ */
+#define e_test_assert_ptr_eq(name, expr, check)                                \
+	do {                                                                   \
+		const void *result = (expr);                                   \
+		const void *other = (check);                                   \
+		if (result == other) {                                         \
+			__e_global_test.success += 1;                          \
+		} else {                                                       \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
+			                 __LINE__);                            \
+			int l = (int) strlen (__E_TEST_SPACE) - p;             \
+			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
+			         __E_TEST_SPACE);                              \
+			__E_TEST_PRINT_ASSERT_FN ("assert_ptr_eq");            \
+			fprintf (stderr, "%s \x1b[36mgot\x1b[0m %p "           \
+			         "\x1b[36mwant\x1b[0m  %p\n", #expr, result,   \
+			         other);                                       \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)
@@ -92,9 +129,9 @@ extern struct __e_test_result __e_global_test;
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_str_eq");            \
-			fprintf (stderr, #expr " \x1b[36mgot\x1b[0m \"%s\" "   \
-			         "\x1b[36mwant\x1b[0m \"%s\"\n", result,       \
-			         other);                                       \
+			fprintf (stderr, "%s \x1b[36mgot\x1b[0m \"%s\" "       \
+			         "\x1b[36mwant\x1b[0m \"%s\"\n",               \
+			         E_MACRO_STRINGIFY (expr), result, other);     \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)                                                                                
@@ -115,8 +152,8 @@ extern struct __e_test_result __e_global_test;
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
-			fprintf (stderr, #expr " \x1b[36mreturned error\x1b[0m"\
-			         " %zu\n", result);                            \
+			fprintf (stderr, "%s \x1b[36mreturned error\x1b[0m "   \
+			         "%zu\n", #expr, result);                      \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)                                                                                
@@ -142,6 +179,14 @@ extern struct __e_test_result __e_global_test;
 		exit (__e_global_test.failure > 0 ? EXIT_FAILURE :             \
 		      EXIT_SUCCESS);                                           \
 	} while (0)
+
+#if E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES)
+# define e_test_assert(name, expr) __e_test_assert (name, auto, expr);
+# define e_test_assert_eq(name, expr, check) __e_test_assert_eq (name, auto, expr, check);
+#else /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
+# define e_test_assert(name, type, expr) __e_test_assert (name, type, expr);
+# define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (name, type, expr, check);
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
 
 #endif /* E_CONFIG_MODULE_TEST */
 #endif /* _EMPOWER_TEST_H_ */

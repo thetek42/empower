@@ -10,7 +10,7 @@ e_debug_hexdump (const void *ptr, usize len)
 	char buf[70] = {0};
 	u8 c;
 
-	fprintf (stderr, "\n---=== hexdump %p ===---\n\n", p);
+	fprintf (stderr, "\n---=== hexdump %p ===---\n\n", (void *) p);
 
 	if (p == nullptr) {
 		fprintf (stderr, "nullptr\n\n");

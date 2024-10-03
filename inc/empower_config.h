@@ -19,5 +19,6 @@
 /* library settings ***********************************************************/
 #define E_CONFIG_LOG_COLOURED				1
 #define E_CONFIG_LOG_WITH_FILE_LINE			1
+#define E_CONFIG_TEST_TYPE_INFERENCE			1
 
 #endif /* _EMPOWER_CONFIG_H_ */

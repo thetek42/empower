@@ -43,21 +43,21 @@ typedef struct {
  * be put into \file. The function returns an `E_Result` with E_OK in case of
  * success and an error in case `fopen` failed.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode);
 
 /**
  * Close the file handle \file. This function is essentially a wrapper around
  * `fclose`. Returns E_OK or the error that occured during `fclose`.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_close (E_Fs_File *file);
 
 /**
  * Get the size of the file \file and store it in \size_out. Returns E_OK or an
  * error that occured during `fseek` or `ftell`.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
 
 /**
@@ -79,14 +79,14 @@ E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
  * | printf ("len: %zu, contents:\n%s\n", len, buf);
  * | e_free (buf);
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
 
 /**
  * Write \len bytes of data pointed to by \data to a file \file. Returns E_OK on
  * success, and an error on failure.
  */
-[[nodiscard]]
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_write (E_Fs_File *file, const char *data, usize len);
 
 /**
