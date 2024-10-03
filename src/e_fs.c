@@ -72,44 +72,74 @@ e_fs_file_get_size (E_Fs_File *file, usize *size_out)
 	return E_OK;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_out)
+{
+	usize count, offset;
+
+	if (!file || !out) {
+		if (out && max_len > 0) out[0] = 0;
+		if (len_out) *len_out = 0;
+		return E_ERR_INVALID_ARGUMENT;
+	}
+
+	if (max_len == 0) {
+		if (len_out) *len_out = 0;
+		return E_OK;
+	}
+
+	offset = 0;
+	while (offset < max_len - 1) {
+		clearerr (file->handle);
+		count = fread (out + offset, sizeof (char),
+		               max_len - offset - 1, file->handle);
+		offset += count;
+		if (count > 0) continue;
+		if (feof (file->handle)) break;
+		if (ferror (file->handle) != 0) {
+			out[0] = 0;
+			if (len_out) *len_out = 0;
+			return E_ERR_FAIL;
+		}
+	}
+	assert (offset <= max_len - 1 && "Read more from file than allowed");
+
+	out[offset] = 0;
+	if (len_out) *len_out = offset;
+	return E_OK;
+}
+
 #if E_CONFIG_MODULE_ALLOC
 
 E_Result
 e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 {
 	E_Result err;
-	usize len, count, offset;
+	usize len;
 
-	if (!file || !out) return E_ERR_INVALID_ARGUMENT;
+	if (!file || !out) {
+		if (out) *out = nullptr;
+		if (len_out) *len_out = 0;
+		return E_ERR_INVALID_ARGUMENT;
+	}
 
 	err = e_fs_file_get_size (file, &len);
-	if (err != E_OK) goto err;
+	if (err != E_OK) {
+		*out = nullptr;
+		if (len_out) *len_out = 0;
+		return err;
+	}
 
 	*out = e_alloc (char, len + 1);
-	offset = 0;
-	while (offset < (usize) len) {
-		clearerr (file->handle);
-		count = fread (*out + offset, sizeof (char),
-		               len - offset, file->handle);
-		offset += count;
-		if (count > 0) continue;
-		if (feof (file->handle)) break;
-		if (ferror (file->handle) != 0) {
-			e_free (*out);
-			err = E_ERR_FAIL;
-			goto err;
-		}
+
+	err = e_fs_file_read (file, *out, len + 1, len_out);
+	if (err != E_OK) {
+		e_free (*out);
+		*out = nullptr;
+		return err;
 	}
-	assert (offset <= (usize) len && "Read more from file than allowed");
 
-	(*out)[offset] = 0;
-	if (len_out) *len_out = offset;
 	return E_OK;
-
-err:
-	*out = nullptr;
-	if (len_out) *len_out = 0;
-	return err;
 }
 
 #endif /* E_CONFIG_MODULE_ALLOC */

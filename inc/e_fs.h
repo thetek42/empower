@@ -60,6 +60,21 @@ E_Result e_fs_file_close (E_Fs_File *file);
 E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
 
+/**
+ * Reads up to \max_len number of bytes of the file handle \file into the buffer
+ * pointed to by \out, and advances the position in the file such that
+ * subsequent read calls will read the next parts of the file. A terminating nul
+ * byte will be written. The length (excluding the terminating nul byte) will be
+ * stored in \len_out. If the length is not required, \len_out can be `nullptr`.
+ * \file or \out may not be `nullptr`, otherwise the function will return an
+ * error. If an error occurs, \len_out will be set to 0, and \out will be filled
+ * with only the terminating nul byte. \out must be able to store at least
+ * \max_len + 1 bytes. \max_len includes the nul terminator. If \max_len is 0,
+ * the terminating nul byte is not written to \out.
+ */
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_out);
+
 #if E_CONFIG_MODULE_ALLOC
 
 /**
@@ -69,7 +84,7 @@ E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
  * can be `nullptr`. The required memory is allocted using `e_alloc` and must be
  * freed by the user using `e_free`. If an error occurs, the memory is freed
  * automatically, \out is set to `nullptr`, \len_out is set to 0 and an error is
- * returned.
+ * returned. The position of the file will be advanced to the end.
  *
  * Example (without error handling, indicated by `(void)`):
  * | E_Fs_File file;
