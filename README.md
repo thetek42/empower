@@ -27,21 +27,25 @@ C applications faster and with more joy.
 
 ## Requirements
 
-- A compiler that understands (at least some parts of) C23. Both GCC and Clang are tested.
+- A compiler that understands C99 or newer. Both GCC and Clang are tested.
 - An operating system that conforms to POSIX.
 
-Both of these things will not be required anymore in the future; I was simply too lazy to make this
-library portable in its infancy stage.
+Support for other compilers and operating systems may be added in the future.
 
 ## Usage
 
 1. Download the library, e.g. to `lib/empower`
 2. Optional: Modify the configuration file in `lib/empower/inc/empower_config.h`
-3. Optional: Modify `lib/empower/Makefile` if you need a different compiler or different flags
-4. Adapt your build system:
-   - Build the libraries by calling `make -C lib/empower [debug|release]`
-   - Add the include directory `lib/empower/inc`
-   - Make sure that you use C23 as the C standard (requirement will be removed in the future)
-   - Link your application with the static library in `lib/empower/bin/empower[-debug].a`
-5. Include `<empower.h>` in your code.
-6. Have fun! Documentation for all functions and types can be found in the header files.
+3. Adapt your build system:
+   - Build the libraries by calling `make -C lib/empower CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release|release-safe]`
+   - Add the include directory `lib/empower/inc` (usually done with `-I`)
+   - Link your application with the static library in `lib/empower/bin/empower-<CC>-<STDC>-<MODE>.a`
+4. Include `<empower.h>` in your code.
+5. Have fun! Documentation for all functions and types can be found in the header files.
+
+## Development
+
+For running the tests, use `make test CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release-safe]`
+
+For generating a `compile_commands.json` that will allow for LSP support with clangd, download
+[Bear](https://github.com/rizsotto/Bear) and run `bear -- make test CC=clang`.
