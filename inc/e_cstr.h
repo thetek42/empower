@@ -143,12 +143,47 @@ E_ATTR_REPRODUCIBLE
 const char *e_cstr_find_char (const char *s, char c);
 
 /**
+ * Find the first character which is not \c in the nul-terminated string \s. If
+ * no match is found within the string, `nullptr` is returned. Otherwise, a
+ * pointer to the matched character is returned. If \s is `nullptr`, `nullptr`
+ * is returned.
+ */
+E_ATTR_REPRODUCIBLE
+const char *e_cstr_find_char_not (const char *s, char c);
+
+/**
+ * Find the first character in the nul-terminated string \s which is also
+ * contained in the nul-terminated string \accept. If no match is found within
+ * the string, `nullptr` is returned. Otherwise, a pointer to the matched
+ * character is returned. If \s or \accept are `nullptr`, `nullptr` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+const char *e_cstr_find_char_pat (const char *s, const char *accept);
+
+/**
+ * Find the first character in the nul-terminated string \s which is not
+ * contained in the nul-terminated string \reject. If no match is found within
+ * the string, `nullptr` is returned. Otherwise, a pointer to the matched
+ * character is returned. If \s or \reject are `nullptr`, \s is returned.
+ */
+E_ATTR_REPRODUCIBLE
+const char *e_cstr_find_char_not_pat (const char *s, const char *reject);
+
+/**
  * Find the first character in the nul-terminated string \s which matches the
  * predicate \func. If no match is found within the string, `nullptr` is
  * returned. Otherwise, a pointer to the matched character is returned. If \s or
  * \func are `nullptr`, `nullptr` is returned.
  */
-const char *e_cstr_find_char_matching (const char *s, E_Char_Predicate func);
+const char *e_cstr_find_char_func (const char *s, E_Char_Predicate func);
+
+/**
+ * Find the first character in the nul-terminated string \s which is rejected by
+ * the predicate \func. If no match is found within the string, `nullptr` is
+ * returned. Otherwise, a pointer to the matched character is returned. If \s is
+ * `nullptr`, `nullptr` is returned. If \func is `nullptr`, \s is returned.
+ */
+const char *e_cstr_find_char_not_func (const char *s, E_Char_Predicate func);
 
 /**
  * Find the substring \needle in the nul-terminated string \haystack. If no

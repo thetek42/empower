@@ -200,13 +200,68 @@ e_cstr_find_char (const char *s, char c)
 	return strchr (s, (int) c);
 }
 
+E_ATTR_REPRODUCIBLE
 const char *
-e_cstr_find_char_matching (const char *s, E_Char_Predicate func)
+e_cstr_find_char_not (const char *s, char c)
+{
+	if (!s) return s;
+
+	while (*s) {
+		if (*s != c) return s;
+		s++;
+	}
+
+	return nullptr;
+}
+
+E_ATTR_REPRODUCIBLE
+const char *
+e_cstr_find_char_pat (const char *s, const char *accept)
+{
+	if (!s || !accept) return nullptr;
+
+	while (*s) {
+		if (strchr (accept, *s)) return s;
+		s++;
+	}
+
+	return nullptr;
+}
+
+E_ATTR_REPRODUCIBLE
+const char *
+e_cstr_find_char_not_pat (const char *s, const char *reject)
+{
+	if (!s || !reject) return s;
+
+	while (*s) {
+		if (!strchr (reject, *s)) return s;
+		s++;
+	}
+
+	return nullptr;
+}
+
+const char *
+e_cstr_find_char_func (const char *s, E_Char_Predicate func)
 {
 	if (!s || !func) return s;
 
 	while (*s) {
 		if (func (*s)) return s;
+		s++;
+	}
+
+	return nullptr;
+}
+
+const char *
+e_cstr_find_char_not_func (const char *s, E_Char_Predicate func)
+{
+	if (!s || !func) return s;
+
+	while (*s) {
+		if (!func (*s)) return s;
 		s++;
 	}
 

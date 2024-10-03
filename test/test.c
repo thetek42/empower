@@ -95,8 +95,15 @@ test_cstr (void)
 	e_test_assert ("e_cstr_is_ascii true", bool, e_cstr_is_ascii (s1));
 	e_test_assert_ptr_eq ("e_cstr_find_char existant", e_cstr_find_char (s1, 'o'), s1 + 4);
 	e_test_assert_ptr_eq ("e_cstr_find_char nonexistant", e_cstr_find_char (s1, 'u'), nullptr);
-	e_test_assert_ptr_eq ("e_cstr_find_char_matching existant", e_cstr_find_char_matching (s5, isalpha), s5 + 2);
-	e_test_assert_ptr_eq ("e_cstr_find_char_matching nonexistant", e_cstr_find_char_matching (s5, isdigit), nullptr);
+	e_test_assert_ptr_eq ("e_cstr_find_char_not", e_cstr_find_char_not (s1, 'H'), s1 + 1);
+	e_test_assert_ptr_eq ("e_cstr_find_char_pat existant", e_cstr_find_char_pat (s1, "abcd"), s1 + 11);
+	e_test_assert_ptr_eq ("e_cstr_find_char_pat nonexistant", e_cstr_find_char_pat (s1, "xyz"), nullptr);
+	e_test_assert_ptr_eq ("e_cstr_find_char_not_pat existant", e_cstr_find_char_not_pat (s1, "HWelo, "), s1 + 9);
+	e_test_assert_ptr_eq ("e_cstr_find_char_not_pat nonexistant", e_cstr_find_char_not_pat (s3, "1234567890"), nullptr);
+	e_test_assert_ptr_eq ("e_cstr_find_char_func existant", e_cstr_find_char_func (s5, isalpha), s5 + 2);
+	e_test_assert_ptr_eq ("e_cstr_find_char_func nonexistant", e_cstr_find_char_func (s5, isdigit), nullptr);
+	e_test_assert_ptr_eq ("e_cstr_find_char_not_func existant", e_cstr_find_char_not_func (s5, isspace), s5 + 2);
+	e_test_assert_ptr_eq ("e_cstr_find_char_not_func nonexistant", e_cstr_find_char_not_func (s3, isdigit), nullptr);
 	e_test_assert_ptr_eq ("e_cstr_find_str existant", e_cstr_find_str (s4, "en"), s4 + 3);
 	e_test_assert_ptr_eq ("e_cstr_find_str nonexistant", e_cstr_find_str (s5, "es"), nullptr);
 	e_test_assert ("e_cstr_eq null null", bool, e_cstr_eq (nullptr, nullptr));

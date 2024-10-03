@@ -110,7 +110,7 @@ extern struct __e_test_result __e_global_test;
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_ptr_eq");            \
 			fprintf (stderr, "%s \x1b[36mgot\x1b[0m %p "           \
-			         "\x1b[36mwant\x1b[0m  %p\n", #expr, result,   \
+			         "\x1b[36mwant\x1b[0m %p\n", #expr, result,    \
 			         other);                                       \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
