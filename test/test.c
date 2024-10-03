@@ -42,29 +42,25 @@ static void
 test_arena (void)
 {
 	const char zero[2] = {0};
-	uintptr_t unalignment;
 	E_Arena arena;
 	void *ptr;
 
 	arena = e_arena_init (16);
 
 	ptr = e_arena_alloc (&arena, u32, 1);
-	unalignment = (uintptr_t) ptr % 4;
 	e_test_assert_ptr_eq ("e_arena_alloc ptr", ptr, arena.ptr);
-	e_test_assert_eq ("e_arena_alloc align", uintptr_t, unalignment, 0);
+	e_test_assert_eq ("e_arena_alloc align", uintptr_t, (uintptr_t) ptr % 4, 0);
 	e_test_assert_eq ("e_arena_alloc len", usize, arena.len, 4);
 
 	ptr = e_arena_alloc_zero (&arena, u16, 1);
-	unalignment = (uintptr_t) ptr % 2;
 	e_test_assert_ptr_eq ("e_arena_alloc_zero ptr", ptr, arena.ptr + 4);
-	e_test_assert_eq ("e_arena_alloc_zero align", uintptr_t, unalignment, 0);
+	e_test_assert_eq ("e_arena_alloc_zero align", uintptr_t, (uintptr_t) ptr % 2, 0);
 	e_test_assert_eq ("e_arena_alloc_zero len", usize, arena.len, 6);
 	e_test_assert_eq ("e_arena_alloc_zero mem", int, memcmp (ptr, zero, 2), 0);
 
 	ptr = e_arena_alloc_aligned (&arena, 8, 8);
-	unalignment = (uintptr_t) ptr % 8;
 	e_test_assert_ptr_eq ("e_arena_alloc_aligned ptr", ptr, arena.ptr + 8);
-	e_test_assert_eq ("e_arena_alloc_aligned align", uintptr_t, unalignment, 0);
+	e_test_assert_eq ("e_arena_alloc_aligned align", uintptr_t, (uintptr_t) ptr % 8, 0);
 	e_test_assert_eq ("e_arena_alloc_aligned len", usize, arena.len, 16);
 
 	e_arena_deinit (&arena);

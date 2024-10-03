@@ -156,10 +156,11 @@ extern struct __e_test_result __e_global_test;
 			         "%zu\n", #expr, result);                      \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
-	} while (0)                                                                                
+	} while (0)
 
 /**
- * Finish the tests and print the test statistics.
+ * Finish the tests, print the test statistics, and terminate the programme. The
+ * exit code is 0 if all tests succeeded, or non-zero if there were failures.
  */
 #define e_test_finish()                                                        \
 	do {                                                                   \

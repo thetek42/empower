@@ -45,10 +45,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C11 && E_STDC_VERSION < E_STDC_VERSION_C23
-# include <stdalign.h>
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 && E_STDC_VERSION < E_STDC_VERSION_C23 */
-
 /* modules ********************************************************************/
 
 #include "e_compat.h"

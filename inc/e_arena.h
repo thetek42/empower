@@ -29,7 +29,9 @@ typedef __E_Vec_Byte E_Arena;
  * When no memory can be allocated, the programme is terminated; only returns
  * `nullptr` when \arena is `nullptr`.
  */
-#define e_arena_alloc(arena, T, nmemb) __e_arena_alloc ((arena), sizeof (T) * (nmemb), alignof (T))
+#if !__E_ALIGNOF_NOT_SUPPORTED
+# define e_arena_alloc(arena, T, nmemb) __e_arena_alloc ((arena), sizeof (T) * (nmemb), alignof (T))
+#endif /* !__E_ALIGNOF_NOT_SUPPORTED */
 
 /**
  * Allocate \size bytes of memory in the arena allocator \arena. Returns a
@@ -38,7 +40,7 @@ typedef __E_Vec_Byte E_Arena;
  * When no memory can be allocated, the programme is terminated; only returns
  * `nullptr` when \arena is `nullptr`.
  */
-#define e_arena_alloc_size(arena, size) __e_arena_alloc ((arena), (size), alignof (max_align_t))
+#define e_arena_alloc_size(arena, size) __e_arena_alloc ((arena), (size), E_MAX_ALIGN)
 
 /**
  * Allocate \size bytes of memory in the arena allocator \arena. Returns a
@@ -54,7 +56,9 @@ typedef __E_Vec_Byte E_Arena;
  * When no memory can be allocated, the programme is terminated; only returns
  * `nullptr` when \arena is `nullptr`.
  */
+#if !__E_ALIGNOF_NOT_SUPPORTED
 #define e_arena_alloc_zero(arena, T, nmemb) __e_arena_alloc_zero ((arena), sizeof (T) * (nmemb), alignof (T))
+#endif /* !__E_ALIGNOF_NOT_SUPPORTED */
 
 /**
  * Allocate \size bytes of memory in the arena allocator \arena. Returns a
@@ -63,7 +67,7 @@ typedef __E_Vec_Byte E_Arena;
  * When no memory can be allocated, the programme is terminated; only returns
  * `nullptr` when \arena is `nullptr`. The memory will be zeroed.
  */
-#define e_arena_alloc_zero_size(arena, size) __e_arena_alloc_zero ((arena), (size), alignof (max_align_t))
+#define e_arena_alloc_zero_size(arena, size) __e_arena_alloc_zero ((arena), (size), E_MAX_ALIGN)
 
 /**
  * Allocate \size bytes of memory in the arena allocator \arena. Returns a
