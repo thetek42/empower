@@ -165,6 +165,31 @@ e_fs_file_write (E_Fs_File *file, const char *data, usize len)
 	return E_OK;
 }
 
+E_ATTR_FORMAT (printf, 3, 4)
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_write_fmt (E_Fs_File *file, usize *written, const char *fmt, ...)
+{
+	va_list ap;
+	int n;
+
+	if (!file || !fmt) {
+		if (written) *written = 0;
+		return E_ERR_INVALID_ARGUMENT;
+	}
+
+	va_start (ap, fmt);
+	n = vfprintf (file->handle, fmt, ap);
+	va_end (ap);
+
+	if (n < 0) {
+		if (written) *written = 0;
+		return E_ERR_FAIL;
+	}
+
+	if (written) *written = (usize) n;
+	return E_OK;
+}
+
 bool
 e_fs_path_exists (const char *path)
 {

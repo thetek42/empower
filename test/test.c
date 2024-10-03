@@ -132,28 +132,27 @@ static void
 test_fs (void)
 {
 	E_Fs_File file;
-	char *buf, buf2[16];
+	char *buf, buf2[15];
 	usize len;
 
 	e_test_assert_ok ("e_fs_file_open write", e_fs_file_open (&file, "test/test.txt", E_FS_OPEN_MODE_WRITE_TRUNC));
-	e_test_assert_ok ("e_fs_file_write", e_fs_file_write (&file, "Hello, World!\n", strlen ("Hello, World!\n")));
+	e_test_assert_ok ("e_fs_file_write", e_fs_file_write (&file, "Hello, World!\t", strlen ("Hello, World!\t")));
+	e_test_assert_ok ("e_fs_file_write_fmt", e_fs_file_write_fmt (&file, &len, "%d", 42));
+	e_test_assert_eq ("e_fs_file_write_fmt len", usize, len, 2);
 	e_test_assert_ok ("e_fs_file_close write", e_fs_file_close (&file));
 
 	e_test_assert_ok ("e_fs_file_open read", e_fs_file_open (&file, "test/test.txt", E_FS_OPEN_MODE_READ_ONLY));
 	e_test_assert_ok ("e_fs_file_get_size", e_fs_file_get_size (&file, &len));
-	e_test_assert_eq ("e_fs_file_get_size len", usize, len, strlen ("Hello, World!\n"));
-	e_test_assert_ok ("e_fs_file_read 1", e_fs_file_read (&file, buf2, 4, &len));
-	e_test_assert_eq ("e_fs_file_read 1 len", usize, len, strlen ("Hel"));
-	e_test_assert_str_eq ("e_fs_file_read 1 out", buf2, "Hel");
-	e_test_assert_ok ("e_fs_file_read 2", e_fs_file_read (&file, buf2, 3, &len));
-	e_test_assert_eq ("e_fs_file_read 2 len", usize, len, strlen ("lo"));
-	e_test_assert_str_eq ("e_fs_file_read 2 out", buf2, "lo");
-	e_test_assert_ok ("e_fs_file_read 3", e_fs_file_read (&file, buf2, 16, &len));
-	e_test_assert_eq ("e_fs_file_read 3 len", usize, len, strlen (", World!\n"));
-	e_test_assert_str_eq ("e_fs_file_read 3 out", buf2, ", World!\n");
+	e_test_assert_eq ("e_fs_file_get_size len", usize, len, strlen ("Hello, World!\t42"));
+	e_test_assert_ok ("e_fs_file_read 1", e_fs_file_read (&file, buf2, 15, &len));
+	e_test_assert_eq ("e_fs_file_read 1 len", usize, len, strlen ("Hello, World!\t"));
+	e_test_assert_str_eq ("e_fs_file_read 1 out", buf2, "Hello, World!\t");
+	e_test_assert_ok ("e_fs_file_read 2", e_fs_file_read (&file, buf2, 15, &len));
+	e_test_assert_eq ("e_fs_file_read 2 len", usize, len, strlen ("42"));
+	e_test_assert_str_eq ("e_fs_file_read 2 out", buf2, "42");
 	e_test_assert_ok ("e_fs_file_read_all", e_fs_file_read_all (&file, &buf, &len));
-	e_test_assert_str_eq ("e_fs_file_read_all out", buf, "Hello, World!\n");
-	e_test_assert_eq ("e_fs_file_read_all len", usize, len, strlen ("Hello, World!\n"));
+	e_test_assert_str_eq ("e_fs_file_read_all out", buf, "Hello, World!\t42");
+	e_test_assert_eq ("e_fs_file_read_all len", usize, len, strlen ("Hello, World!\t42"));
 	e_test_assert_ok ("e_fs_file_close read", e_fs_file_close (&file));
 
 	e_test_assert ("e_fs_path_exists true", bool, e_fs_path_exists ("test/test.txt"));
