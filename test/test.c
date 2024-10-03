@@ -160,6 +160,8 @@ test_fs (void)
 	e_test_assert_ok ("e_fs_file_read 1", e_fs_file_read (&file, buf2, 15, &len));
 	e_test_assert_eq ("e_fs_file_read 1 len", usize, len, strlen ("Hello, World!\t"));
 	e_test_assert_str_eq ("e_fs_file_read 1 out", buf2, "Hello, World!\t");
+	e_test_assert_ok ("e_fs_file_get_remaining_size", e_fs_file_get_remaining_size (&file, &len));
+	e_test_assert_eq ("e_fs_file_get_remaining_size len", usize, len, 2);
 	e_test_assert_ok ("e_fs_file_read 2", e_fs_file_read (&file, buf2, 15, &len));
 	e_test_assert_eq ("e_fs_file_read 2 len", usize, len, strlen ("42"));
 	e_test_assert_str_eq ("e_fs_file_read 2 out", buf2, "42");

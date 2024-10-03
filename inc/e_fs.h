@@ -54,11 +54,19 @@ E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_close (E_Fs_File *file);
 
 /**
- * Get the size of the file \file and store it in \size_out. Returns E_OK or an
+ * Get the total size of the file \file and store it in \size_out. Returns E_OK or an
  * error that occured during `fseek` or `ftell`.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
+
+/**
+ * Get the remaining size (i.e. from the current file position indicator to the
+ * end of the file) of the file \file and store it in \size_out. Returns E_OK or
+ * an error that occured during `fseek` or `ftell`.
+ */
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_get_remaining_size (E_Fs_File *file, usize *size_out);
 
 /**
  * Rewind the file \file, i.e. set its position indicator to the beginning of

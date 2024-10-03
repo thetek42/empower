@@ -43,6 +43,33 @@ e_fs_file_close (E_Fs_File *file)
 }
 
 E_Result
+e_fs_file_get_remaining_size (E_Fs_File *file, usize *size_out)
+{
+	long len, orig;
+	int ret;
+
+	if (!file || !size_out) return E_ERR_INVALID_ARGUMENT;
+
+	orig = ftell (file->handle);
+	if (orig < 0) goto err;
+
+	ret = fseek (file->handle, 0L, SEEK_END);
+	if (ret < 0) goto err;
+
+	len = ftell (file->handle);
+	if (ret < 0) goto err;
+
+	ret = fseek (file->handle, orig, SEEK_SET);
+	if (ret < 0) goto err;
+
+	*size_out = (usize) len - (usize) orig;
+	return E_OK;
+err:
+	*size_out = 0;
+	return (E_Result) errno;
+}
+
+E_Result
 e_fs_file_get_size (E_Fs_File *file, usize *size_out)
 {
 	long len, orig;
