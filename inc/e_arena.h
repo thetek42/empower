@@ -15,7 +15,7 @@
  *
  * Module dependencies:
  *  - e_alloc
- *  - e_log (transitive)
+ *  - e_log (optional; transitive)
  *
  ******************************************************************************/
 

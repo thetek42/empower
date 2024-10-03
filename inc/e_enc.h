@@ -15,8 +15,8 @@
  * encrypting and decrypting data.
  *
  * Module dependencies:
- *  - e_alloc
- *  - e_log (transient)
+ *  - e_alloc (optional)
+ *  - e_log (optional; transient)
  *
  ******************************************************************************/
 
@@ -50,6 +50,8 @@ void e_base64_enc (const char *plain, char *encoded_out);
  */
 bool e_base64_dec (const char *encoded, char *plain_out);
 
+#if E_CONFIG_MODULE_ALLOC
+
 /**
  * Encode a nul-terminated plain text \plain using Base64, allocates enough
  * memory for storing the result and stores the encoded text including a nul
@@ -66,6 +68,8 @@ char *e_base64_enc_alloc (const char *plain);
  * The memory must be freed by the user using `e_free`.
  */
 char *e_base64_dec_alloc (const char *encoded);
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 #endif /* E_CONFIG_MODULE_ENC */
 #endif /* _EMPOWER_ENC_H_ */

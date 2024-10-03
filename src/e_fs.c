@@ -72,6 +72,8 @@ e_fs_file_get_size (E_Fs_File *file, usize *size_out)
 	return E_OK;
 }
 
+#if E_CONFIG_MODULE_ALLOC
+
 E_Result
 e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 {
@@ -109,6 +111,8 @@ err:
 	if (len_out) *len_out = 0;
 	return err;
 }
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 E_Result
 e_fs_file_write (E_Fs_File *file, const char *data, usize len)

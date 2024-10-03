@@ -14,9 +14,9 @@
  * This module provides wrappers for file system APIs.
  *
  * Module dependencies:
- *  - e_alloc
  *  - e_result
- *  - e_log (transitive)
+ *  - e_alloc (optional)
+ *  - e_log (optional; transitive)
  *
  ******************************************************************************/
 
@@ -60,6 +60,8 @@ E_Result e_fs_file_close (E_Fs_File *file);
 E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
 
+#if E_CONFIG_MODULE_ALLOC
+
 /**
  * Reads all content the file handle \file into a buffer pointed to by \out. A
  * terminating nul byte will be written. The length (excluding the terminating
@@ -81,6 +83,8 @@ E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 /**
  * Write \len bytes of data pointed to by \data to a file \file. Returns E_OK on

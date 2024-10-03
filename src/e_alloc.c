@@ -1,6 +1,16 @@
 #include "empower.h"
 #include <stdlib.h>
 
+#if E_CONFIG_MODULE_LOG
+# define DIE(...) e_die (__VA_ARGS__)
+#else /* E_CONFIG_MODULE_LOG */
+# define DIE(...)                                                              \
+	do {                                                                   \
+		fprintf (stderr, "ERROR: " __VA_ARGS__);                       \
+		exit (EXIT_FAILURE);                                           \
+	} while (0)
+#endif /* E_CONFIG_MODULE_LOG */
+
 #if E_CONFIG_MODULE_ALLOC
 
 E_ATTR_NODISCARD ("e_mem_alloc allocates memory which must be freed")
@@ -11,7 +21,7 @@ __e_mem_alloc (usize size)
 
 	ptr = malloc (size);
 	if (ptr == nullptr) {
-		e_die ("failed to alloc %zu bytes", size);
+		DIE ("failed to alloc %zu bytes", size);
 	}
 
 	return ptr;
@@ -25,7 +35,7 @@ __e_mem_calloc (usize nmemb, usize size)
 
 	ptr = calloc (nmemb, size);
 	if (ptr == nullptr) {
-		e_die ("failed to calloc %zu bytes", nmemb * size);
+		DIE ("failed to calloc %zu bytes", nmemb * size);
 	}
 
 	return ptr;
@@ -42,7 +52,7 @@ __e_mem_realloc (void *ptr, usize size)
 
 	ptr = realloc (ptr, size);
 	if (ptr == nullptr) {
-		e_die ("failed to realloc %zu bytes", size);
+		DIE ("failed to realloc %zu bytes", size);
 	}
 
 	return ptr;
@@ -56,7 +66,7 @@ e_mem_strdup (const char *s)
 
 	res = strdup (s);
 	if (res == nullptr) {
-		e_die ("failed to strdup");
+		DIE ("failed to strdup");
 	}
 
 	return res;
@@ -70,7 +80,7 @@ e_mem_strndup (const char *s, usize n)
 
 	res = strndup (s, n);
 	if (res == nullptr) {
-		e_die ("failed to strdup");
+		DIE ("failed to strdup");
 	}
 
 	return res;

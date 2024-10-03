@@ -5,11 +5,6 @@
 #endif /* _EMPOWER_H_ */
 #if E_CONFIG_MODULE_ALLOC
 
-/* TODO: make e_log an optional dependency */
-#if !E_CONFIG_MODULE_LOG
-# error "module e_alloc depends on: e_log"
-#endif /* !E_CONFIG_MODULE_LOG */
-
 /*! e_alloc *******************************************************************
  * 
  * This module provides various allocation-related functions. It also provides
@@ -18,7 +13,7 @@
  * terminate the programme and print an error message.
  *
  * Module dependencies:
- *  - e_log
+ *  - e_log (optional)
  *
  ******************************************************************************/
 

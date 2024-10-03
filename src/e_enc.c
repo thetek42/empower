@@ -112,6 +112,8 @@ e_base64_dec (const char *encoded, char *plain_out)
 	return true;
 }
 
+#if E_CONFIG_MODULE_ALLOC
+
 char *
 e_base64_enc_alloc (const char *plain)
 {
@@ -138,6 +140,8 @@ e_base64_dec_alloc (const char *encoded)
 
 	return ret;
 }
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 static bool
 base64_is_valid_char (char c)

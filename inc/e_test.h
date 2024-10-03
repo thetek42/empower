@@ -10,6 +10,10 @@
  * This module provides basic functionality for unit testing using macros. Type
  * inference can be used in C23 for cleaner code.
  *
+ * Module dependencies:
+ *  - e_debug (optional)
+ *  - e_result (optional)
+ *
  * Configuration options:
  *  - TYPE_INFERENCE: Enable type inference in C23
  *
@@ -51,7 +55,7 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C11
+#if E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG
 # define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, result, other)                  \
 	do {                                                                   \
 		fprintf (stderr, "%s \x1b[36mgot\x1b[0m ", #expr);             \
@@ -59,10 +63,10 @@ extern struct __e_test_result __e_global_test;
 		fprintf (stderr, " \x1b[36mwant\x1b[0m ");                     \
 		fprintf (stderr, E_DEBUG_AUTO_FMT (other), other);             \
 	} while (0)
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
+#else /* E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
 # define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, a, b)                           \
 	fprintf (stderr, "\x1b[36mfailed\x1b[0m")
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
+#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
 
 /**
  * Assert that two values equal each other and update the global test

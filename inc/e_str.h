@@ -18,7 +18,7 @@
  *  - e_cstr
  *  - e_vec
  *  - e_alloc (transient)
- *  - e_log (transient)
+ *  - e_log (transient; optional)
  *
  ******************************************************************************/
 
