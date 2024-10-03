@@ -37,7 +37,7 @@ Support for other compilers and operating systems may be added in the future.
 1. Download the library, e.g. to `lib/empower`
 2. Optional: Modify the configuration file in `lib/empower/inc/empower_config.h`
 3. Adapt your build system:
-   - Build the libraries by calling `make -C lib/empower CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release|release-safe]`
+   - Build the library by calling `make -C lib/empower CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release|release-safe]`
    - Add the include directory `lib/empower/inc` (usually done with `-I`)
    - Link your application with the static library in `lib/empower/bin/empower-<CC>-<STDC>-<MODE>.a`
 4. Include `<empower.h>` in your code.
