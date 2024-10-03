@@ -97,6 +97,49 @@ err:
 }
 
 E_Result
+e_fs_file_get_pos (E_Fs_File *file, usize *pos)
+{
+	long p;
+
+	if (!file || !pos) return E_ERR_INVALID_ARGUMENT;
+
+	p = ftell (file->handle);
+	if (p < 0) {
+		*pos = 0;
+		return (E_Result) errno;
+	}
+
+	*pos = (usize) p;
+	return E_OK;
+}
+
+E_Result
+e_fs_file_set_pos (E_Fs_File *file, usize pos)
+{
+	int ret;
+
+	if (!file || pos > LONG_MAX) return E_ERR_INVALID_ARGUMENT;
+
+	ret = fseek (file->handle, (long) pos, SEEK_SET);
+	if (ret < 0) return (E_Result) errno;
+
+	return E_OK;
+}
+
+E_Result
+e_fs_file_set_pos_end (E_Fs_File *file, usize pos)
+{
+	int ret;
+
+	if (!file || pos > LONG_MAX) return E_ERR_INVALID_ARGUMENT;
+
+	ret = fseek (file->handle, -((long) pos), SEEK_END);
+	if (ret < 0) return (E_Result) errno;
+
+	return E_OK;
+}
+
+E_Result
 e_fs_file_rewind (E_Fs_File *file)
 {
 	if (!file) return E_ERR_INVALID_ARGUMENT;
@@ -146,6 +189,20 @@ E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_o
 E_Result
 e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 {
+	if (!file || !out) {
+		if (out) *out = nullptr;
+		if (len_out) *len_out = 0;
+		return E_ERR_INVALID_ARGUMENT;
+	}
+
+	rewind (file->handle);
+
+	return e_fs_file_read_remaining (file, out, len_out);
+}
+
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out)
+{
 	E_Result err;
 	usize len;
 
@@ -154,8 +211,6 @@ e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 		if (len_out) *len_out = 0;
 		return E_ERR_INVALID_ARGUMENT;
 	}
-
-	rewind (file->handle);
 
 	err = e_fs_file_get_size (file, &len);
 	if (err != E_OK) {

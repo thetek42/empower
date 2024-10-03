@@ -69,6 +69,30 @@ E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_get_remaining_size (E_Fs_File *file, usize *size_out);
 
 /**
+ * Get the file position indicator of the file \file and stores it in \pos. If
+ * an error occurs, \pos is set to 0 and the error is returned.
+ */
+E_Result
+e_fs_file_get_pos (E_Fs_File *file, usize *pos);
+
+/**
+ * Set the file position indicator of the file \file to \pos bytes after the
+ * beginning of the file. Returns E_OK or an error that occured during `fseek`.
+ */
+E_Result
+e_fs_file_set_pos (E_Fs_File *file, usize pos);
+
+/**
+ * Rewind the file \file, i.e. set its position indicator to \pos bytes before
+ * the end of the file. the file. Only returns an error if \file is `nullptr`.
+ * Note that this behaves differently than a regular `fseek` with `SEEK_END` in
+ * that `fseek` expects \pos to be negative, while this function expects it to
+ * be positive.
+ */
+E_Result
+e_fs_file_set_pos_end (E_Fs_File *file, usize pos);
+
+/**
  * Rewind the file \file, i.e. set its position indicator to the beginning of
  * the file. Only returns an error if \file is `nullptr`.
  */
@@ -93,8 +117,8 @@ E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_o
 #if E_CONFIG_MODULE_ALLOC
 
 /**
- * Reads the entire contents of the file handle \file into a buffer pointed to
- * by \out. A terminating nul byte will be written. The length (excluding the
+ * Reads the entire content of the file handle \file into a buffer pointed to by
+ * \out. A terminating nul byte will be written. The length (excluding the
  * terminating nul byte) will be stored in \len_out. If the length is not
  * required, \len_out can be `nullptr`. The required memory is allocted using
  * `e_alloc` and must be freed by the user using `e_free`. If an error occurs,
@@ -114,6 +138,15 @@ E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_o
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
+
+/**
+ * Reads the remaining content (i.e. from the current file position indicator
+ * to the end of the file) of the file handle \file into an allocated buffer.
+ * The behaviour of this function is the same as `e_fs_file_read_all`, except
+ * that it only reads the remaining content and not the entire file.
+ */
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out);
 
 #endif /* E_CONFIG_MODULE_ALLOC */
 
