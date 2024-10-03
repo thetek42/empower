@@ -45,30 +45,35 @@ e_fs_file_close (E_Fs_File *file)
 E_Result
 e_fs_file_get_size (E_Fs_File *file, usize *size_out)
 {
-	long len;
+	long len, orig;
 	int ret;
 
 	if (!file || !size_out) return E_ERR_INVALID_ARGUMENT;
 
-	ret = fseek (file->handle, 0, SEEK_END);
-	if (ret < 0) {
-		*size_out = 0;
-		return (E_Result) errno;
-	}
+	orig = ftell (file->handle);
+	if (orig < 0) goto err;
+
+	ret = fseek (file->handle, 0L, SEEK_END);
+	if (ret < 0) goto err;
 
 	len = ftell (file->handle);
-	if (ret < 0) {
-		*size_out = 0;
-		return (E_Result) errno;
-	}
+	if (ret < 0) goto err;
 
-	ret = fseek (file->handle, 0, SEEK_SET);
-	if (ret < 0) {
-		*size_out = 0;
-		return (E_Result) errno;
-	}
+	ret = fseek (file->handle, orig, SEEK_SET);
+	if (ret < 0) goto err;
 
 	*size_out = (usize) len;
+	return E_OK;
+err:
+	*size_out = 0;
+	return (E_Result) errno;
+}
+
+E_Result
+e_fs_file_rewind (E_Fs_File *file)
+{
+	if (!file) return E_ERR_INVALID_ARGUMENT;
+	rewind (file->handle);
 	return E_OK;
 }
 
@@ -122,6 +127,8 @@ e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 		if (len_out) *len_out = 0;
 		return E_ERR_INVALID_ARGUMENT;
 	}
+
+	rewind (file->handle);
 
 	err = e_fs_file_get_size (file, &len);
 	if (err != E_OK) {

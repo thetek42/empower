@@ -150,6 +150,10 @@ test_fs (void)
 	e_test_assert_ok ("e_fs_file_read 2", e_fs_file_read (&file, buf2, 15, &len));
 	e_test_assert_eq ("e_fs_file_read 2 len", usize, len, strlen ("42"));
 	e_test_assert_str_eq ("e_fs_file_read 2 out", buf2, "42");
+	e_test_assert_ok ("e_fs_file_rewind", e_fs_file_rewind (&file));
+	e_test_assert_ok ("e_fs_file_read 3", e_fs_file_read (&file, buf2, 15, &len));
+	e_test_assert_eq ("e_fs_file_read 3 len", usize, len, strlen ("Hello, World!\t"));
+	e_test_assert_str_eq ("e_fs_file_read 3 out", buf2, "Hello, World!\t");
 	e_test_assert_ok ("e_fs_file_read_all", e_fs_file_read_all (&file, &buf, &len));
 	e_test_assert_str_eq ("e_fs_file_read_all out", buf, "Hello, World!\t42");
 	e_test_assert_eq ("e_fs_file_read_all len", usize, len, strlen ("Hello, World!\t42"));
