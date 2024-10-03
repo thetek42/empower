@@ -48,10 +48,10 @@
 /**
  * Log a message with debug level. Will not be logged if `NDEBUG` is defined.
  */
-# ifndef NDEBUG
-#  define e_log_debug(fmt, ...) fprintf (stderr, __E_LOG_COLOUR_MAGENTA "DEBUG " __E_LOG_COLOUR_RESET fmt __E_LOG_FILE_LINE "\n" __VA_OPT__ (,) __VA_ARGS__)
-# else /* NDEBUG */
+# ifdef NDEBUG
 #  define e_log_debug(fmt, ...)
+# else /* NDEBUG */
+#  define e_log_debug(fmt, ...) fprintf (stderr, __E_LOG_COLOUR_MAGENTA "DEBUG " __E_LOG_COLOUR_RESET fmt __E_LOG_FILE_LINE "\n" __VA_OPT__ (,) __VA_ARGS__)
 # endif /* NDEBUG */
 
 /**
@@ -83,10 +83,10 @@
 /**
  * Log a message with debug level. Will not be logged if `NDEBUG` is defined.
  */
-# ifndef NDEBUG
-#  define e_log_debug(...) __e_log_impl ( __E_LOG_FILE_LINE "\n", __E_LOG_COLOUR_MAGENTA "DEBUG " __E_LOG_COLOUR_RESET __VA_ARGS__)
-# else /* NDEBUG */
+# ifdef NDEBUG
 #  define e_log_debug(...)
+# else /* NDEBUG */
+#  define e_log_debug(...) __e_log_impl ( __E_LOG_FILE_LINE "\n", __E_LOG_COLOUR_MAGENTA "DEBUG " __E_LOG_COLOUR_RESET __VA_ARGS__)
 # endif /* NDEBUG */
 
 /**
