@@ -80,9 +80,15 @@ test_cstr (void)
 
 	e_test_assert_eq ("e_cstr_count_char", usize, e_cstr_count_char (s1, 'l'), 3);
 	e_test_assert_eq ("e_cstr_count_char nul", usize, e_cstr_count_char (s1, '\0'), 0);
-	e_test_assert_eq ("e_cstr_count_char_matching", usize, e_cstr_count_char_matching (s1, islower), 8);
+	e_test_assert_eq ("e_cstr_count_char_not", usize, e_cstr_count_char_not (s1, 'l'), strlen (s1) - 3);
+	e_test_assert_eq ("e_cstr_count_char_pat", usize, e_cstr_count_char_pat (s1, "load"), 6);
+	e_test_assert_eq ("e_cstr_count_char_not_pat", usize, e_cstr_count_char_not_pat (s1, "load"), strlen (s1) - 6);
+	e_test_assert_eq ("e_cstr_count_char_func", usize, e_cstr_count_char_func (s1, islower), 8);
+	e_test_assert_eq ("e_cstr_count_char_not_func", usize, e_cstr_count_char_not_func (s1, islower), strlen (s1) - 8);
 	e_test_assert_eq ("e_cstr_count_str", usize, e_cstr_count_str (s4, "en"), 3);
 	e_test_assert_eq ("e_cstr_count_str too long", usize, e_cstr_count_str (s3, "123456"), 0);
+	e_test_assert_eq ("e_cstr_len", usize, e_cstr_len (s3), strlen (s3));
+	e_test_assert_eq ("e_cstr_len nullptr", usize, e_cstr_len (nullptr), 0);
 	e_test_assert ("e_cstr_is_blank false", bool, !e_cstr_is_blank (s1));
 	e_test_assert ("e_cstr_is_blank true", bool, e_cstr_is_blank (s2));
 	e_test_assert ("e_cstr_is_ascii false", bool, !e_cstr_is_ascii (s4));

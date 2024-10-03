@@ -16,8 +16,51 @@ e_cstr_count_char (const char *s, char c)
 	return r;
 }
 
+E_ATTR_REPRODUCIBLE
 usize
-e_cstr_count_char_matching (const char *s, E_Char_Predicate func)
+e_cstr_count_char_not (const char *s, char c)
+{
+	usize r;
+
+	r = 0;
+	if (!s) return 0;
+	while (*s) {
+		if (*s++ != c) r += 1;
+	}
+	return r;
+}
+
+E_ATTR_REPRODUCIBLE
+usize
+e_cstr_count_char_pat (const char *s, const char *accept)
+{
+	usize r;
+
+	r = 0;
+	if (!s || !accept) return 0;
+	while (*s) {
+		if (strchr (accept, *s++)) r += 1;
+	}
+	return r;
+}
+
+E_ATTR_REPRODUCIBLE
+usize
+e_cstr_count_char_not_pat (const char *s, const char *reject)
+{
+	usize r;
+
+	r = 0;
+	if (!s) return 0;
+	if (!reject) return strlen (s);
+	while (*s) {
+		if (!strchr (reject, *s++)) r += 1;
+	}
+	return r;
+}
+
+usize
+e_cstr_count_char_func (const char *s, E_Char_Predicate func)
 {
 	usize r;
 
@@ -25,6 +68,19 @@ e_cstr_count_char_matching (const char *s, E_Char_Predicate func)
 	if (!s || !func) return 0;
 	while (*s) {
 		if (func (*s++)) r += 1;
+	}
+	return r;
+}
+
+usize
+e_cstr_count_char_not_func (const char *s, E_Char_Predicate func)
+{
+	usize r;
+
+	r = 0;
+	if (!s || !func) return 0;
+	while (*s) {
+		if (!func (*s++)) r += 1;
 	}
 	return r;
 }
@@ -49,6 +105,12 @@ e_cstr_count_str (const char *haystack, const char *needle)
 	}
 
 	return count;
+}
+
+E_ATTR_REPRODUCIBLE
+usize e_cstr_len (const char *s)
+{
+	return s ? strlen (s) : 0;
 }
 
 E_ATTR_REPRODUCIBLE

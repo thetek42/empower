@@ -14,8 +14,8 @@
 
 /**
  * A pointer to a function that evaulates whether the ASCII character \c matches
- * a certain predicate. It returns 0 if \c does not match, and non-zero if it
- * does. The functions from `<ctype.h>` have this type.
+ * a certain predicate. It returns 0 if \c is accepted, and non-zero if it is
+ * rejected. The functions from `<ctype.h>` have this type.
  */
 typedef int (* E_Char_Predicate) (int c);
 
@@ -27,10 +27,41 @@ E_ATTR_REPRODUCIBLE
 usize e_cstr_count_char (const char *s, char c);
 
 /**
- * Count the number of matches of a `E_Char_Predicate` \func in the
- * nul-terminated string \s. When \s or \func are `nullptr`, it returns 0.
+ * Count the number of occurances of characters which are not \c in the
+ * nul-terminated string \s. When \s is `nullptr`, it returns 0.
  */
-usize e_cstr_count_char_matching (const char *s, E_Char_Predicate func);
+E_ATTR_REPRODUCIBLE
+usize e_cstr_count_char_not (const char *s, char c);
+
+/**
+ * Count the number of occurances of characters in the nul-terminated string \s
+ * which are contained in the nul-terminated string \accept. When \s or \accept
+ * is `nullptr`, it returns 0.
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_count_char_pat (const char *s, const char *accept);
+
+/**
+ * Count the number of occurances of characters in the nul-terminated string \s
+ * which are not contained in the nul-terminated string \reject. When \s is
+ * `nullptr`, it returns 0. When \reject is `nullptr`, it returns `strlen (s)`.
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_count_char_not_pat (const char *s, const char *reject);
+
+/**
+ * Count the number of occurances of characters in the nul-terminated string \s
+ * which are accepted by the `E_Char_Predicate` \func. When \s or \func are
+ * `nullptr`, it returns 0.
+ */
+usize e_cstr_count_char_func (const char *s, E_Char_Predicate func);
+
+/**
+ * Count the number of occurances of characters in the nul-terminated string \s
+ * which are rejected by the `E_Char_Predicate` \func. When \s or \func are
+ * `nullptr`, it returns 0.
+ */
+usize e_cstr_count_char_not_func (const char *s, E_Char_Predicate func);
 
 /**
  * Count the number of occurances of a nul-terminated string \needle in the
@@ -39,6 +70,14 @@ usize e_cstr_count_char_matching (const char *s, E_Char_Predicate func);
  */
 E_ATTR_REPRODUCIBLE
 usize e_cstr_count_str (const char *haystack, const char *needle);
+
+/**
+ * Get the length of a string \s. If \s is `nullptr`, 0 is returned. This is
+ * essentially like `strlen`, except that it allows for `nullptr` (which would
+ * cause undefined behaviour in `strlen`)
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_len (const char *s);
 
 /**
  * Check if the nul-terminated string \s is ASCII. Returns `true` when \s only
