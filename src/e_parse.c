@@ -128,6 +128,12 @@ e_parse_consume_until_func (const char **s, E_Char_Predicate func)
 }
 
 const char *
+e_parse_consume_line (const char **s)
+{
+	return e_parse_consume_until_char (s, '\n');
+}
+
+const char *
 e_parse_consume_whitespace (const char **s)
 {
 	return e_parse_consume_while_func (s, isspace);

@@ -6,8 +6,6 @@ E_VEC_IMPLEMENT (E_Ini_Entry, __E_Vec_Ini_Entry, __e_vec_ini_entry);
 E_VEC_IMPLEMENT (E_Ini_Section, __E_Vec_Ini_Section, __e_vec_ini_section);
 
 static E_Result __e_ini_parse_str (E_Ini *ini, const char *str, usize len);
-static int is_rbacket_or_nl (int c);
-static int is_eq_or_nl (int c);
 
 E_Result
 e_ini_parse_str (E_Ini *ini, const char *str)
@@ -70,9 +68,10 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 {
 	__E_Vec_Ini_Section sections;
 	__E_Vec_Ini_Entry entries;
-	const char *end, *eq, *section_name, *key;
+	E_Ini_Entry entry;
+	const char *s, *token_start, *key;
 	char *str_buf, *str_buf_end;
-	usize line, i;
+	usize i, line, token_len, key_len;
 
 	if (!ini || !str) return E_ERR_INVALID_ARGUMENT;
 
@@ -87,115 +86,95 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 		.entries_len = 0,
 	});
 
+	s = str;
+	line = 0;
 	str_buf_end = str_buf;
-	section_name = nullptr;
-	line = 1;
-	while (len > 0) {
+	
+	while (*s != 0) {
+		e_parse_consume_whitespace_until_newline (&s);
 
-		if (isspace (*str)) {
-			if (*str == '\n') line += 1;
-			str++;
-			len--;
+		/* newline */
+		if (e_parse_char (&s, '\n')) {
+			line += 1;
 			continue;
 		}
 
-		if (*str == '[') {
-			end = e_cstr_find_char_func (str, is_rbacket_or_nl);
-			if (!end || *end != ']') {
-				e_log_error ("ini: unexpected eof (expected `]`) in line %zu", line);
+		/* namespace */
+		if (e_parse_char (&s, '[')) {
+			if (*s == 0) goto unexpected_eof;
+			token_start = e_parse_consume_until_pat (&s, "]\t\v\f\r\n");
+			if (*s == 0) goto unexpected_eof;
+			token_len = s - token_start;
+			if (token_len == 0) {
+				e_log_error ("ini parsing failed (line %zu): namespace name cannot be empty", line);
 				goto err;
 			}
-			if (*end != ']') {
-				e_log_error ("ini: unexpected newline (expected `]`) in line %zu", line);
+			if (!e_parse_char (&s, ']')) {
+				e_log_error ("ini parsing failed (line %zu): expected ] after namespace name", line);
 				goto err;
 			}
-			section_name = str_buf_end;
-			strncpy (str_buf_end, str + 1, end - str - 1);
-			str_buf_end[end - str - 1] = 0;
-			str_buf_end += end - str;
+			e_parse_consume_whitespace_until_newline (&s);
+			if (*s != 0 && *s != '\n') {
+				e_log_error ("ini parsing failed (line %zu): unexpected character after namespace declaration", line);
+				goto err;
+			}
+
 			for (i = 0; i < sections.len; i++) {
 				if (!sections.ptr[i].name) continue;
-				if (e_cstr_eq (sections.ptr[i].name, section_name)) {
-					e_log_error ("ini: duplicate section in line %zu", line);
+				if (strcmp (sections.ptr[i].name, token_start) == 0) {
+					e_log_error ("ini parsing failed (line %zu): duplicate section", line);
 					goto err;
 				}
 			}
+
 			__e_vec_ini_section_append (&sections, (E_Ini_Section) {
-				.name = section_name,
+				.name = str_buf_end,
 				.entries_idx = entries.len,
 				.entries_len = 0,
 			});
-			len -= end - str + 1;
-			str = end + 1;
-			while (len > 0 && *str != '\n' && isspace (*str)) {
-				str += 1;
-				len -= 1;
-			}
-			if (len == 0) break;
-			if (*str != '\n') {
-				e_log_error ("ini: unexpected character %c in line %zu", *str, line);
-				goto err;
-			}
+
+			strncpy (str_buf_end, token_start, token_len);
+			str_buf_end[token_len] = 0;
+			str_buf_end += token_len + 1;
+
 			continue;
 		}
 
-		if (*str == '=') {
-			e_log_error ("ini: unexpected = in line %zu", line);
+		/* entry key */
+		key = e_parse_consume_until_pat (&s, "=\r\n");
+		if (*s == 0) goto unexpected_eof;
+		if (!e_parse_char (&s, '=')) {
+			e_log_error ("ini parsing failed (line %zu): expected = after entry key", line);
 			goto err;
 		}
+		key_len = s - key - 1;
+		while (key_len > 0 && isspace (key[key_len - 1])) key_len -= 1;
+		e_parse_consume_whitespace_until_newline (&s);
 
-		end = e_cstr_find_char_func (str, is_eq_or_nl);
-		if (!end) {
-			e_log_error ("ini: unexpected eof (expected `=`) in line %zu", line);
-			goto err;
-		}
-		if (*end != '=') {
-			e_log_error ("ini: unexpected newline (expected `=`) in line %zu", line);
-			goto err;
-		}
-		eq = end;
-		for (end -= 1; end > str && isspace (*end); end--) {}
-		key = str_buf_end;
-		strncpy (str_buf_end, str, end - str + 1);
-		str_buf_end[end - str + 1] = 0;
-		str_buf_end += end - str + 2;
-		len -= eq - str + 1;
-		str = eq + 1;
-		while (len > 0 && *str != '\n' && isspace (*str)) {
-			str += 1;
-			len -= 1;
-		}
-		if (*str == '\n') {
-			*str_buf_end = 0;
-			__e_vec_ini_entry_append (&entries, (E_Ini_Entry) {
-				.key = key,
-				.value = str_buf_end,
-			});
-			sections.ptr[sections.len - 1].entries_len += 1;
-			str_buf_end += 1;
-			continue;
-		} else {
-			end = strchr (str, '\n');
-			if (!end) end = &str[len];
-			for (end -= 1; end > str && isspace (*end); end--) {}
-			strncpy (str_buf_end, str, end - str + 1);
-			str_buf_end[end - str + 1] = 0;
-			__e_vec_ini_entry_append (&entries, (E_Ini_Entry) {
-				.key = key,
-				.value = str_buf_end,
-			});
-			sections.ptr[sections.len - 1].entries_len += 1;
-			str_buf_end += end - str + 2;
-			len -= end - str + 1;
-			str = end + 1;
-			continue;
-		}
+		/* entry value */
+		token_start = e_parse_consume_line (&s);
+		token_len = s - token_start;
+		while (token_len > 0 && isspace (token_start[token_len - 1])) token_len -= 1;
+		
+		entry.key = str_buf_end;
+		strncpy (str_buf_end, key, key_len);
+		str_buf_end[key_len] = 0;
+		str_buf_end += key_len + 1;
+		entry.value = str_buf_end;
+		strncpy (str_buf_end, token_start, token_len);
+		str_buf_end[token_len] = 0;
+		str_buf_end += token_len + 1;
+		__e_vec_ini_entry_append (&entries, entry);
+		sections.ptr[sections.len - 1].entries_len += 1;
 	}
 
 	ini->sections = sections;
 	ini->entries = entries;
 	ini->str_buf = str_buf;
 	return E_OK;
+
+unexpected_eof:
+	e_log_error ("ini parsing failed (line %zu): unexpected eof", line);
 err:
 	e_free (str_buf);
 	__e_vec_ini_entry_deinit (&entries);
@@ -203,16 +182,24 @@ err:
 	return E_ERR_INVALID_FORMAT;
 }
 
-static int
-is_rbacket_or_nl (int c)
+void
+e_ini_debug (E_Ini *ini)
 {
-	return c == ']' || c == '\n' || c == '\r';
-}
+	E_Ini_Entry *entries;
+	usize si, ei;
 
-static int
-is_eq_or_nl (int c)
-{
-	return c == '=' || c == '\n' || c == '\r';
+	if (!ini) return;
+
+	fprintf (stderr, "\n---=== Debugging INI %p ===---", (void *) ini);
+	for (si = 0; si < ini->sections.len; si++) {
+		fprintf (stderr, "[%s]\n", ini->sections.ptr[si].name);
+		entries = &ini->entries.ptr[ini->sections.ptr[si].entries_idx];
+		for (ei = 0; ei < ini->sections.ptr[si].entries_len; ei++) {
+			fprintf (stderr, "  %s = %s\n",
+		                 entries[ei].key, entries[ei].value);
+		}
+	}
+	fprintf (stderr, "\n");
 }
 
 #endif /* E_CONFIG_MODULE_INI */

@@ -137,6 +137,12 @@ const char *e_parse_consume_until_pat (const char **s, const char *accept);
 const char *e_parse_consume_until_func (const char **s, E_Char_Predicate func);
 
 /**
+ * Consume a nul-terminated string \s until the end of the line and advance \s
+ * to the newline character or end of string. Returns \s.
+ */
+const char *e_parse_consume_line (const char **s);
+
+/**
  * Consume whitespace in a nul-terminated string \s and advance \s to the first
  * non-whitespace character. Returns \s.
  */

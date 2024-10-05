@@ -5,9 +5,9 @@
 #endif /* _EMPOWER_H_ */
 #if E_CONFIG_MODULE_INI
 
-#if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_FS || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
-# error "module e_ini depends on: e_cstr, e_fs, e_log, e_result, e_vec"
-#endif /* !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_FS || || !E_CONFIG_MODULE_LOG !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
+#if !E_CONFIG_MODULE_FS || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
+# error "module e_ini depends on: e_fs, e_log, e_parse, e_result, e_vec"
+#endif /* !E_CONFIG_MODULE_FS || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
 
 /*! e_ini *********************************************************************
  * 
@@ -18,12 +18,13 @@
  | | pass = password123
  *
  * Module dependencies:
- *  - e_cstr
  *  - e_fs
  *  - e_log
+ *  - e_parse
  *  - e_result
  *  - e_vec
  *  - e_alloc (transient)
+ *  - e_cstr (transient)
  *
  ******************************************************************************/
 
@@ -92,6 +93,11 @@ void e_ini_deinit (E_Ini *ini);
  * `nullptr`, `nullptr` is returned.
  */
 E_Ini_Entry *e_ini_get_entry (E_Ini *ini, const char *section, const char *key);
+
+/**
+ * Debug print a parsed INI file.
+ */
+void e_ini_debug (E_Ini *ini);
 
 #endif /* E_CONFIG_MODULE_INI */
 #endif /* _EMPOWER_INI_H_ */
