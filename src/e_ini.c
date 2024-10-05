@@ -18,19 +18,12 @@ e_ini_parse_str (E_Ini *ini, const char *str)
 E_Result
 e_ini_parse_file (E_Ini *ini, const char *path)
 {
-	E_Fs_File file;
 	E_Result res;
 	usize len;
 	char *buf;
 
-	res = e_fs_file_open (&file, path, E_FS_OPEN_MODE_READ_ONLY);
+	res = e_fs_read_file (path, &buf, &len);
 	if (res != E_OK) return res;
-
-	res = e_fs_file_read_all (&file, &buf, &len);
-	if (res != E_OK) return res;
-
-	res = e_fs_file_close (&file);
-	if (res != E_OK) goto ret;
 
 	res = __e_ini_parse_str (ini, buf, len);
 	if (res != E_OK) goto ret;

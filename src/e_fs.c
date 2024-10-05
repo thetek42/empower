@@ -11,8 +11,32 @@ static const char *const mode_str_table[] = {
 	"a+", /* E_FS_OPEN_MODE_READ_WRITE_APPEND */
 };
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode)
+e_fs_read_file (const char *path, char **out, usize *len_out)
+{
+	E_Result res;
+	E_File file;
+
+	if (!path || !out) return E_ERR_INVALID_ARGUMENT;
+
+	res = e_fs_file_open (&file, path, E_FS_OPEN_MODE_READ_ONLY);
+	if (res != E_OK) return res;
+
+	res = e_fs_file_read_all (&file, out, len_out);
+	if (res != E_OK) {
+		e_fs_file_close (&file);
+		return res;
+	}
+
+	e_fs_file_close (&file);
+
+	return E_OK;
+}
+
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result
+e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode)
 {
 	FILE *handle;
 
@@ -27,23 +51,16 @@ e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode)
 	return E_OK;
 }
 
-E_Result
-e_fs_file_close (E_Fs_File *file)
+void
+e_fs_file_close (E_File *file)
 {
-	int ret;
-
-	if (!file) return E_ERR_INVALID_ARGUMENT;
-
-	ret = fclose (file->handle);
-	if (ret != 0) {
-		return (E_Result) errno;
-	}
-
-	return E_OK;
+	if (!file) return;
+	fclose (file->handle);
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_get_remaining_size (E_Fs_File *file, usize *size_out)
+e_fs_file_get_remaining_size (E_File *file, usize *size_out)
 {
 	long len, orig;
 	int ret;
@@ -69,8 +86,9 @@ err:
 	return (E_Result) errno;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_get_size (E_Fs_File *file, usize *size_out)
+e_fs_file_get_size (E_File *file, usize *size_out)
 {
 	long len, orig;
 	int ret;
@@ -96,8 +114,9 @@ err:
 	return (E_Result) errno;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_get_pos (E_Fs_File *file, usize *pos)
+e_fs_file_get_pos (E_File *file, usize *pos)
 {
 	long p;
 
@@ -113,8 +132,9 @@ e_fs_file_get_pos (E_Fs_File *file, usize *pos)
 	return E_OK;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_set_pos (E_Fs_File *file, usize pos)
+e_fs_file_set_pos (E_File *file, usize pos)
 {
 	int ret;
 
@@ -126,8 +146,9 @@ e_fs_file_set_pos (E_Fs_File *file, usize pos)
 	return E_OK;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_set_pos_end (E_Fs_File *file, usize pos)
+e_fs_file_set_pos_end (E_File *file, usize pos)
 {
 	int ret;
 
@@ -139,8 +160,9 @@ e_fs_file_set_pos_end (E_Fs_File *file, usize pos)
 	return E_OK;
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_rewind (E_Fs_File *file)
+e_fs_file_rewind (E_File *file)
 {
 	if (!file) return E_ERR_INVALID_ARGUMENT;
 	rewind (file->handle);
@@ -148,7 +170,7 @@ e_fs_file_rewind (E_Fs_File *file)
 }
 
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_out)
+E_Result e_fs_file_read (E_File *file, char *out, usize max_len, usize *len_out)
 {
 	usize count, offset;
 
@@ -186,8 +208,9 @@ E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_o
 
 #if E_CONFIG_MODULE_ALLOC
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
+e_fs_file_read_all (E_File *file, char **out, usize *len_out)
 {
 	if (!file || !out) {
 		if (out) *out = nullptr;
@@ -201,7 +224,7 @@ e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out)
 }
 
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out)
+E_Result e_fs_file_read_remaining (E_File *file, char **out, usize *len_out)
 {
 	E_Result err;
 	usize len;
@@ -233,8 +256,9 @@ E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out)
 
 #endif /* E_CONFIG_MODULE_ALLOC */
 
+E_ATTR_NODISCARD ("E_Result must be checked")
 E_Result
-e_fs_file_write (E_Fs_File *file, const char *data, usize len)
+e_fs_file_write (E_File *file, const char *data, usize len)
 {
 	usize count, written;
 
@@ -256,7 +280,7 @@ e_fs_file_write (E_Fs_File *file, const char *data, usize len)
 
 E_ATTR_FORMAT (printf, 3, 4)
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_write_fmt (E_Fs_File *file, usize *written, const char *fmt, ...)
+E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...)
 {
 	va_list ap;
 	int n;

@@ -146,7 +146,7 @@ test_enc (void)
 static void
 test_fs (void)
 {
-	E_Fs_File file;
+	E_File file;
 	char *buf, buf2[15];
 	usize len;
 
@@ -154,7 +154,7 @@ test_fs (void)
 	e_test_assert_ok ("e_fs_file_write", e_fs_file_write (&file, "Hello, World!\t", strlen ("Hello, World!\t")));
 	e_test_assert_ok ("e_fs_file_write_fmt", e_fs_file_write_fmt (&file, &len, "%d", 42));
 	e_test_assert_eq ("e_fs_file_write_fmt len", usize, len, 2);
-	e_test_assert_ok ("e_fs_file_close write", e_fs_file_close (&file));
+	e_fs_file_close (&file);
 
 	e_test_assert_ok ("e_fs_file_open read", e_fs_file_open (&file, "test/test.txt", E_FS_OPEN_MODE_READ_ONLY));
 
@@ -190,8 +190,7 @@ test_fs (void)
 	e_test_assert_str_eq ("e_fs_file_read_all out", buf, "Hello, World!\t42");
 	e_test_assert_eq ("e_fs_file_read_all len", usize, len, strlen ("Hello, World!\t42"));
 	e_free (buf);
-
-	e_test_assert_ok ("e_fs_file_close read", e_fs_file_close (&file));
+	e_fs_file_close (&file);
 
 	e_test_assert ("e_fs_path_exists true", bool, e_fs_path_exists ("test/test.txt"));
 	e_test_assert ("e_fs_path_exists false", bool, !e_fs_path_exists ("eierschale.docx"));

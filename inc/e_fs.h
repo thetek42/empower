@@ -35,7 +35,15 @@ typedef enum {
  */
 typedef struct {
 	FILE *handle;
-} E_Fs_File;
+} E_File;
+
+/**
+ * Reads the entire content of the file with path \path into a buffer pointed to
+ * by \out. The file will be opened and closed automatically. The behaviour and
+ * arguments of this function are essentially the same as `e_fs_file_read_all`.
+ */
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_read_file (const char *path, char **out, usize *len_out);
 
 /**
  * Open a file handle for the file located at \path using the open mode \mode.
@@ -44,21 +52,20 @@ typedef struct {
  * success and an error in case `fopen` failed.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_open (E_Fs_File *file_out, const char *path, E_Fs_Open_Mode mode);
+E_Result e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode);
 
 /**
  * Close the file handle \file. This function is essentially a wrapper around
  * `fclose`. Returns E_OK or the error that occured during `fclose`.
  */
-E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_close (E_Fs_File *file);
+void e_fs_file_close (E_File *file);
 
 /**
  * Get the total size of the file \file and store it in \size_out. Returns E_OK or an
  * error that occured during `fseek` or `ftell`.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
+E_Result e_fs_file_get_size (E_File *file, usize *size_out);
 
 /**
  * Get the remaining size (i.e. from the current file position indicator to the
@@ -66,21 +73,21 @@ E_Result e_fs_file_get_size (E_Fs_File *file, usize *size_out);
  * an error that occured during `fseek` or `ftell`.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_get_remaining_size (E_Fs_File *file, usize *size_out);
+E_Result e_fs_file_get_remaining_size (E_File *file, usize *size_out);
 
 /**
  * Get the file position indicator of the file \file and stores it in \pos. If
  * an error occurs, \pos is set to 0 and the error is returned.
  */
 E_Result
-e_fs_file_get_pos (E_Fs_File *file, usize *pos);
+e_fs_file_get_pos (E_File *file, usize *pos);
 
 /**
  * Set the file position indicator of the file \file to \pos bytes after the
  * beginning of the file. Returns E_OK or an error that occured during `fseek`.
  */
 E_Result
-e_fs_file_set_pos (E_Fs_File *file, usize pos);
+e_fs_file_set_pos (E_File *file, usize pos);
 
 /**
  * Rewind the file \file, i.e. set its position indicator to \pos bytes before
@@ -90,14 +97,14 @@ e_fs_file_set_pos (E_Fs_File *file, usize pos);
  * be positive.
  */
 E_Result
-e_fs_file_set_pos_end (E_Fs_File *file, usize pos);
+e_fs_file_set_pos_end (E_File *file, usize pos);
 
 /**
  * Rewind the file \file, i.e. set its position indicator to the beginning of
  * the file. Only returns an error if \file is `nullptr`.
  */
 E_Result
-e_fs_file_rewind (E_Fs_File *file);
+e_fs_file_rewind (E_File *file);
 
 /**
  * Reads up to \max_len number of bytes of the file handle \file into the buffer
@@ -112,7 +119,7 @@ e_fs_file_rewind (E_Fs_File *file);
  * the terminating nul byte is not written to \out.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_out);
+E_Result e_fs_file_read (E_File *file, char *out, usize max_len, usize *len_out);
 
 #if E_CONFIG_MODULE_ALLOC
 
@@ -132,12 +139,12 @@ E_Result e_fs_file_read (E_Fs_File *file, char *out, usize max_len, usize *len_o
  * | usize len;
  * | (void) e_fs_file_open (&file, "data.txt", E_FS_OPEN_MODE_READ_ONLY);
  * | (void) e_fs_file_read_all (&file, &buf, &len);
- * | (void) e_fs_file_close (&file);
+ * | e_fs_file_close (&file);
  * | printf ("len: %zu, contents:\n%s\n", len, buf);
  * | e_free (buf);
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
+E_Result e_fs_file_read_all (E_File *file, char **out, usize *len_out);
 
 /**
  * Reads the remaining content (i.e. from the current file position indicator
@@ -146,7 +153,7 @@ E_Result e_fs_file_read_all (E_Fs_File *file, char **out, usize *len_out);
  * that it only reads the remaining content and not the entire file.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out);
+E_Result e_fs_file_read_remaining (E_File *file, char **out, usize *len_out);
 
 #endif /* E_CONFIG_MODULE_ALLOC */
 
@@ -155,7 +162,7 @@ E_Result e_fs_file_read_remaining (E_Fs_File *file, char **out, usize *len_out);
  * success, and an error on failure.
  */
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_write (E_Fs_File *file, const char *data, usize len);
+E_Result e_fs_file_write (E_File *file, const char *data, usize len);
 
 /**
  * Write a formatted string to the file handle \file. This uses the same format
@@ -165,7 +172,7 @@ E_Result e_fs_file_write (E_Fs_File *file, const char *data, usize len);
  */
 E_ATTR_FORMAT (printf, 3, 4)
 E_ATTR_NODISCARD ("E_Result must be checked")
-E_Result e_fs_file_write_fmt (E_Fs_File *file, usize *written, const char *fmt, ...);
+E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...);
 
 /**
  * Check if a path exists.
