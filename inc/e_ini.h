@@ -28,7 +28,7 @@
  *
  ******************************************************************************/
 
-/* TODO: comments */
+/* TODO: ini format documentation */
 /* TODO: multiline values */
 /* TODO: tests, tests, tests */
 /* TODO: entry value parsing (e.g. for integers) */

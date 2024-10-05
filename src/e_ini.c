@@ -99,6 +99,12 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 			continue;
 		}
 
+		/* comments */
+		if (e_parse_char (&s, ';')) {
+			e_parse_consume_line (&s);
+			continue;
+		}
+
 		/* namespace */
 		if (e_parse_char (&s, '[')) {
 			if (*s == 0) goto unexpected_eof;
@@ -114,7 +120,9 @@ __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 				goto err;
 			}
 			e_parse_consume_whitespace_until_newline (&s);
-			if (*s != 0 && *s != '\n') {
+			if (*s == ';') {
+				e_parse_consume_line (&s);
+			} else if (*s != 0 && *s != '\n') {
 				e_log_error ("ini parsing failed (line %zu): unexpected character after namespace declaration", line);
 				goto err;
 			}

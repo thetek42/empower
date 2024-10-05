@@ -138,7 +138,8 @@ const char *e_parse_consume_until_func (const char **s, E_Char_Predicate func);
 
 /**
  * Consume a nul-terminated string \s until the end of the line and advance \s
- * to the newline character or end of string. Returns \s.
+ * to the newline character or end of string. Returns \s. Note that the newline
+ * character is not consumed and needs to be checked.
  */
 const char *e_parse_consume_line (const char **s);
 
