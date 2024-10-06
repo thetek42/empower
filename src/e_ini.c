@@ -13,6 +13,8 @@ e_ini_parse_str (E_Ini *ini, const char *str)
 	return __e_ini_parse_str (ini, str, strlen (str));
 }
 
+#if E_CONFIG_MODULE_FS
+
 E_Result
 e_ini_parse_file (E_Ini *ini, const char *path)
 {
@@ -31,6 +33,8 @@ ret:
 	e_free (buf);
 	return res;
 }
+
+#endif /* E_CONFIG_MODULE_FS */
 
 void
 e_ini_deinit (E_Ini *ini)

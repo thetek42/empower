@@ -5,9 +5,9 @@
 #endif /* _EMPOWER_H_ */
 #if E_CONFIG_MODULE_INI
 
-#if !E_CONFIG_MODULE_FS || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
-# error "module e_ini depends on: e_fs, e_log, e_parse, e_result, e_vec"
-#endif /* !E_CONFIG_MODULE_FS || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
+#if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
+# error "module e_ini depends on: e_cstr, e_log, e_parse, e_result, e_vec"
+#endif /* !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
 
 /*! e_ini *********************************************************************
  * 
@@ -15,16 +15,16 @@
  *
  * | [user]
  * | name = admin
- | | pass = password123
+ * | pass = password123
  *
  * Module dependencies:
- *  - e_fs
+ *  - e_alloc
+ *  - e_cstr
  *  - e_log
  *  - e_parse
  *  - e_result
  *  - e_vec
- *  - e_alloc (transient)
- *  - e_cstr (transient)
+ *  - e_fs (optional)
  *
  ******************************************************************************/
 
@@ -73,6 +73,8 @@ typedef struct {
  */
 E_Result e_ini_parse_str (E_Ini *ini, const char *str);
 
+#if E_CONFIG_MODULE_FS
+
 /**
  * Parse an INI file from a file located at \path. The parsed file will be
  * stored in \ini. A result is returned, indicating whether the parsing was
@@ -80,6 +82,8 @@ E_Result e_ini_parse_str (E_Ini *ini, const char *str);
  * `e_log_error`.
  */
 E_Result e_ini_parse_file (E_Ini *ini, const char *path);
+
+#endif /* E_CONFIG_MODULE_FS */
 
 /**
  * Deinitialise the parsed INI file \ini and free its occupied memory.
