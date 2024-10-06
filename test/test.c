@@ -70,6 +70,7 @@ test_arena (void)
 static void
 test_cstr (void)
 {
+	E_Str_Iter split;
 	char s1[] = "Hello, World!";
 	char s2[] = " \n\t \f \v    \r ";
 	char s3[] = "1337";
@@ -77,6 +78,8 @@ test_cstr (void)
 	char s5[] = "  foo   ";
 	char s6[] = "";
 	char s7[] = "  foo   ";
+	char s8[] = "foo,bar,,baz,";
+	char s9[] = "fooXXbarXXXXbazXX";
 	usize len;
 
 	e_test_assert_eq ("e_cstr_count_char", usize, e_cstr_count_char (s1, 'l'), 3);
@@ -124,6 +127,56 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_trim len", usize, len, 3);
 	e_test_assert_ptr_eq ("e_cstr_trim empty", e_cstr_trim (s6, &len), s6);
 	e_test_assert_eq ("e_cstr_trim empty len", usize, len, 0);
+
+	split = e_cstr_split_init (s8);
+	/* matched segment / remainder */
+	/* "foo" / "bar,,baz," */
+	e_test_assert ("e_cstr_split_char 1 ret", e_cstr_split_char (&split, ','));
+	e_test_assert_ptr_eq ("e_cstr_split_char 1 ptr", split.ptr, s8);
+	e_test_assert_eq ("e_cstr_split_char 1 len", usize, split.len, 3);
+	/* "bar" / ",baz," */
+	e_test_assert ("e_cstr_split_char 2 ret", e_cstr_split_char (&split, ','));
+	e_test_assert_ptr_eq ("e_cstr_split_char 2 ptr", split.ptr, s8 + 4);
+	e_test_assert_eq ("e_cstr_split_char 2 len", usize, split.len, 3);
+	/* "" / "baz," (empty segment) */
+	e_test_assert ("e_cstr_split_char 3 ret", e_cstr_split_char (&split, ','));
+	e_test_assert_ptr_eq ("e_cstr_split_char 3 ptr", split.ptr, s8 + 8);
+	e_test_assert_eq ("e_cstr_split_char 3 len", usize, split.len, 0);
+	/* "baz" / "" */
+	e_test_assert ("e_cstr_split_char 4 ret", e_cstr_split_char (&split, ','));
+	e_test_assert_ptr_eq ("e_cstr_split_char 4 ptr", split.ptr, s8 + 9);
+	e_test_assert_eq ("e_cstr_split_char 4 len", usize, split.len, 3);
+	/* "" / "" (0 length segment after trailing comma) */
+	e_test_assert ("e_cstr_split_char 5 ret", e_cstr_split_char (&split, ','));
+	e_test_assert_ptr_eq ("e_cstr_split_char 5 ptr", split.ptr, s8 + 13);
+	e_test_assert_eq ("e_cstr_split_char 5 len", usize, split.len, 0);
+	/* nothing left */
+	e_test_assert ("e_cstr_split_char 6 ret", !e_cstr_split_char (&split, ','));
+
+	split = e_cstr_split_init (s9);
+	/* matched segment / remainder */
+	/* "foo" / "barXXXXbazXX" */
+	e_test_assert ("e_cstr_split_str 1 ret", e_cstr_split_str (&split, "XX"));
+	e_test_assert_ptr_eq ("e_cstr_split_str 1 ptr", split.ptr, s9);
+	e_test_assert_eq ("e_cstr_split_str 1 len", usize, split.len, 3);
+	/* "bar" / "XXbazXX" */
+	e_test_assert ("e_cstr_split_str 2 ret", e_cstr_split_str (&split, "XX"));
+	e_test_assert_ptr_eq ("e_cstr_split_str 2 ptr", split.ptr, s9 + 5);
+	e_test_assert_eq ("e_cstr_split_str 2 len", usize, split.len, 3);
+	/* "" / "bazXX" (empty segment) */
+	e_test_assert ("e_cstr_split_str 3 ret", e_cstr_split_str (&split, "XX"));
+	e_test_assert_ptr_eq ("e_cstr_split_str 3 ptr", split.ptr, s9 + 10);
+	e_test_assert_eq ("e_cstr_split_str 3 len", usize, split.len, 0);
+	/* "baz" / "" */
+	e_test_assert ("e_cstr_split_str 4 ret", e_cstr_split_str (&split, "XX"));
+	e_test_assert_ptr_eq ("e_cstr_split_str 4 ptr", split.ptr, s9 + 12);
+	e_test_assert_eq ("e_cstr_split_str 4 len", usize, split.len, 3);
+	/* "" / "" (0 length segment after trailing comma) */
+	e_test_assert ("e_cstr_split_str 5 ret", e_cstr_split_str (&split, "XX"));
+	e_test_assert_ptr_eq ("e_cstr_split_str 5 ptr", split.ptr, s9 + 17);
+	e_test_assert_eq ("e_cstr_split_str 5 len", usize, split.len, 0);
+	/* nothing left */
+	e_test_assert ("e_cstr_split_str 6 ret", !e_cstr_split_str (&split, "XX"));
 }
 
 static void

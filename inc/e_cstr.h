@@ -12,6 +12,19 @@
  *
  ******************************************************************************/
 
+/* TODO: allocating string splitters */
+
+/**
+ * A struct for use with string iteration functions (such as the `e_cstr_split`
+ * family of functions). This is essentially just a memory slice where \ptr
+ * points to the beginning of the substring, and \len informs the user about how
+ * long the substring is. See `e_cstr_split_char` for how to use this.
+ */
+typedef struct {
+	const char *ptr;
+	usize len;
+} E_Str_Iter;
+
 /**
  * A pointer to a function that evaulates whether the ASCII character \c matches
  * a certain predicate. It returns 0 if \c is accepted, and non-zero if it is
@@ -258,6 +271,41 @@ const char *e_cstr_trim (const char *s, usize *len);
  */
 E_ATTR_REPRODUCIBLE
 const char *e_cstr_trim_with_len (const char *s, usize *len);
+
+/**
+ * Initialize a `E_Str_Iter` for the `e_cstr_split` family of functions with the
+ * nul-terminated string \s.
+ */
+E_Str_Iter e_cstr_split_init (const char *s);
+
+/**
+ * Iterate on a string iterator \iter by splitting the string at \delim. If
+ * there is a segment that can be processed, it returns `true`, or `false` if
+ * there is no new segment. \iter is updated to the segment. If \iter is
+ * `nullptr`, `false` is returned. The following example illustrates how to use
+ * this:
+ *
+ * | const char *string = "foo/bar/baz"
+ * | E_Str_Iter iter = e_cstr_split_init (string);
+ * | while (e_cstr_split_char (&iter, '/')) {
+ * |         printf ("Element: %.*s\n", (int) iter.len, iter.ptr);
+ * | }
+ */
+bool e_cstr_split_char (E_Str_Iter *iter, char delim);
+
+/**
+ * Iterate on a string iterator \iter by splitting the string at \delim. See
+ * `e_cstr_split_char` for details and an example. If \delim is `nullptr` or a
+ * string of 0 length, this function essentially acts as an iterator over every
+ * single character in the string.
+ */
+bool e_cstr_split_str (E_Str_Iter *iter, const char *delim);
+
+/**
+ * Iterate on a string iterator \iter by splitting the string at newline
+ * characters. See `e_cstr_split_char` for details and an example.
+ */
+bool e_cstr_split_lines (E_Str_Iter *iter);
 
 #endif /* E_CONFIG_MODULE_CSTR */
 #endif /* _EMPOWER_CSTR_H_ */

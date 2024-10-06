@@ -358,4 +358,59 @@ e_cstr_trim_with_len (const char *s, usize *len)
 	return start;
 }
 
+E_Str_Iter
+e_cstr_split_init (const char *s)
+{
+	return (E_Str_Iter) {
+		.ptr = s,
+		.len = -1, /* -1 required for first iteration to function */
+	};
+}
+
+bool
+e_cstr_split_char (E_Str_Iter *iter, char delim)
+{
+	const char *delim_pos;
+
+	if (!iter || !iter->ptr || iter->ptr[0] == 0) return false;
+	iter->ptr += iter->len + 1;
+	delim_pos = e_cstr_find_char (iter->ptr, delim);
+	if (delim_pos) {
+		iter->len = delim_pos - iter->ptr;
+	} else {
+		iter->len = strlen (iter->ptr);
+	}
+
+	return true;
+}
+
+bool
+e_cstr_split_str (E_Str_Iter *iter, const char *delim)
+{
+	const char *delim_pos;
+
+	if (!iter || !iter->ptr || iter->ptr[0] == 0) return false;
+	if (!delim || strlen (delim) == 0) {
+		iter->ptr += iter->len == (usize) -1 ? 0 : 1;
+		iter->len = 1;
+		return iter->ptr[0] != 0;
+	}
+
+	iter->ptr += iter->len + (iter->len == (usize) -1 ? 1 : strlen (delim));
+	delim_pos = e_cstr_find_str (iter->ptr, delim);
+	if (delim_pos) {
+		iter->len = delim_pos - iter->ptr;
+	} else {
+		iter->len = strlen (iter->ptr);
+	}
+
+	return true;
+}
+
+bool
+e_cstr_split_lines (E_Str_Iter *iter)
+{
+	return e_cstr_split_char (iter, '\n');
+}
+
 #endif /* E_CONFIG_MODULE_CSTR */
