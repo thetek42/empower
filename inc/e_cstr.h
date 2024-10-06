@@ -85,6 +85,13 @@ E_ATTR_REPRODUCIBLE
 usize e_cstr_count_str (const char *haystack, const char *needle);
 
 /**
+ * Count the number of lines in the nul-terminated string \s. When \s is
+ * `nullptr`, it returns 0.
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_count_lines (const char *s);
+
+/**
  * Get the length of a string \s. If \s is `nullptr`, 0 is returned. This is
  * essentially like `strlen`, except that it allows for `nullptr` (which would
  * cause undefined behaviour in `strlen`)

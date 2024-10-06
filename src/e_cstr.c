@@ -108,6 +108,14 @@ e_cstr_count_str (const char *haystack, const char *needle)
 }
 
 E_ATTR_REPRODUCIBLE
+usize
+e_cstr_count_lines (const char *s)
+{
+	if (!s) return 0;
+	return 1 + e_cstr_count_char (s, '\n');
+}
+
+E_ATTR_REPRODUCIBLE
 usize e_cstr_len (const char *s)
 {
 	return s ? strlen (s) : 0;
