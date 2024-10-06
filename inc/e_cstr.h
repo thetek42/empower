@@ -10,6 +10,9 @@
  * This module provides various utility functions for dealing with C strings and
  * serves as an extension to the `string.h` header from the standard library.
  *
+ * Module dependencies:
+ *  - e_alloc (optional)
+ *
  ******************************************************************************/
 
 /* TODO: allocating string splitters */
@@ -243,6 +246,18 @@ bool e_cstr_eq (const char *a, const char *b);
  */
 E_ATTR_REPRODUCIBLE
 bool e_cstr_eq_n (const char *a, const char *b, usize n);
+
+#if E_CONFIG_MODULE_ALLOC
+
+/**
+ * Calculate the Levenshtein distance (i.e. the number of simple edits to
+ * transform \a to \b) between two nul-terminated strings \a and \b. If \a
+ * or \b are `nullptr`, they will be treated as if they were empty strings.
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_distance (const char *a, const char *b);
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 /**
  * Trim whitespace from the start of the nul-terminated string \s. Returns a

@@ -309,6 +309,42 @@ e_cstr_eq_n (const char *a, const char *b, usize n)
 	return !strncmp (a, b, n);
 }
 
+#if E_CONFIG_MODULE_ALLOC
+#define __MIN3(a, b, c) ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
+
+E_ATTR_REPRODUCIBLE
+usize
+e_cstr_distance (const char *a, const char *b)
+{
+	usize a_len, b_len, i, j, last_diag, old_diag, sub, *col;
+
+	if (!a && !b) return 0;
+	if (!a) return strlen (b);
+	if (!b) return strlen (a);
+
+	a_len = strlen (a);
+	b_len = strlen (b);
+	col = e_alloc (usize, a_len + 1);
+
+	for (i = 0; i <= a_len; i++) col[i] = i;
+	for (i = 1; i <= b_len; i++) {
+		col[0] = i;
+		last_diag = i - 1;
+		for (j = 1; j <= a_len; j++) {
+			old_diag = col[j];
+			sub = last_diag + (a[j - 1] == b[i - 1] ? 0 : 1);
+			col[j] = __MIN3 (col[j] + 1, col[j - 1] + 1, sub);
+			last_diag = old_diag;
+		}
+	}
+
+	i = col[a_len];
+	e_free (col);
+	return i;
+}
+
+#endif /* E_CONFIG_MODULE_ALLOC */
+
 E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_trim_start (const char *s)

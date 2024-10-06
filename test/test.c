@@ -135,6 +135,7 @@ test_cstr (void)
 	e_test_assert ("e_cstr_continues_with false", !e_cstr_continues_with (s1, "foo", 3));
 	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
 	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
+	e_test_assert_eq ("e_cstr_distance 1", usize, e_cstr_distance ("kitten", "sitting"), 3);
 
 	split = e_cstr_split_init (s8);
 	/* matched segment / remainder */
