@@ -43,7 +43,6 @@ main (int argc, char *argv[])
 static void
 test_arena (void)
 {
-	const char zero[2] = {0};
 	E_Arena arena;
 	void *ptr;
 
@@ -51,18 +50,18 @@ test_arena (void)
 
 	ptr = e_arena_alloc (&arena, u32, 1);
 	e_test_assert_ptr_eq ("e_arena_alloc ptr", ptr, arena.ptr);
-	e_test_assert_eq ("e_arena_alloc align", uintptr_t, (uintptr_t) ptr % 4, 0);
+	e_test_assert_ptr_aligned ("e_arena_alloc align", ptr, 4);
 	e_test_assert_eq ("e_arena_alloc len", usize, arena.len, 4);
 
 	ptr = e_arena_alloc_zero (&arena, u16, 1);
 	e_test_assert_ptr_eq ("e_arena_alloc_zero ptr", ptr, arena.ptr + 4);
-	e_test_assert_eq ("e_arena_alloc_zero align", uintptr_t, (uintptr_t) ptr % 2, 0);
+	e_test_assert_ptr_aligned ("e_arena_alloc_zero align", ptr, 2);
 	e_test_assert_eq ("e_arena_alloc_zero len", usize, arena.len, 6);
-	e_test_assert_eq ("e_arena_alloc_zero mem", int, memcmp (ptr, zero, 2), 0);
+	e_test_assert ("e_arena_alloc_zero mem", e_mem_is_zero (ptr, 2));
 
 	ptr = e_arena_alloc_aligned (&arena, 8, 8);
 	e_test_assert_ptr_eq ("e_arena_alloc_aligned ptr", ptr, arena.ptr + 8);
-	e_test_assert_eq ("e_arena_alloc_aligned align", uintptr_t, (uintptr_t) ptr % 8, 0);
+	e_test_assert_ptr_aligned ("e_arena_alloc_aligned align", ptr, 8);
 	e_test_assert_eq ("e_arena_alloc_aligned len", usize, arena.len, 16);
 
 	e_arena_deinit (&arena);
@@ -91,30 +90,30 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_count_str too long", usize, e_cstr_count_str (s3, "123456"), 0);
 	e_test_assert_eq ("e_cstr_len", usize, e_cstr_len (s3), strlen (s3));
 	e_test_assert_eq ("e_cstr_len nullptr", usize, e_cstr_len (nullptr), 0);
-	e_test_assert ("e_cstr_is_blank false", bool, !e_cstr_is_blank (s1));
-	e_test_assert ("e_cstr_is_blank true", bool, e_cstr_is_blank (s2));
-	e_test_assert ("e_cstr_is_ascii false", bool, !e_cstr_is_ascii (s4));
-	e_test_assert ("e_cstr_is_ascii true", bool, e_cstr_is_ascii (s1));
+	e_test_assert ("e_cstr_is_blank false", !e_cstr_is_blank (s1));
+	e_test_assert ("e_cstr_is_blank true", e_cstr_is_blank (s2));
+	e_test_assert ("e_cstr_is_ascii false", !e_cstr_is_ascii (s4));
+	e_test_assert ("e_cstr_is_ascii true", e_cstr_is_ascii (s1));
 	e_test_assert_ptr_eq ("e_cstr_find_char existant", e_cstr_find_char (s1, 'o'), s1 + 4);
-	e_test_assert_ptr_eq ("e_cstr_find_char nonexistant", e_cstr_find_char (s1, 'u'), nullptr);
+	e_test_assert_null ("e_cstr_find_char nonexistant", e_cstr_find_char (s1, 'u'));
 	e_test_assert_ptr_eq ("e_cstr_find_char_not", e_cstr_find_char_not (s1, 'H'), s1 + 1);
 	e_test_assert_ptr_eq ("e_cstr_find_char_pat existant", e_cstr_find_char_pat (s1, "abcd"), s1 + 11);
-	e_test_assert_ptr_eq ("e_cstr_find_char_pat nonexistant", e_cstr_find_char_pat (s1, "xyz"), nullptr);
+	e_test_assert_null ("e_cstr_find_char_pat nonexistant", e_cstr_find_char_pat (s1, "xyz"));
 	e_test_assert_ptr_eq ("e_cstr_find_char_not_pat existant", e_cstr_find_char_not_pat (s1, "HWelo, "), s1 + 9);
-	e_test_assert_ptr_eq ("e_cstr_find_char_not_pat nonexistant", e_cstr_find_char_not_pat (s3, "1234567890"), nullptr);
+	e_test_assert_null ("e_cstr_find_char_not_pat nonexistant", e_cstr_find_char_not_pat (s3, "1234567890"));
 	e_test_assert_ptr_eq ("e_cstr_find_char_func existant", e_cstr_find_char_func (s5, isalpha), s5 + 2);
-	e_test_assert_ptr_eq ("e_cstr_find_char_func nonexistant", e_cstr_find_char_func (s5, isdigit), nullptr);
+	e_test_assert_null ("e_cstr_find_char_func nonexistant", e_cstr_find_char_func (s5, isdigit));
 	e_test_assert_ptr_eq ("e_cstr_find_char_not_func existant", e_cstr_find_char_not_func (s5, isspace), s5 + 2);
-	e_test_assert_ptr_eq ("e_cstr_find_char_not_func nonexistant", e_cstr_find_char_not_func (s3, isdigit), nullptr);
+	e_test_assert_null ("e_cstr_find_char_not_func nonexistant", e_cstr_find_char_not_func (s3, isdigit));
 	e_test_assert_ptr_eq ("e_cstr_find_str existant", e_cstr_find_str (s4, "en"), s4 + 3);
-	e_test_assert_ptr_eq ("e_cstr_find_str nonexistant", e_cstr_find_str (s5, "es"), nullptr);
-	e_test_assert ("e_cstr_eq null null", bool, e_cstr_eq (nullptr, nullptr));
-	e_test_assert ("e_cstr_eq ptr null", bool, !e_cstr_eq (s5, nullptr));
-	e_test_assert ("e_cstr_eq ptr eq ptr", bool, e_cstr_eq (s5, s5));
-	e_test_assert ("e_cstr_eq eq", bool, e_cstr_eq (s5, s7));
-	e_test_assert ("e_cstr_eq not eq", bool, !e_cstr_eq (s5, s4));
-	e_test_assert ("e_cstr_matches_predicate false", bool, !e_cstr_matches_predicate (s3, islower));
-	e_test_assert ("e_cstr_matches_predicate true", bool, e_cstr_matches_predicate (s3, isdigit));
+	e_test_assert_null ("e_cstr_find_str nonexistant", e_cstr_find_str (s5, "es"));
+	e_test_assert ("e_cstr_eq null null", e_cstr_eq (nullptr, nullptr));
+	e_test_assert ("e_cstr_eq ptr null", !e_cstr_eq (s5, nullptr));
+	e_test_assert ("e_cstr_eq ptr eq ptr", e_cstr_eq (s5, s5));
+	e_test_assert ("e_cstr_eq eq", e_cstr_eq (s5, s7));
+	e_test_assert ("e_cstr_eq not eq", !e_cstr_eq (s5, s4));
+	e_test_assert ("e_cstr_matches_predicate false", !e_cstr_matches_predicate (s3, islower));
+	e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate (s3, isdigit));
 	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
 	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
 	e_test_assert_ptr_eq ("e_cstr_trim_start", e_cstr_trim_start (s5), s5 + 2);
@@ -192,12 +191,12 @@ test_fs (void)
 	e_free (buf);
 	e_fs_file_close (&file);
 
-	e_test_assert ("e_fs_path_exists true", bool, e_fs_path_exists ("test/test.txt"));
-	e_test_assert ("e_fs_path_exists false", bool, !e_fs_path_exists ("eierschale.docx"));
-	e_test_assert ("e_fs_is_file true", bool, e_fs_is_file ("test/test.txt"));
-	e_test_assert ("e_fs_is_file false", bool, !e_fs_is_file ("test"));
-	e_test_assert ("e_fs_is_dir true", bool, e_fs_is_dir ("test"));
-	e_test_assert ("e_fs_is_dir false", bool, !e_fs_is_dir ("test/test.txt"));
+	e_test_assert ("e_fs_path_exists true", e_fs_path_exists ("test/test.txt"));
+	e_test_assert ("e_fs_path_exists false", !e_fs_path_exists ("eierschale.docx"));
+	e_test_assert ("e_fs_is_file true", e_fs_is_file ("test/test.txt"));
+	e_test_assert ("e_fs_is_file false", !e_fs_is_file ("test"));
+	e_test_assert ("e_fs_is_dir true", e_fs_is_dir ("test"));
+	e_test_assert ("e_fs_is_dir false", !e_fs_is_dir ("test/test.txt"));
 }
 
 static void
@@ -205,12 +204,23 @@ test_ini (void)
 {
 	E_Ini ini;
 
-	e_test_assert_ok ("e_ini_parse_file", e_ini_parse_file (&ini, "test/test.ini"));
+	const char *ini_str =
+		"no_section = 123\n"
+		"\n"
+		"; comment\n"
+		"[foo]\n"
+		"  bar = baz \n"
+		"qux =\n"
+		"\n"
+		"  [bar]  ; comment\n"
+		"rab = zab\n";
+
+	e_test_assert_ok ("e_ini_parse_str", e_ini_parse_str (&ini, ini_str));
 	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, nullptr, "no_section")->value, "123");
 	e_test_assert_str_eq ("e_ini_get_entry section", e_ini_get_entry (&ini, "bar", "rab")->value, "zab");
 	e_test_assert_str_eq ("e_ini_get_entry empty", e_ini_get_entry (&ini, "foo", "qux")->value, "");
-	e_test_assert_ptr_eq ("e_ini_get_entry invalid section", e_ini_get_entry (&ini, "kjfadsf", "foo"), nullptr);
-	e_test_assert_ptr_eq ("e_ini_get_entry invalid key", e_ini_get_entry (&ini, "foo", "kjfadsf"), nullptr);
+	e_test_assert_null ("e_ini_get_entry invalid section", e_ini_get_entry (&ini, "kjfadsf", "foo"));
+	e_test_assert_null ("e_ini_get_entry invalid key", e_ini_get_entry (&ini, "foo", "kjfadsf"));
 	e_ini_deinit (&ini);
 }
 
@@ -225,32 +235,32 @@ test_parse (void)
 	e_test_assert_ptr_eq ("e_parse_char 1 ret", e_parse_char (&s, 'i'), orig);
 	e_test_assert_ptr_eq ("e_parse_char 1 ptr", s, orig + 1);
 	/* s = "nt foo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char 2 ret", e_parse_char (&s, 'i'), nullptr);
+	e_test_assert_null ("e_parse_char 2 ret", e_parse_char (&s, 'i'));
 	e_test_assert_ptr_eq ("e_parse_char 2 ptr", s, orig + 1);
 	e_test_assert_ptr_eq ("e_parse_char_not 1 ret", e_parse_char_not (&s, 't'), orig + 1);
 	e_test_assert_ptr_eq ("e_parse_char_not 1 ptr", s, orig + 2);
 	/* s = "t foo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char_not 2 ret", e_parse_char_not (&s, 't'), nullptr);
+	e_test_assert_null ("e_parse_char_not 2 ret", e_parse_char_not (&s, 't'));
 	e_test_assert_ptr_eq ("e_parse_char_not 2 ptr", s, orig + 2);
 	e_test_assert_ptr_eq ("e_parse_char_pat 1 ret", e_parse_char_pat (&s, "ajtbe"), orig + 2);
 	e_test_assert_ptr_eq ("e_parse_char_pat 1 ptr", s, orig + 3);
 	/* s = " foo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char_pat 2 ret", e_parse_char_pat (&s, "ajtbe"), nullptr);
+	e_test_assert_null ("e_parse_char_pat 2 ret", e_parse_char_pat (&s, "ajtbe"));
 	e_test_assert_ptr_eq ("e_parse_char_pat 2 ptr", s, orig + 3);
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 1 ret", e_parse_char_not_pat (&s, "abcdefg"), orig + 3);
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 1 ptr", s, orig + 4);
 	/* s = "foo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char_not_pat 2 ret", e_parse_char_not_pat (&s, "abcdefg"), nullptr);
+	e_test_assert_null ("e_parse_char_not_pat 2 ret", e_parse_char_not_pat (&s, "abcdefg"));
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 2 ptr", s, orig + 4);
 	e_test_assert_ptr_eq ("e_parse_char_func 1 ret", e_parse_char_func (&s, isalpha), orig + 4);
 	e_test_assert_ptr_eq ("e_parse_char_func 1 ptr", s, orig + 5);
 	/* s = "oo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char_func 2 ret", e_parse_char_func (&s, isdigit), nullptr);
+	e_test_assert_null ("e_parse_char_func 2 ret", e_parse_char_func (&s, isdigit));
 	e_test_assert_ptr_eq ("e_parse_char_func 2 ptr", s, orig + 5);
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 1 ret", e_parse_char_not_func (&s, isdigit), orig + 5);
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 1 ptr", s, orig + 6);
 	/* s = "o (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_char_not_pat 2 ret", e_parse_char_not_func (&s, isalpha), nullptr);
+	e_test_assert_null ("e_parse_char_not_pat 2 ret", e_parse_char_not_func (&s, isalpha));
 	e_test_assert_ptr_eq ("e_parse_char_not_pat 2 ptr", s, orig + 6);
 
 	s = orig;
@@ -258,7 +268,7 @@ test_parse (void)
 	e_test_assert_ptr_eq ("e_parse_str_match 1 ret", e_parse_str_match (&s, "int f"), orig);
 	e_test_assert_ptr_eq ("e_parse_str_match 1 ptr", s, orig + 5);
 	/* s = "oo (void) {\n    return 42; \n} */
-	e_test_assert_ptr_eq ("e_parse_str_match 2 ret", e_parse_str_match (&s, "int f"), nullptr);
+	e_test_assert_null ("e_parse_str_match 2 ret", e_parse_str_match (&s, "int f"));
 	e_test_assert_ptr_eq ("e_parse_str_match 2 ptr", s, orig + 5);
 	e_test_assert_ptr_eq ("e_parse_consume_while_char ret", e_parse_consume_while_char (&s, 'o'), orig + 5);
 	e_test_assert_ptr_eq ("e_parse_consume_while_char ptr", s, orig + 7);
@@ -340,7 +350,7 @@ test_vec (void)
 	usize len;
 
 	vec = e_vec_int_init ();
-	e_test_assert_ptr_eq ("e_vec_init ptr", vec.ptr, nullptr);
+	e_test_assert_null ("e_vec_init ptr", vec.ptr);
 	e_test_assert_eq ("e_vec_init len", usize, vec.len, 0);
 	e_test_assert_eq ("e_vec_init cap", usize, vec.cap, 0);
 

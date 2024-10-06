@@ -39,10 +39,9 @@ extern struct __e_test_result __e_global_test;
  * Assert that a condition is truthy and update the global test statistics. If
  * the check fails, an error message will be printed.
  */
-#define __e_test_assert(name, type, expr)                                      \
+#define e_test_assert(name, expr)                                              \
 	do {                                                                   \
-		type success = (expr);                                         \
-		if (success) {                                                 \
+		if ((expr)) {                                                  \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
@@ -78,6 +77,30 @@ extern struct __e_test_result __e_global_test;
 		type result = (expr);                                          \
 		type other = (check);                                          \
 		if (result == other) {                                         \
+			__e_global_test.success += 1;                          \
+		} else {                                                       \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
+			                 __LINE__);                            \
+			int l = (int) strlen (__E_TEST_SPACE) - p;             \
+			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
+			         __E_TEST_SPACE);                              \
+			__E_TEST_PRINT_ASSERT_FN ("assert_eq");                \
+			__E_TEST_ASSERT_EQ_PRINT_VALUES (expr, result, other); \
+			fprintf (stderr, "\n");                                \
+			__e_global_test.failure += 1;                          \
+		}                                                              \
+	} while (0)
+
+/**
+ * Assert that two values do not equal each other and update the global test
+ * statistics. The types of the values are determined automatically. If the
+ * check fails, an error message will be printed.
+ */
+#define __e_test_assert_not_eq(name, type, expr, check)                        \
+	do {                                                                   \
+		type result = (expr);                                          \
+		type other = (check);                                          \
+		if (result != other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
@@ -163,6 +186,51 @@ extern struct __e_test_result __e_global_test;
 	} while (0)
 
 /**
+ * Assert that an `E_Result` is not `E_OK` and update the global test
+ * statistics. If the check fails, an error message will be printed.
+ */
+#define e_test_assert_err(name, expr)                                          \
+	do {                                                                   \
+		E_Result result = (expr);                                      \
+		if (result != E_OK) {                                          \
+			__e_global_test.success += 1;                          \
+		} else {                                                       \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
+			                 __LINE__);                            \
+			int l = (int) strlen (__E_TEST_SPACE) - p;             \
+			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
+			         __E_TEST_SPACE);                              \
+			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
+			fprintf (stderr, "%s \x1b[36mreturned error\x1b[0m "   \
+			         "%zu\n", #expr, result);                      \
+			__e_global_test.failure += 1;                          \
+		}                                                              \
+	} while (0)
+
+/**
+ * Assert that a pointer is aligned to a certain alignment and update the global
+ * test statistics. If the check fails, an error message will be printed.
+ */
+#define e_test_assert_ptr_aligned(name, expr, alignment)                       \
+	do {                                                                   \
+		const void *result = (expr);                                   \
+		if (((uintptr_t) result % (alignment)) == 0) {                 \
+			__e_global_test.success += 1;                          \
+		} else {                                                       \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
+			                 __LINE__);                            \
+			int l = (int) strlen (__E_TEST_SPACE) - p;             \
+			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
+			         __E_TEST_SPACE);                              \
+			__E_TEST_PRINT_ASSERT_FN ("assert_ptr_aligned");       \
+			fprintf (stderr, "%s = \x1b[36m%p\x1b[0m not aligned " \
+			         "to %zu bytes\n", #expr, result,              \
+			         (usize) alignment);                           \
+			__e_global_test.failure += 1;                          \
+		}                                                              \
+	} while (0)
+
+/**
  * Finish the tests, print the test statistics, and terminate the programme. The
  * exit code is 0 if all tests succeeded, or non-zero if there were failures.
  */
@@ -185,12 +253,19 @@ extern struct __e_test_result __e_global_test;
 		      EXIT_SUCCESS);                                           \
 	} while (0)
 
+/**
+ * Assert that a pointer is `nullptr` and update the global test statistics. If
+ * the check fails, an error message will be printed.
+ */
+#define e_test_assert_null(name, expr)                                         \
+	e_test_assert_ptr_eq (name, expr, nullptr)
+
 #if E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES)
-# define e_test_assert(name, expr) __e_test_assert (name, auto, expr);
 # define e_test_assert_eq(name, expr, check) __e_test_assert_eq (name, auto, expr, check);
+# define e_test_assert_not_eq(name, expr, check) __e_test_assert_not_eq (name, auto, expr, check);
 #else /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
-# define e_test_assert(name, type, expr) __e_test_assert (name, type, expr);
 # define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (name, type, expr, check);
+# define e_test_assert_not_eq(name, type, expr, check) __e_test_assert_not_eq (name, type, expr, check);
 #endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
 
 #endif /* E_CONFIG_MODULE_TEST */

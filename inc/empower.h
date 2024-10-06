@@ -58,6 +58,7 @@
 #include "e_enc.h"
 #include "e_log.h"
 #include "e_math.h"
+#include "e_mem.h"
 #include "e_parse.h"
 #include "e_result.h"
 #include "e_test.h"
