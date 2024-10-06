@@ -180,7 +180,7 @@ extern struct __e_test_result __e_global_test;
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
 			fprintf (stderr, "%s \x1b[36mreturned error\x1b[0m "   \
-			         "%zu\n", #expr, result);                      \
+			         "%s\n", #expr, e_result_to_str (result));     \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)
@@ -201,8 +201,8 @@ extern struct __e_test_result __e_global_test;
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
 			__E_TEST_PRINT_ASSERT_FN ("assert_ok");                \
-			fprintf (stderr, "%s \x1b[36mreturned error\x1b[0m "   \
-			         "%zu\n", #expr, result);                      \
+			fprintf (stderr, "%s \x1b[36mreturned ok\x1b[0m\n",    \
+			         #expr);                                       \
 			__e_global_test.failure += 1;                          \
 		}                                                              \
 	} while (0)

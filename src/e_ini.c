@@ -191,7 +191,7 @@ err:
 	e_free (str_buf);
 	__e_vec_ini_entry_deinit (&entries);
 	__e_vec_ini_section_deinit (&sections);
-	return E_ERR_INVALID_FORMAT;
+	return E_ERR_FORMAT_ERROR;
 }
 
 void

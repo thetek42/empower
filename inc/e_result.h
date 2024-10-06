@@ -27,11 +27,11 @@ enum {
 	E_OK                            = 0,
 	/* errno */
 	E_ERR_NOT_PERMITTED             = EPERM,
-	E_ERR_NO_SUCH_FILE              = ENOENT,
-	E_ERR_NO_SUCH_PROCESS           = ESRCH,
+	E_ERR_FILE_NOT_FOUND            = ENOENT,
+	E_ERR_PROCESS_NOT_FOUND         = ESRCH,
 	E_ERR_INTERRUPTED               = EINTR,
 	E_ERR_IO_ERROR                  = EIO,
-	E_ERR_NO_SUCH_ADDRESS           = ENXIO,
+	E_ERR_ADDRESS_NOT_FOUND         = ENXIO,
 	E_ERR_TOO_BIG                   = E2BIG,
 	E_ERR_FORMAT_ERROR              = ENOEXEC,
 	E_ERR_BAD_FILE                  = EBADF,
@@ -44,7 +44,7 @@ enum {
 	E_ERR_BUSY                      = EBUSY,
 	E_ERR_EXISTS                    = EEXIST,
 	E_ERR_CROSS_DEVICE_LINK         = EXDEV,
-	E_ERR_NO_SUCH_DEVICE            = ENODEV,
+	E_ERR_DEVICE_NOT_FOUND          = ENODEV,
 	E_ERR_NOT_A_DIRECTORY           = ENOTDIR,
 	E_ERR_IS_A_DIRECTORY            = EISDIR,
 	E_ERR_INVALID_ARGUMENT          = EINVAL,
@@ -161,8 +161,14 @@ enum {
 	E_ERR_HARDWARE_ERROR            = EHWPOISON,
 	/* custom */
 	E_ERR_FAIL,
-	E_ERR_INVALID_FORMAT,
 };
+
+/**
+ * Convert an `E_Result` \res into a human-readable string. If \res is not a
+ * valid result, `nullptr` is returned.
+ */
+E_ATTR_UNSEQUENCED
+const char *e_result_to_str (E_Result res);
 
 #endif /* E_CONFIG_MODULE_RESULT */
 #endif /* _EMPOWER_RESULT_H_ */
