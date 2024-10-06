@@ -117,8 +117,6 @@ test_cstr (void)
 	e_test_assert ("e_cstr_eq not eq", !e_cstr_eq (s5, s4));
 	e_test_assert ("e_cstr_matches_predicate false", !e_cstr_matches_predicate (s3, islower));
 	e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate (s3, isdigit));
-	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
-	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
 	e_test_assert_ptr_eq ("e_cstr_trim_start", e_cstr_trim_start (s5), s5 + 2);
 	e_test_assert_ptr_eq ("e_cstr_trim_start empty", e_cstr_trim_start (s6), s6);
 	e_test_assert_eq ("e_cstr_trim_end", usize, e_cstr_trim_end (s5), strlen (s5) - 3);
@@ -127,6 +125,14 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_trim len", usize, len, 3);
 	e_test_assert_ptr_eq ("e_cstr_trim empty", e_cstr_trim (s6, &len), s6);
 	e_test_assert_eq ("e_cstr_trim empty len", usize, len, 0);
+	e_test_assert ("e_cstr_starts_with true", e_cstr_starts_with (s1, "Hel"));
+	e_test_assert ("e_cstr_starts_with false", !e_cstr_starts_with (s1, "foo"));
+	e_test_assert ("e_cstr_ends_with true", e_cstr_ends_with (s1, "World!"));
+	e_test_assert ("e_cstr_ends_with false", !e_cstr_starts_with (s1, "foo"));
+	e_test_assert ("e_cstr_continues_with true", e_cstr_continues_with (s1, "lo,", 3));
+	e_test_assert ("e_cstr_continues_with false", !e_cstr_continues_with (s1, "foo", 3));
+	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
+	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
 
 	split = e_cstr_split_init (s8);
 	/* matched segment / remainder */

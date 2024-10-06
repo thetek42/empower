@@ -228,6 +228,16 @@ E_ATTR_REPRODUCIBLE
 bool e_cstr_eq (const char *a, const char *b);
 
 /**
+ * Checks if two strings \a and \b are equal in the first \n bytes. If both \a
+ * and \b are `nullptr`, `true` is returned. If either \a or \b is a `nullptr`,
+ * `false` is returned. Otherwise, `strncmp` is used to check if they are equal.
+ * This is essentially like using `strncmp() == 0`, except that it allows for
+ * `nullptr` (which would cause undefined behaviour in `strncmp`).
+ */
+E_ATTR_REPRODUCIBLE
+bool e_cstr_eq_n (const char *a, const char *b, usize n);
+
+/**
  * Trim whitespace from the start of the nul-terminated string \s. Returns a
  * pointer to the start of the trimmed string. If \s only consists of
  * whitespace, the return value will point to the nul terminator. If `s` is
@@ -305,7 +315,32 @@ bool e_cstr_split_str (E_Str_Iter *iter, const char *delim);
  * Iterate on a string iterator \iter by splitting the string at newline
  * characters. See `e_cstr_split_char` for details and an example.
  */
+E_ATTR_REPRODUCIBLE
 bool e_cstr_split_lines (E_Str_Iter *iter);
+
+/**
+ * Check if a nul-terminated string \s starts with the nul-terminated string
+ * \expect. If \s is `nullptr`, `false` is returned. If \expect is `nullptr`,
+ * `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool e_cstr_starts_with (const char *s, const char *expect);
+
+/**
+ * Check if a nul-terminated string \s ends with the nul-terminated string
+ * \expect. If \s is `nullptr`, `false` is returned. If \expect is `nullptr`,
+ * `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool e_cstr_ends_with (const char *s, const char *expect);
+
+/**
+ * Check if a nul-terminated string \s continues with the nul-terminated string
+ * \expect at the position \pos. If \s is `nullptr` or \pos is outside of the
+ * string, `false` is returned. If \expect is `nullptr`, `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool e_cstr_continues_with (const char *s, const char *expect, usize pos);
 
 #endif /* E_CONFIG_MODULE_CSTR */
 #endif /* _EMPOWER_CSTR_H_ */

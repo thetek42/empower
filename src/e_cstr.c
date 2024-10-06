@@ -293,6 +293,15 @@ e_cstr_eq (const char *a, const char *b)
 }
 
 E_ATTR_REPRODUCIBLE
+bool
+e_cstr_eq_n (const char *a, const char *b, usize n)
+{
+	if (a == b) return true;
+	if (!a || !b) return false;
+	return !strncmp (a, b, n);
+}
+
+E_ATTR_REPRODUCIBLE
 const char *
 e_cstr_trim_start (const char *s)
 {
@@ -411,6 +420,49 @@ bool
 e_cstr_split_lines (E_Str_Iter *iter)
 {
 	return e_cstr_split_char (iter, '\n');
+}
+
+E_ATTR_REPRODUCIBLE
+bool
+e_cstr_starts_with (const char *s, const char *expect)
+{
+	if (!s) return false;
+	if (!expect) return true;
+	return e_cstr_eq_n (s, expect, strlen (expect));
+}
+
+/**
+ * Check if a nul-terminated string \s ends with the nul-terminated string
+ * \expect. If \s is `nullptr`, `false` is returned. If \expect is `nullptr`,
+ * `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool
+e_cstr_ends_with (const char *s, const char *expect)
+{
+	usize s_len, expect_len;
+
+	if (!s) return false;
+	if (!expect) return true;
+	s_len = strlen (s);
+	expect_len = strlen (expect);
+	if (expect_len > s_len) return false;
+	return e_cstr_eq (s + s_len - expect_len, expect);
+}
+
+/**
+ * Check if a nul-terminated string \s continues with the nul-terminated string
+ * \expect at the position \pos. If \s is `nullptr` or \pos is outside of the
+ * string, `false` is returned. If \expect is `nullptr`, `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool
+e_cstr_continues_with (const char *s, const char *expect, usize pos)
+{
+	if (!s) return false;
+	if (!expect) return true;
+	if (pos > strlen (s)) return false;
+	return e_cstr_eq_n (s + pos, expect, strlen (expect));
 }
 
 #endif /* E_CONFIG_MODULE_CSTR */
