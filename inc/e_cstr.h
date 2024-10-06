@@ -197,12 +197,21 @@ E_ATTR_REPRODUCIBLE
 const char *e_cstr_find_str (const char *haystack, const char *needle);
 
 /**
+ * Check if the nul-terminated string \haystack contains the nul-terminated
+ * string \needle. If \haystack is `nullptr`, `false` is returned. If \needle is
+ * `nullptr`, `true` is returned.
+ */
+E_ATTR_REPRODUCIBLE
+bool e_cstr_contains (const char *haystack, const char *needle);
+
+/**
  * Checks if two strings \a and \b are equal. If both \a and \b are `nullptr`,
  * `true` is returned. If either \a or \b is a `nullptr`, `false` is returned.
  * Otherwise, `strcmp` is used to check if they are equal. This is essentially
  * like using `strcmp() == 0`, except that it allows for `nullptr` (which would
  * cause undefined behaviour in `strcmp`).
  */
+E_ATTR_REPRODUCIBLE
 bool e_cstr_eq (const char *a, const char *b);
 
 /**

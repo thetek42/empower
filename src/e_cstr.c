@@ -276,6 +276,14 @@ e_cstr_find_str (const char *haystack, const char *needle)
 	return strstr (haystack, needle);
 }
 
+E_ATTR_REPRODUCIBLE
+bool
+e_cstr_contains (const char *haystack, const char *needle)
+{
+	return e_cstr_find_str (haystack, needle) != nullptr;
+}
+
+E_ATTR_REPRODUCIBLE
 bool
 e_cstr_eq (const char *a, const char *b)
 {
