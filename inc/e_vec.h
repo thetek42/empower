@@ -153,7 +153,9 @@
 	 * \slice and the items in the vector is used. Returns a pointer to    \
 	 * the first item of the matched slice. If you want to get the index   \
 	 * instead of the pointer, use `e_vec_find_slice_idx`. If \item is     \
-	 * not found or \vec or \slice is `nullptr`, `nullptr` is returned.    \
+	 * not found or \vec is `nullptr`, `nullptr` is returned. If \slice is \
+	 * `nullptr` or \len is 0 and \vec is has at least one element, a      \
+	 * pointer to that element is returned.                                \
 	 */                                                                    \
 	const T *prefix##_find_slice (const type_name *vec, const T *slice,    \
 	                              usize len);                              \
@@ -164,11 +166,30 @@
 	 * \slice and the items in the vector is used. Returns the index of    \
 	 * the first item of the matched slice. If you want to get the pointer \
 	 * instead of the index of the first item, use `e_vec_find_slice`. If  \
-	 * \item is not found or \vec or \slice is `nullptr`, `nullptr` is     \
-	 * returned.                                                           \
+	 * \item is not found or \vec is `nullptr`, `nullptr` is returned. If  \
+	 * \slice is `nullptr` or \len is 0 and \vec has at least one element, \
+	 * the first element's index (i.e. 0) is returned, -1 otherwise.       \
 	 */                                                                    \
 	isize prefix##_find_slice_idx (const type_name *vec, const T *slice,   \
 	                               usize len);                             \
+                                                                               \
+	/**                                                                    \
+	 * Check if the vector \vec contains the item \item. For comparing the \
+	 * items in \vec with \item, `memcmp` is used. Returns `true` if the   \
+	 * item is found, `false` otherwise. If \vec is `nullptr`, `false` is  \
+	 * returned.                                                           \
+	 */                                                                    \
+	bool prefix##_contains (const type_name *vec, T item);                 \
+                                                                               \
+	/**                                                                    \
+	 * Check if the vector \vec contains the slice \slice of length \len.  \
+	 * For comparing the items in \vec with \slice, `memcmp` is used.      \
+	 * Returns `true` if the slice is found, `false` otherwise. If \vec is \
+	 * `nullptr`, `false` is returned. If \slice is `nullptr` or \len is   \
+	 * 0, `true` is returned.                                              \
+	 */                                                                    \
+	bool prefix##_contains_slice (const type_name *vec, const T *slice,    \
+	                              usize len);                              \
                                                                                \
 	static_assert (true, "")
 
@@ -340,6 +361,19 @@
 			}                                                      \
 		}                                                              \
 		return -1;                                                     \
+	}                                                                      \
+                                                                               \
+	bool                                                                   \
+	prefix##_contains (const type_name *vec, T item)                       \
+	{                                                                      \
+		return prefix##_find_idx (vec, item) >= 0;                     \
+	}                                                                      \
+                                                                               \
+	bool                                                                   \
+	prefix##_contains_slice (const type_name *vec, const T *slice,         \
+	                         usize len)                                    \
+	{                                                                      \
+		return prefix##_find_slice_idx (vec, slice, len) >= 0;         \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")

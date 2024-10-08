@@ -443,11 +443,14 @@ test_vec (void)
 	e_test_assert_null ("e_vec_find nonexisting", e_vec_int_find (&vec, 42));
 	e_test_assert_eq ("e_vec_find_idx existing", isize, e_vec_int_find_idx (&vec, 4), 3);
 	e_test_assert_eq ("e_vec_find_idx nonexisting", isize, e_vec_int_find_idx (&vec, 42), -1);
-
 	e_test_assert_ptr_eq ("e_vec_find_slice existing", e_vec_int_find_slice (&vec, slice2, 2), &vec.ptr[2]);
 	e_test_assert_null ("e_vec_find_slice nonexisting", e_vec_int_find_slice (&vec, slice3, 2));
 	e_test_assert_eq ("e_vec_find_slice_idx existing", isize, e_vec_int_find_slice_idx (&vec, slice2, 2), 2);
 	e_test_assert_eq ("e_vec_find_slice_idx nonexisting", isize, e_vec_int_find_slice_idx (&vec, slice3, 2), -1);
+	e_test_assert ("e_vec_contains true", e_vec_int_contains (&vec, 4));
+	e_test_assert ("e_vec_contains false", !e_vec_int_contains (&vec, 42));
+	e_test_assert ("e_vec_contains_slice true", e_vec_int_contains_slice (&vec, slice2, 2));
+	e_test_assert ("e_vec_contains_slice false", !e_vec_int_contains_slice (&vec, slice3, 2));
 
 	e_vec_int_pop (&vec, &popped);
 	e_test_assert_eq ("e_vec_pop 1 item", int, *popped, 8);
