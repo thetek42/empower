@@ -1,14 +1,13 @@
-#ifndef _EMPOWER_MATH_H_
-#define _EMPOWER_MATH_H_
+#ifndef _EMPOWER_RAND_H_
+#define _EMPOWER_RAND_H_
 #ifndef _EMPOWER_H_
 #error "do not include this file directly, only include empower.h"
 #endif /* _EMPOWER_H_ */
-#if E_CONFIG_MODULE_MATH
+#if E_CONFIG_MODULE_RAND
 
-/*! e_math ********************************************************************
+/*! e_rand ********************************************************************
  * 
- * This module provides additional math-related functions. The random number
- * functions provided here use POSIX's random number generator.
+ * This module provides functions related to randomization.
  *
  ******************************************************************************/
 
@@ -45,5 +44,5 @@ f32 e_math_rand_f32 (void);
  */
 f64 e_math_rand_f64 (void);
 
-#endif /* E_CONFIG_MODULE_MATH */
-#endif /* _EMPOWER_MATH_H_ */
+#endif /* E_CONFIG_MODULE_RAND */
+#endif /* _EMPOWER_RAND_H_ */

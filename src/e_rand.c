@@ -1,6 +1,6 @@
 #include "empower.h"
 
-#if E_CONFIG_MODULE_MATH
+#if E_CONFIG_MODULE_RAND
 
 void
 e_math_rand_seed (u32 seed)
@@ -41,4 +41,4 @@ e_math_rand_f64 (void)
 	return drand48 ();
 }
 
-#endif /* E_CONFIG_MODULE_MATH */
+#endif /* E_CONFIG_MODULE_RAND */

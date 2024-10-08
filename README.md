@@ -18,9 +18,9 @@ C applications faster and with more joy.
 | **e_ini**      | INI file parsing         |
 | **e_log**      | Logging                  |
 | **e_macro**    | Macro helpers            |
-| **e_math**     | Math-related functions   |
 | **e_mem**      | Memory manipulation      |
 | **e_parse**    | String parser utilities  |
+| **e_rand**     | Randomization            |
 | **e_result**   | Result type              |
 | **e_str**      | Dynamically sized string |
 | **e_test**     | Testing                  |
