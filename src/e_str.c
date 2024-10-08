@@ -47,15 +47,7 @@ e_str_clone (E_Str *str)
 void
 e_str_append_char (E_Str *str, char c)
 {
-	if (!str) return;
-
-	if (str->len + 1 > str->cap) {
-		e_str_grow (str, str->len + 1);
-	}
-
-	str->ptr[str->len] = c;
-	str->ptr[str->len + 1] = 0;
-	str->len += 1;
+	e_str_append_slice (str, &c, 1);
 }
 
 usize
@@ -64,8 +56,7 @@ e_str_append_cstr (E_Str *str, const char *s)
 	usize len;
 
 	len = strlen (s);
-	e_str_append_slice (str, s, len + 1);
-	str->len -= 1; /* NOTE: this is here to circumvent a false positive warning */
+	e_str_append_slice (str, s, len);
 
 	return len;
 }
@@ -132,6 +123,58 @@ e_str_append_fmt_all (E_Str *str, const char *fmt, ...)
 	str->len += (usize) written;
 
 	return (usize) written;
+}
+
+void
+e_str_insert_char (E_Str *str, usize idx, char c)
+{
+	e_str_insert_slice (str, idx, &c, 1);
+}
+
+usize
+e_str_insert_cstr (E_Str *str, usize idx, const char *s)
+{
+	usize len;
+
+	len = strlen (s);
+	e_str_insert_slice (str, idx, s, len);
+
+	return len;
+}
+
+void
+e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len)
+{
+	if (!str || !s || len == 0) return;
+	if (idx >= str->len) {
+		e_str_append_slice (str, s, len);
+		return;
+	}
+
+	if (str->len + len + 1 > str->cap) {
+		e_str_grow (str, str->len + len + 1);
+	}
+
+	memmove (&str->ptr[idx + len], &str->ptr[idx], str->len - idx + 1);
+	strncpy (&str->ptr[idx], s, len);
+	str->len += len;
+}
+
+usize
+e_str_remove (E_Str *str, usize idx, usize count)
+{
+	if (!str || count == 0 || idx >= str->len) return 0;
+	if (idx + count == str->len) {
+		str->len -= count;
+		str->ptr[str->len] = 0;
+		return count;
+	}
+	count = idx + count > str->len ? str->len - idx : count;
+	memmove (&str->ptr[idx], &str->ptr[idx + count],
+	         str->len - idx - count + 1);
+	str->len -= count;
+	str->ptr[str->len] = 0;
+	return count;
 }
 
 #endif /* E_CONFIG_MODULE_STR */

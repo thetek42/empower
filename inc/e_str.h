@@ -105,5 +105,37 @@ usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
 E_ATTR_FORMAT (printf, 2, 3)
 usize e_str_append_fmt_all (E_Str *str, const char *fmt, ...);
 
+/**
+ * Insert a single character \c at position \idx into the string \str. If \idx
+ * is out of bounds, the character is appended instead. When inserting into the
+ * middle of the string, the rest of the string is pushed back. The memory is
+ * reallocated if necessary.
+ */
+void e_str_insert_char (E_Str *str, usize idx, char c);
+
+/**
+ * Insert a nul-terminated string \s at position \idx into the string \str. If
+ * \idx is out of bounds, the character is appended instead. When inserting into
+ * the middle of the string, the rest of the string is pushed back. The memory
+ * is reallocated if necessary. Retruns the number of characters added to \str,
+ * i.e. the length of \s.
+ */
+usize e_str_insert_cstr (E_Str *str, usize idx, const char *s);
+
+/**
+ * Insert a string \s of length \len at position \idx into the string \str. If
+ * \idx is out of bounds, the character is appended instead. When inserting into
+ * the middle of the string, the rest of the string is pushed back. The memory
+ * is reallocated if necessary.
+ */
+void e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len);
+
+/**
+ * Remove \count characters from the string \str, starting at \idx. Returns the
+ * number of characters removed. When removing from the middle of the stirng,
+ * the memory inside the string is shifted accordingly.
+ */
+usize e_str_remove (E_Str *str, usize idx, usize count);
+
 #endif /* E_CONFIG_MODULE_STR */
 #endif /* _EMPOWER_STR_H_ */

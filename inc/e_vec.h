@@ -236,9 +236,10 @@
 	 * Remove \count items from the vector \vec starting at position \idx. \
 	 * No action is performed for items at positions which would be out of \
 	 * bounds. When removing memory in the middle of the vector, the       \
-	 * memory is shifted accordingly.                                      \
+	 * memory is shifted accordingly. Returns the number of removed        \
+	 * elements.                                                           \
 	 */                                                                    \
-	void prefix##_remove (type_name *vec, usize idx, usize count);         \
+	usize prefix##_remove (type_name *vec, usize idx, usize count);        \
                                                                                \
 	static_assert (true, "")
 
@@ -471,18 +472,19 @@
 		vec->len += len;                                               \
 	}                                                                      \
                                                                                \
-	void                                                                   \
+	usize                                                                  \
 	prefix##_remove (type_name *vec, usize idx, usize count)               \
 	{                                                                      \
-		if (!vec || idx >= vec->len || count == 0) return;             \
+		if (!vec || idx >= vec->len || count == 0) return 0;           \
 		if (idx + count == vec->len) {                                 \
 			vec->len -= count;                                     \
-			return;                                                \
+			return count;                                          \
 		}                                                              \
 		count = idx + count > vec->len ? vec->len - idx : count;       \
 		memmove (vec->ptr + idx, vec->ptr + idx + count,               \
 		         sizeof (T) * count);                                  \
 		vec->len -= count;                                             \
+		return count;                                                  \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")

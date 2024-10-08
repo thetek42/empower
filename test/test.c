@@ -400,6 +400,32 @@ test_str (void)
 	e_test_assert_eq ("e_str_append_fmt_all len", usize, str.len, strlen ("Hello, World! 123 dec:42,hex:2a 123 12345"));
 	e_test_assert_eq ("e_str_append_fmt_all len_ret", usize, len_ret, 6);
 
+	e_str_insert_char (&str, 3, 'X');
+	e_test_assert_str_eq ("e_str_insert_char", str.ptr, "HelXlo, World! 123 dec:42,hex:2a 123 12345");
+	e_test_assert_eq ("e_str_insert_char len", usize, str.len, strlen ("HelXlo, World! 123 dec:42,hex:2a 123 12345"));
+
+	e_str_insert_cstr (&str, 4, "YZ");
+	e_test_assert_str_eq ("e_str_insert_cstr", str.ptr, "HelXYZlo, World! 123 dec:42,hex:2a 123 12345");
+	e_test_assert_eq ("e_str_insert_cstr len", usize, str.len, strlen ("HelXYZlo, World! 123 dec:42,hex:2a 123 12345"));
+
+	e_str_insert_slice (&str, 6, "ABC", 3);
+	e_test_assert_str_eq ("e_str_insert_slice", str.ptr, "HelXYZABClo, World! 123 dec:42,hex:2a 123 12345");
+	e_test_assert_eq ("e_str_insert_slice len", usize, str.len, strlen ("HelXYZABClo, World! 123 dec:42,hex:2a 123 12345"));
+
+	e_str_insert_slice (&str, 1000, "ABC", 3);
+	e_test_assert_str_eq ("e_str_insert_slice end", str.ptr, "HelXYZABClo, World! 123 dec:42,hex:2a 123 12345ABC");
+	e_test_assert_eq ("e_str_insert_slice end len", usize, str.len, strlen ("HelXYZABClo, World! 123 dec:42,hex:2a 123 12345ABC"));
+
+	len_ret = e_str_remove (&str, 10, 10);
+	e_test_assert_str_eq ("e_str_remove", str.ptr, "HelXYZABCl123 dec:42,hex:2a 123 12345ABC");
+	e_test_assert_eq ("e_str_remove len", usize, str.len, strlen ("HelXYZABCl123 dec:42,hex:2a 123 12345ABC"));
+	e_test_assert_eq ("e_str_remove len_ret", usize, len_ret, 10);
+
+	len_ret = e_str_remove (&str, 35, 10);
+	e_test_assert_str_eq ("e_str_remove end", str.ptr, "HelXYZABCl123 dec:42,hex:2a 123 123");
+	e_test_assert_eq ("e_str_remove end len", usize, str.len, strlen ("HelXYZABCl123 dec:42,hex:2a 123 123"));
+	e_test_assert_eq ("e_str_remove end len_ret", usize, len_ret, 5);
+
 	e_str_deinit (&str);
 }
 
@@ -522,10 +548,11 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_pop_slice 1 returned len", usize, len, 4);
 
 	/* [1,2,3,11,4,5,3] */
-	e_vec_int_remove (&vec, 7, 2);
+	len = e_vec_int_remove (&vec, 7, 3);
 	e_test_assert_eq ("e_vec_remove end ptr[6]", int, vec.ptr[6], 3);
 	e_test_assert_eq ("e_vec_remove end len", usize, vec.len, 7);
 	e_test_assert_eq ("e_vec_remove end cap", usize, vec.cap, 16);
+	e_test_assert_eq ("e_vec_remove end ret", usize, len, 2);
 
 	/* [1,2,3,5,3] */
 	e_vec_int_remove (&vec, 3, 2);
