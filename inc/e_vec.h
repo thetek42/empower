@@ -216,6 +216,22 @@
 	bool prefix##_set_slice (const type_name *vec, usize idx,              \
 	                         const T *slice, usize len);                   \
                                                                                \
+	/**                                                                    \
+	 * Insert \item at the position \idx into the vector \vec. The rest of \
+	 * the vector is shifted backwards. If \idx is out of range, the item  \
+	 * is appended to the vector. The memory is reallocated if necessary.  \
+	 */                                                                    \
+	void prefix##_insert (type_name *vec, usize idx, T item);              \
+                                                                               \
+	/**                                                                    \
+	 * Insert a slice \slice of \len items at position \idx into the       \
+	 * vector \vec. The rest of the vector is shifted backwards. If \idx   \
+	 * is out of range, the items are appended to the vector. The memory   \
+	 * is reallocated if necessary.                                        \
+	 */                                                                    \
+	void prefix##_insert_slice (type_name *restrict vec, usize idx,        \
+	                            const T *restrict slice, usize len);       \
+                                                                               \
 	static_assert (true, "")
 
 /**
@@ -282,12 +298,7 @@
 	void                                                                   \
 	prefix##_append (type_name *vec, T item)                               \
 	{                                                                      \
-		if (!vec) return;                                              \
-		if (vec->len >= vec->cap) {                                    \
-			prefix##_grow (vec, vec->cap + 1);                     \
-		}                                                              \
-		vec->ptr[vec->len] = item;                                     \
-		vec->len += 1;                                                 \
+		prefix##_append_slice (vec, &item, 1);                         \
 	}                                                                      \
                                                                                \
 	void                                                                   \
@@ -426,6 +437,30 @@
 		if (idx + len - 1 >= vec->len) return false;                   \
 		memcpy (&vec->ptr[idx], slice, sizeof (T) * len);              \
 		return true;                                                   \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_insert (type_name *vec, usize idx, T item)                    \
+	{                                                                      \
+		prefix##_insert_slice (vec, idx, &item, 1);                    \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_insert_slice (type_name *restrict vec, usize idx,             \
+	                       const T *restrict slice, usize len)             \
+	{                                                                      \
+		if (!vec || !slice || len == 0) return;                        \
+		if (idx >= vec->len) {                                         \
+			prefix##_append_slice (vec, slice, len);               \
+			return;                                                \
+		}                                                              \
+		if (vec->len >= vec->cap) {                                    \
+			prefix##_grow (vec, vec->cap + len);                   \
+		}                                                              \
+		memmove (vec->ptr + idx + len, vec->ptr + idx,                 \
+			 sizeof (T) * (vec->len - idx));                       \
+		memcpy (vec->ptr + idx, slice, sizeof (T) * len);              \
+		vec->len += len;                                               \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")
