@@ -20,6 +20,9 @@
  *
  ******************************************************************************/
 
+/**
+ * Specifies which mode to use for opening files.
+ */
 /* TODO: this should be done with flags instead */
 typedef enum {
 	E_FS_OPEN_MODE_READ_ONLY, /* r */
@@ -29,6 +32,26 @@ typedef enum {
 	E_FS_OPEN_MODE_READ_WRITE_TRUNC, /* w+ */
 	E_FS_OPEN_MODE_READ_WRITE_APPEND, /* a+ */
 } E_Fs_Open_Mode;
+
+/**
+ * Specifies the permissions of a file or directory.
+ */
+typedef enum {
+	/* individual options */
+	E_FS_PERM_USER_READ = S_IRUSR,
+	E_FS_PERM_USER_WRITE = S_IWUSR,
+	E_FS_PERM_USER_EXEC = S_IXUSR,
+	E_FS_PERM_GROUP_READ = S_IRGRP,
+	E_FS_PERM_GROUP_WRITE = S_IWGRP,
+	E_FS_PERM_GROUP_EXEC = S_IXGRP,
+	E_FS_PERM_OTHER_READ = S_IROTH,
+	E_FS_PERM_OTHER_WRITE = S_IWOTH,
+	E_FS_PERM_OTHER_EXEC = S_IXOTH,
+	/* combined options */
+	E_FS_PERM_USER_RWX = S_IRWXU,
+	E_FS_PERM_GROUP_RWX = S_IRWXG,
+	E_FS_PERM_OTHER_RWX = S_IRWXO,
+} E_Fs_Permissions;
 
 /**
  * A wrapper for a `FILE` handle.
@@ -193,6 +216,12 @@ bool e_fs_is_dir (const char *path);
  * Check if a path points to a file.
  */
 bool e_fs_is_link (const char *path);
+
+/**
+ * Create a directory at path \path with permissions \perm.
+ */
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result e_fs_dir_create (const char *path, E_Fs_Permissions perm);
 
 #endif /* E_CONFIG_MODULE_FS */
 #endif /* _EMPOWER_FS_H_ */

@@ -333,4 +333,16 @@ e_fs_is_link (const char *path)
 	return S_ISLNK (s.st_mode);
 }
 
+E_ATTR_NODISCARD ("E_Result must be checked")
+E_Result
+e_fs_dir_create (const char *path, E_Fs_Permissions perm)
+{
+	int ret;
+
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	ret = mkdir (path, (mode_t) perm);
+	if (ret < 0) return (E_Result) errno;
+	return E_OK;
+}
+
 #endif /* E_CONFIG_MODULE_FS */

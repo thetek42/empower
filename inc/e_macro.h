@@ -4,7 +4,7 @@
 #error "do not include this file directly, only include empower.h"
 #endif /* _EMPOWER_H_ */
 
-/*! e_log *********************************************************************
+/*! e_macro *******************************************************************
  * 
  * This module provides macro utilities.
  *
@@ -21,5 +21,11 @@
  */
 #define E_MACRO_CONCAT(a, b) __E_MACRO_CONCAT_HELPER (a, b)
 #define __E_MACRO_CONCAT_HELPER(a, b) a##b
+
+/**
+ * Obtain the parent of type \type from the pointer \ptr to its member called
+ * \member.
+ */
+#define E_CONTAINER_OF(ptr, type, member) ((type *) ((char *) (ptr) - offsetof (type, member)))
 
 #endif /* _EMPOWER_MACRO_H_ */
