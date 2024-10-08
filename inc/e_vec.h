@@ -129,6 +129,47 @@
 	usize prefix##_pop_slice (type_name *vec, T **slice_out,               \
 	                          usize max_len);                              \
                                                                                \
+	/**                                                                    \
+	 * Find the position of \item in the vector \vec. In order to find the \
+	 * item, `memcmp` between \item and the items in the vector is used.   \
+	 * Returns a pointer to the item. If you want to get the index instead \
+	 * of the pointer, use `e_vec_find_idx`. If \item is not found or \vec \
+	 * is `nullptr`, `nullptr` is returned.                                \
+	 */                                                                    \
+	const T *prefix##_find (const type_name *vec, T item);                 \
+                                                                               \
+	/**                                                                    \
+	 * Find the position of \item in the vector \vec. In order to find the \
+	 * item, `memcmp` between \item and the items in the vector is used.   \
+	 * Returns the index of the item. If you want to get the pointer       \
+	 * instead of the index, use `e_vec_find`. If \item is not found or    \
+	 * \vec is `nullptr`, -1 is returned.                                  \
+	 */                                                                    \
+	isize prefix##_find_idx (const type_name *vec, T item);                \
+                                                                               \
+	/**                                                                    \
+	 * Find the position of a slice of memory \slice with length \len in   \
+	 * the vector \vec. In order to find the items, `memcmp` between       \
+	 * \slice and the items in the vector is used. Returns a pointer to    \
+	 * the first item of the matched slice. If you want to get the index   \
+	 * instead of the pointer, use `e_vec_find_slice_idx`. If \item is     \
+	 * not found or \vec or \slice is `nullptr`, `nullptr` is returned.    \
+	 */                                                                    \
+	const T *prefix##_find_slice (const type_name *vec, const T *slice,    \
+	                              usize len);                              \
+                                                                               \
+	/**                                                                    \
+	 * Find the position of a slice of memory \slice with length \len in   \
+	 * the vector \vec. In order to find the items, `memcmp` between       \
+	 * \slice and the items in the vector is used. Returns the index of    \
+	 * the first item of the matched slice. If you want to get the pointer \
+	 * instead of the index of the first item, use `e_vec_find_slice`. If  \
+	 * \item is not found or \vec or \slice is `nullptr`, `nullptr` is     \
+	 * returned.                                                           \
+	 */                                                                    \
+	isize prefix##_find_slice_idx (const type_name *vec, const T *slice,   \
+	                               usize len);                             \
+                                                                               \
 	static_assert (true, "")
 
 /**
@@ -249,6 +290,56 @@
 			if (slice_out) *slice_out = nullptr;                   \
 			return 0;                                              \
 		}                                                              \
+	}                                                                      \
+                                                                               \
+	const T *                                                              \
+	prefix##_find (const type_name *vec, T item)                           \
+	{                                                                      \
+		isize idx;                                                     \
+                                                                               \
+		idx = prefix##_find_idx (vec, item);                           \
+		if (idx < 0) return nullptr;                                   \
+		return &vec->ptr[idx];                                         \
+	}                                                                      \
+                                                                               \
+	isize                                                                  \
+	prefix##_find_idx (const type_name *vec, T item)                       \
+	{                                                                      \
+		usize i;                                                       \
+                                                                               \
+		if (!vec) return -1;                                           \
+		for (i = 0; i < vec->len; i++) {                               \
+			if (!memcmp (&vec->ptr[i], &item, sizeof (T))) {       \
+				return (isize) i;                              \
+			}                                                      \
+		}                                                              \
+		return -1;                                                     \
+	}                                                                      \
+                                                                               \
+	const T *                                                              \
+	prefix##_find_slice (const type_name *vec, const T *slice, usize len)  \
+	{                                                                      \
+		isize idx;                                                     \
+                                                                               \
+		idx = prefix##_find_slice_idx (vec, slice, len);               \
+		if (idx < 0) return nullptr;                                   \
+		return &vec->ptr[idx];                                         \
+	}                                                                      \
+                                                                               \
+	isize                                                                  \
+	prefix##_find_slice_idx (const type_name *vec, const T *slice,         \
+	                         usize len)                                    \
+	{                                                                      \
+		usize i;                                                       \
+                                                                               \
+		if (!vec) return -1;                                           \
+		if (!slice || len == 0) return vec->len == 0 ? -1 : 0;         \
+		for (i = 0; i < vec->len - len + 1; i++) {                     \
+			if (!memcmp (&vec->ptr[i], slice, sizeof (T) * len)) { \
+				return (isize) i;                              \
+			}                                                      \
+		}                                                              \
+		return -1;                                                     \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")
