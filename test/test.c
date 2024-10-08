@@ -410,6 +410,7 @@ test_vec (void)
 	int slice[] = { 4, 5, 6, 7, 8 };
 	int slice2[] = { 3, 4 };
 	int slice3[] = { 4, 3 };
+	int slice4[] = { 2, 3 };
 	int *popped;
 	usize len;
 
@@ -451,6 +452,12 @@ test_vec (void)
 	e_test_assert ("e_vec_contains false", !e_vec_int_contains (&vec, 42));
 	e_test_assert ("e_vec_contains_slice true", e_vec_int_contains_slice (&vec, slice2, 2));
 	e_test_assert ("e_vec_contains_slice false", !e_vec_int_contains_slice (&vec, slice3, 2));
+	e_test_assert_ptr_eq ("e_vec_get existing", e_vec_int_get (&vec, 4), &vec.ptr[4]);
+	e_test_assert_ptr_eq ("e_vec_get nonexisting", e_vec_int_get (&vec, 42), nullptr);
+	e_test_assert ("e_vec_set ok", e_vec_int_set (&vec, 1, 42));
+	e_test_assert ("e_vec_set out of range", !e_vec_int_set (&vec, 42, 1));
+	e_test_assert ("e_vec_set_slice ok", e_vec_int_set_slice (&vec, 1, slice4, 2));
+	e_test_assert ("e_vec_set_slice out of range", !e_vec_int_set_slice (&vec, 42, slice4, 2));
 
 	e_vec_int_pop (&vec, &popped);
 	e_test_assert_eq ("e_vec_pop 1 item", int, *popped, 8);

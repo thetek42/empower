@@ -191,6 +191,31 @@
 	bool prefix##_contains_slice (const type_name *vec, const T *slice,    \
 	                              usize len);                              \
                                                                                \
+	/**                                                                    \
+	 * Get the item at index \idx of the vector \vec. Returns a poitner to \
+	 * the item. If \vec is `nullptr` or \idx is out of range, `nullptr`   \
+	 * is returned.                                                        \
+	 */                                                                    \
+	const T *prefix##_get (const type_name *vec, usize idx);               \
+                                                                               \
+	/**                                                                    \
+	 * Set the item at index \idx of the vector \vec to \item. When \idx   \
+	 * is out of range, the item is not set. No reallocation is performed. \
+	 * When the item was set, `true` is returned. When the item was not    \
+	 * set or \vec is `nullptr`, `false` is returned.                      \
+	 */                                                                    \
+	bool prefix##_set (const type_name *vec, usize idx, T item);           \
+                                                                               \
+	/**                                                                    \
+	 * Set the items beginning at index \idx of the vector \vec to the     \
+	 * slice \slice of length \len. When \idx is out of range, the items   \
+	 * are not set. No reallocation is performed. When the items were set, \
+	 * `true` is returned. When the items were not set or \vec is          \
+	 * `nullptr`, `false` is returned.                                     \
+	 */                                                                    \
+	bool prefix##_set_slice (const type_name *vec, usize idx,              \
+	                         const T *slice, usize len);                   \
+                                                                               \
 	static_assert (true, "")
 
 /**
@@ -374,6 +399,33 @@
 	                         usize len)                                    \
 	{                                                                      \
 		return prefix##_find_slice_idx (vec, slice, len) >= 0;         \
+	}                                                                      \
+                                                                               \
+	const T *                                                              \
+	prefix##_get (const type_name *vec, usize idx)                         \
+	{                                                                      \
+		if (!vec) return nullptr;                                      \
+		if (idx >= vec->len) return nullptr;                           \
+		return (const T *) &vec->ptr[idx];                             \
+	}                                                                      \
+                                                                               \
+	bool                                                                   \
+	prefix##_set (const type_name *vec, usize idx, T item)                 \
+	{                                                                      \
+		if (!vec) return false;                                        \
+		if (idx >= vec->len) return false;                             \
+		vec->ptr[idx] = item;                                          \
+		return true;                                                   \
+	}                                                                      \
+                                                                               \
+	bool                                                                   \
+	prefix##_set_slice (const type_name *vec, usize idx, const T *slice,   \
+	                    usize len)                                         \
+	{                                                                      \
+		if (!vec) return false;                                        \
+		if (idx + len - 1 >= vec->len) return false;                   \
+		memcpy (&vec->ptr[idx], slice, sizeof (T) * len);              \
+		return true;                                                   \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")
