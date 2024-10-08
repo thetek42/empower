@@ -18,7 +18,7 @@ CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
 ifeq ($(MODE),release)
 CFLAGS += -DNDEBUG -O3 -march=native
 else ifeq ($(MODE),release-safe)
-CFLAGS += -DNDEBUG -O3 -march=native -fsanitize=undefined,address,leak
+CFLAGS += -DDEBUG -O3 -march=native -fsanitize=undefined,address,leak
 else
 CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
 endif
