@@ -89,8 +89,9 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_count_char_not_pat", usize, e_cstr_count_char_not_pat (s1, "load"), strlen (s1) - 6);
 	e_test_assert_eq ("e_cstr_count_char_func", usize, e_cstr_count_char_func (s1, islower), 8);
 	e_test_assert_eq ("e_cstr_count_char_not_func", usize, e_cstr_count_char_not_func (s1, islower), strlen (s1) - 8);
-	e_test_assert_eq ("e_cstr_count_str", usize, e_cstr_count_str (s4, "en"), 3);
+	e_test_assert_eq ("e_cstr_count_str", usize, e_cstr_count_str (s9, "XX"), 4);
 	e_test_assert_eq ("e_cstr_count_str too long", usize, e_cstr_count_str (s3, "123456"), 0);
+	e_test_assert_eq ("e_cstr_count_str_overlap", usize, e_cstr_count_str_overlap (s9, "XX"), 5);
 	e_test_assert_eq ("e_cstr_count_lines 1", usize, e_cstr_count_lines (s1), 1);
 	e_test_assert_eq ("e_cstr_count_lines 2", usize, e_cstr_count_lines (s2), 2);
 	e_test_assert_eq ("e_cstr_len", usize, e_cstr_len (s3), strlen (s3));

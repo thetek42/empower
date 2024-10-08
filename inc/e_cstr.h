@@ -82,10 +82,20 @@ usize e_cstr_count_char_not_func (const char *s, E_Char_Predicate func);
 /**
  * Count the number of occurances of a nul-terminated string \needle in the
  * nul-terminated string \haystack. When \haystack or \needle is `nullptr`, it
- * returns 0.
+ * returns 0. Overlap is not counted, so searching for "aa" in the string "aaa"
+ * would yield 1.
  */
 E_ATTR_REPRODUCIBLE
 usize e_cstr_count_str (const char *haystack, const char *needle);
+
+/**
+ * Count the number of occurances of a nul-terminated string \needle in the
+ * nul-terminated string \haystack. When \haystack or \needle is `nullptr`, it
+ * returns 0. Overlap is counted, so searching for "aa" in the string "aaa"
+ * would yield 2.
+ */
+E_ATTR_REPRODUCIBLE
+usize e_cstr_count_str_overlap (const char *haystack, const char *needle);
 
 /**
  * Count the number of lines in the nul-terminated string \s. When \s is

@@ -96,7 +96,32 @@ e_cstr_count_str (const char *haystack, const char *needle)
 	needle_len = strlen (needle);
 	count = 0;
 
-	while (needle_len < haystack_len) {
+	while (needle_len <= haystack_len) {
+		if (strncmp (haystack, needle, needle_len) == 0) {
+			count += 1;
+			haystack += needle_len;
+			haystack_len -= needle_len;
+		} else {
+			haystack += 1;
+			haystack_len -= 1;
+		}
+	}
+
+	return count;
+}
+
+usize
+e_cstr_count_str_overlap (const char *haystack, const char *needle)
+{
+	usize haystack_len, needle_len, count;
+
+	if (!haystack || !needle) return 0;
+
+	haystack_len = strlen (haystack);
+	needle_len = strlen (needle);
+	count = 0;
+
+	while (needle_len <= haystack_len) {
 		if (strncmp (haystack, needle, needle_len) == 0) {
 			count += 1;
 		}
