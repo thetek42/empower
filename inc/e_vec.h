@@ -232,6 +232,14 @@
 	void prefix##_insert_slice (type_name *restrict vec, usize idx,        \
 	                            const T *restrict slice, usize len);       \
                                                                                \
+	/**                                                                    \
+	 * Remove \count items from the vector \vec starting at position \idx. \
+	 * No action is performed for items at positions which would be out of \
+	 * bounds. When removing memory in the middle of the vector, the       \
+	 * memory is shifted accordingly.                                      \
+	 */                                                                    \
+	void prefix##_remove (type_name *vec, usize idx, usize count);         \
+                                                                               \
 	static_assert (true, "")
 
 /**
@@ -461,6 +469,20 @@
 			 sizeof (T) * (vec->len - idx));                       \
 		memcpy (vec->ptr + idx, slice, sizeof (T) * len);              \
 		vec->len += len;                                               \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_remove (type_name *vec, usize idx, usize count)               \
+	{                                                                      \
+		if (!vec || idx >= vec->len || count == 0) return;             \
+		if (idx + count == vec->len) {                                 \
+			vec->len -= count;                                     \
+			return;                                                \
+		}                                                              \
+		count = idx + count > vec->len ? vec->len - idx : count;       \
+		memmove (vec->ptr + idx, vec->ptr + idx + count,               \
+		         sizeof (T) * count);                                  \
+		vec->len -= count;                                             \
 	}                                                                      \
                                                                                \
 	static_assert (true, "")

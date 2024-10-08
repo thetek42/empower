@@ -514,12 +514,25 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_insert_slice append len", usize, vec.len, 13);
 	e_test_assert_eq ("e_vec_insert_slice append cap", usize, vec.cap, 16);
 
-	/* [1,2,3,11,4] */
-	len = e_vec_int_pop_slice (&vec, &popped, 8);
-	e_test_assert_eq ("e_vec_pop_slice 1 item", int, *popped, 5);
-	e_test_assert_eq ("e_vec_pop_slice 1 len", usize, vec.len, 5);
+	/* [1,2,3,11,4,5,3,4,6] */
+	len = e_vec_int_pop_slice (&vec, &popped, 4);
+	e_test_assert_eq ("e_vec_pop_slice 1 item", int, *popped, 9);
+	e_test_assert_eq ("e_vec_pop_slice 1 len", usize, vec.len, 9);
 	e_test_assert_eq ("e_vec_pop_slice 1 cap", usize, vec.cap, 16);
-	e_test_assert_eq ("e_vec_pop_slice 1 returned len", usize, len, 8);
+	e_test_assert_eq ("e_vec_pop_slice 1 returned len", usize, len, 4);
+
+	/* [1,2,3,11,4,5,3] */
+	e_vec_int_remove (&vec, 7, 2);
+	e_test_assert_eq ("e_vec_remove end ptr[6]", int, vec.ptr[6], 3);
+	e_test_assert_eq ("e_vec_remove end len", usize, vec.len, 7);
+	e_test_assert_eq ("e_vec_remove end cap", usize, vec.cap, 16);
+
+	/* [1,2,3,5,3] */
+	e_vec_int_remove (&vec, 3, 2);
+	e_test_assert_eq ("e_vec_remove middle ptr[2]", int, vec.ptr[2], 3);
+	e_test_assert_eq ("e_vec_remove middle ptr[3]", int, vec.ptr[3], 5);
+	e_test_assert_eq ("e_vec_remove middle len", usize, vec.len, 5);
+	e_test_assert_eq ("e_vec_remove middle cap", usize, vec.cap, 16);
 
 	/* [] */
 	len = e_vec_int_pop_slice (&vec, &popped, 8);
