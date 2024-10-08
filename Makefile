@@ -12,7 +12,7 @@ endif
 ifeq ($(CC),gcc)
 
 CFLAGS := -std=$(STDC) -Iinc
-CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-attributes -pedantic
+CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-attributes -Wno-stringop-truncation -pedantic
 CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
 
 ifeq ($(MODE),release)
