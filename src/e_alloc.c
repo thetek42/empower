@@ -86,4 +86,16 @@ e_mem_strndup (const char *s, usize n)
 	return res;
 }
 
+E_ATTR_NODISCARD ("e_mem_dup allocates memory which must be freed")
+void *
+e_mem_dup (const void *ptr, usize n)
+{
+	void *ret;
+
+	if (!ptr || n == 0) return nullptr;
+	ret = e_alloc_size (n);
+	memcpy (ret, ptr, n);
+	return ret;
+}
+
 #endif /* E_CONFIG_MODULE_ALLOC */

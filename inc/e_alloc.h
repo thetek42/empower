@@ -96,6 +96,14 @@ char *e_mem_strdup (const char *s);
 E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
 char *e_mem_strndup (const char *s, usize n);
 
+/**
+ * Duplicate \n bytes of memory from the pointer \ptr. The memory is allocated
+ * using `e_alloc` and must be freed with `e_free`. If \ptr is `nullptr` or \n
+ * is 0, no allocation is performed and `nullptr` is returned.
+ */
+E_ATTR_NODISCARD ("e_mem_dup allocates memory which must be freed")
+void *e_mem_dup (const void *ptr, usize n);
+
 E_ATTR_NODISCARD ("e_mem_alloc allocates memory which must be freed")
 void *__e_mem_alloc (usize size);
 
