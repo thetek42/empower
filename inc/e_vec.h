@@ -320,7 +320,7 @@
                                                                                \
 		idx = prefix##_find_idx (vec, item);                           \
 		if (idx < 0) return nullptr;                                   \
-		return &vec->ptr[idx];                                         \
+		return (const T *) &vec->ptr[idx];                             \
 	}                                                                      \
                                                                                \
 	isize                                                                  \
@@ -344,7 +344,7 @@
                                                                                \
 		idx = prefix##_find_slice_idx (vec, slice, len);               \
 		if (idx < 0) return nullptr;                                   \
-		return &vec->ptr[idx];                                         \
+		return (const T *) &vec->ptr[idx];                             \
 	}                                                                      \
                                                                                \
 	isize                                                                  \
