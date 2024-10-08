@@ -35,5 +35,11 @@ bool e_mem_eq (const void *a, const void *b, usize n);
 E_ATTR_REPRODUCIBLE
 void e_mem_swap (void *a, void *b, usize n);
 
+/**
+ * Checks if the pointer \ptr is aligned to \align bytes.
+ */
+E_ATTR_UNSEQUENCED
+bool e_mem_is_aligned (const void *ptr, usize align);
+
 #endif /* E_CONFIG_MODULE_MEM */
 #endif /* _EMPOWER_MEM_H_ */

@@ -46,4 +46,11 @@ e_mem_swap (void *a, void *b, usize n)
 	}
 }
 
+E_ATTR_UNSEQUENCED
+bool
+e_mem_is_aligned (const void *ptr, usize align)
+{
+	return ((uintptr_t) ptr % align) == 0;
+}
+
 #endif /* E_CONFIG_MODULE_MEM */
