@@ -9,6 +9,10 @@
  * 
  * This module provides miscellaneous functions for operating on memory.
  *
+ * Module dependencies:
+ *  - e_alloc (optional)
+ *  - e_log (transitive, optional)
+ *
  ******************************************************************************/
 
 /**
@@ -40,6 +44,36 @@ void e_mem_swap (void *a, void *b, usize n);
  */
 E_ATTR_UNSEQUENCED
 bool e_mem_is_aligned (const void *ptr, usize align);
+
+#if E_CONFIG_MODULE_ALLOC
+
+/**
+ * Duplicate a string. This is equivalent to `strdup`, except that it terminates
+ * the programme in case the memory allocation fails. This function only returns
+ * `nullptr` if \s is `nullptr`. The allocated memory must be freed by the user
+ * using `e_free`.
+ */
+E_ATTR_NODISCARD ("e_mem_strdup allocates memory which must be freed")
+char *e_mem_strdup (const char *s);
+
+/**
+ * Duplicate up to \n characters of a string \s. This is equivalent to
+ * `strndup`, except that it terminates the programme in case the memory
+ * allocation fails. This function only returns `nullptr` if \s is `nullptr`.
+ * The allocated memory must be freed by the user using `e_free`.
+ */
+E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
+char *e_mem_strndup (const char *s, usize n);
+
+/**
+ * Duplicate \n bytes of memory from the pointer \ptr. The memory is allocated
+ * using `e_alloc` and must be freed with `e_free`. If \ptr is `nullptr` or \n
+ * is 0, no allocation is performed and `nullptr` is returned.
+ */
+E_ATTR_NODISCARD ("e_mem_dup allocates memory which must be freed")
+void *e_mem_dup (const void *ptr, usize n);
+
+#endif /* E_CONFIG_MODULE_ALLOC */
 
 #endif /* E_CONFIG_MODULE_MEM */
 #endif /* _EMPOWER_MEM_H_ */

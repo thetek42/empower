@@ -58,44 +58,4 @@ __e_mem_realloc (void *ptr, usize size)
 	return ptr;
 }
 
-E_ATTR_NODISCARD ("e_mem_strdup allocates memory which must be freed")
-char *
-e_mem_strdup (const char *s)
-{
-	char *res;
-
-	res = strdup (s);
-	if (res == nullptr) {
-		DIE ("failed to strdup");
-	}
-
-	return res;
-}
-
-E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
-char *
-e_mem_strndup (const char *s, usize n)
-{
-	char *res;
-
-	res = strndup (s, n);
-	if (res == nullptr) {
-		DIE ("failed to strdup");
-	}
-
-	return res;
-}
-
-E_ATTR_NODISCARD ("e_mem_dup allocates memory which must be freed")
-void *
-e_mem_dup (const void *ptr, usize n)
-{
-	void *ret;
-
-	if (!ptr || n == 0) return nullptr;
-	ret = e_alloc_size (n);
-	memcpy (ret, ptr, n);
-	return ret;
-}
-
 #endif /* E_CONFIG_MODULE_ALLOC */
