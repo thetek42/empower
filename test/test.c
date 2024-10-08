@@ -438,6 +438,7 @@ test_vec (void)
 	int slice2[] = { 3, 4 };
 	int slice3[] = { 4, 3 };
 	int slice4[] = { 2, 3 };
+	int slice5[] = { 4, 4 };
 	int *popped;
 	usize len;
 
@@ -533,13 +534,21 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_insert_slice len", usize, vec.len, 11);
 	e_test_assert_eq ("e_vec_insert_slice cap", usize, vec.cap, 16);
 
-	/* [1,2,3,11,4,5,3,4,6,9,12,2,3] */
-	e_vec_int_insert_slice (&vec, 42, slice4, 2);
+	/* [1,2,3,11,4,5,3,4,6,9,12,3,4] */
+	e_vec_int_insert_slice (&vec, 42, slice2, 2);
 	e_test_assert_eq ("e_vec_insert_slice append ptr[10]", int, vec.ptr[10], 12);
-	e_test_assert_eq ("e_vec_insert_slice append ptr[11]", int, vec.ptr[11], 2);
-	e_test_assert_eq ("e_vec_insert_slice append ptr[12]", int, vec.ptr[12], 3);
+	e_test_assert_eq ("e_vec_insert_slice append ptr[11]", int, vec.ptr[11], 3);
+	e_test_assert_eq ("e_vec_insert_slice append ptr[12]", int, vec.ptr[12], 4);
 	e_test_assert_eq ("e_vec_insert_slice append len", usize, vec.len, 13);
 	e_test_assert_eq ("e_vec_insert_slice append cap", usize, vec.cap, 16);
+
+	e_vec_int_append (&vec, 4);
+	e_vec_int_append (&vec, 4);
+	e_test_assert_eq ("e_vec_count", usize, e_vec_int_count (&vec, 3), 3);
+	e_test_assert_eq ("e_vec_count_slice 1", usize, e_vec_int_count_slice (&vec, slice2, 2), 2);
+	e_test_assert_eq ("e_vec_count_slice 2", usize, e_vec_int_count_slice (&vec, slice5, 2), 1);
+	e_test_assert_eq ("e_vec_count_slice_overlap", usize, e_vec_int_count_slice_overlap (&vec, slice5, 2), 2);
+	e_vec_int_pop_slice (&vec, nullptr, 2);
 
 	/* [1,2,3,11,4,5,3,4,6] */
 	len = e_vec_int_pop_slice (&vec, &popped, 4);

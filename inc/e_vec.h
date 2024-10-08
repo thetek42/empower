@@ -241,6 +241,29 @@
 	 */                                                                    \
 	usize prefix##_remove (type_name *vec, usize idx, usize count);        \
                                                                                \
+	/**                                                                    \
+	 * Count the number of occurances of \item in the vector \vec. If \vec \
+	 * is `nullptr`, 0 is returned. For comparing the items, `memcmp` is   \
+	 * used.                                                               \
+	 */                                                                    \
+	usize prefix##_count (const type_name *vec, T item);                   \
+                                                                               \
+	/**                                                                    \
+	 * Count the number of occurances of a slice \slice of length \len     \
+	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
+	 * comparing the items, `memcmp` is used. Overlap is not counted.      \
+	 */                                                                    \
+	usize prefix##_count_slice (const type_name *vec, const T *slice,      \
+	                            usize len);                                \
+                                                                               \
+	/**                                                                    \
+	 * Count the number of occurances of a slice \slice of length \len     \
+	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
+	 * comparing the items, `memcmp` is used. Overlap is counted.          \
+	 */                                                                    \
+	usize prefix##_count_slice_overlap (const type_name *vec,              \
+	                                    const T *slice, usize len);        \
+                                                                               \
 	static_assert (true, "")
 
 /**
@@ -484,6 +507,48 @@
 		memmove (vec->ptr + idx, vec->ptr + idx + count,               \
 		         sizeof (T) * count);                                  \
 		vec->len -= count;                                             \
+		return count;                                                  \
+	}                                                                      \
+                                                                               \
+	usize                                                                  \
+	prefix##_count (const type_name *vec, T item)                          \
+	{                                                                      \
+		return prefix##_count_slice_overlap (vec, &item, 1);           \
+	}                                                                      \
+                                                                               \
+	usize                                                                  \
+	prefix##_count_slice (const type_name *vec, const T *slice, usize len) \
+	{                                                                      \
+		usize i, count;                                                \
+                                                                               \
+		if (!vec) return 0;                                            \
+		count = 0;                                                     \
+		for (i = 0; i < vec->len; ) {                                  \
+			if (!memcmp (&vec->ptr[i], slice, sizeof (T) * len)) { \
+				count += 1;                                    \
+				i += len;                                      \
+			} else {                                               \
+				i += 1;                                        \
+			}                                                      \
+		}                                                              \
+                                                                               \
+		return count;                                                  \
+	}                                                                      \
+                                                                               \
+	usize                                                                  \
+	prefix##_count_slice_overlap (const type_name *vec, const T *slice,    \
+	                              usize len)                               \
+	{                                                                      \
+		usize i, count;                                                \
+                                                                               \
+		if (!vec) return 0;                                            \
+		count = 0;                                                     \
+		for (i = 0; i < vec->len; i++) {                               \
+			if (!memcmp (&vec->ptr[i], slice, sizeof (T) * len)) { \
+				count += 1;                                    \
+			}                                                      \
+		}                                                              \
+                                                                               \
 		return count;                                                  \
 	}                                                                      \
                                                                                \
