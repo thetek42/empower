@@ -95,6 +95,19 @@
 	void prefix##_grow (type_name *vec, usize cap);                        \
                                                                                \
 	/**                                                                    \
+	 * Clear all items from a vector \vec. The memory is freed. This is    \
+	 * the same as calling `e_vec_deinit` followed by `e_vec_init`.        \
+	 */                                                                    \
+	void prefix##_clear (type_name *vec);                                  \
+                                                                               \
+	/**                                                                    \
+	 * Truncate a vector \vec to \n items. The memory is reallocated (i.e. \
+	 * shrank) to fit the new number of items. If \n is larger than the    \
+	 * length of the vector, no action is performed.                       \
+	 */                                                                    \
+	void prefix##_trunc (type_name *vec, usize n);                         \
+                                                                               \
+	/**                                                                    \
 	 * Clone a vector. This function allocates memory which must be freed  \
 	 * by the user using \e_vec_deinit. If \vec is `nullptr`, an empty     \
 	 * vector is returned.                                                 \
@@ -350,6 +363,24 @@
 		if (cap <= vec->cap) return;                                   \
 		vec->cap = stdc_bit_ceil (cap);                                \
 		vec->ptr = e_realloc (vec->ptr, T, vec->cap);                  \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_clear (type_name *vec)                                        \
+	{                                                                      \
+		if (!vec) return;                                              \
+		prefix##_deinit (vec);                                         \
+		*vec = prefix##_init ();                                       \
+	}                                                                      \
+                                                                               \
+	void                                                                   \
+	prefix##_trunc (type_name *vec, usize n)                               \
+	{                                                                      \
+		if (!vec) return;                                              \
+		if (vec->len >= n) return;                                     \
+		vec->len = n;                                                  \
+		vec->cap = stdc_bit_ceil (n);                                  \
+		vec->ptr = e_realloc (vec->ptr, T, n);                         \
 	}                                                                      \
                                                                                \
 	type_name                                                              \
