@@ -32,7 +32,7 @@ extern struct __e_test_result __e_global_test;
  */
 #define E_TEST_MAIN() struct __e_test_result __e_global_test = {0}
 
-#define __E_TEST_ASSERT_FMT(name) "\x1b[31mfail\x1b[0m \x1b[33m" name "\x1b[0m (" __FILE__ ":%d) "
+#define __E_TEST_ASSERT_FMT(name) "\x1b[31mfail\x1b[0m \x1b[33m" name "\x1b[0m (" E_MACRO_FILE_LINE ") "
 #define __E_TEST_SPACE "                                                                      "
 #define __E_TEST_PRINT_ASSERT_FN(name) fprintf (stderr, "\x1b[35m%s\x1b[0m ", name)
 
@@ -45,8 +45,7 @@ extern struct __e_test_result __e_global_test;
 		if ((expr)) {                                                  \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l, __E_TEST_SPACE);           \
 			__E_TEST_PRINT_ASSERT_FN ("assert");                   \
@@ -80,8 +79,7 @@ extern struct __e_test_result __e_global_test;
 		if (result == other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -104,8 +102,7 @@ extern struct __e_test_result __e_global_test;
 		if (result != other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -127,8 +124,7 @@ extern struct __e_test_result __e_global_test;
 		if (result == other) {                                         \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -151,8 +147,7 @@ extern struct __e_test_result __e_global_test;
 		if (strcmp (result, other) == 0) {                             \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -174,8 +169,7 @@ extern struct __e_test_result __e_global_test;
 		if (result == E_OK) {                                          \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -196,8 +190,7 @@ extern struct __e_test_result __e_global_test;
 		if (result != E_OK) {                                          \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \
@@ -218,8 +211,7 @@ extern struct __e_test_result __e_global_test;
 		if (e_mem_is_aligned (result, alignment)) {                    \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
-			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name),   \
-			                 __LINE__);                            \
+			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
 			int l = (int) strlen (__E_TEST_SPACE) - p;             \
 			fprintf (stderr, "%.*s", l > 0 ? l : 0,                \
 			         __E_TEST_SPACE);                              \

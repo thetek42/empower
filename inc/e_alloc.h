@@ -5,6 +5,10 @@
 #endif /* _EMPOWER_H_ */
 #if E_CONFIG_MODULE_ALLOC
 
+#if !defined (E_CONFIG_MODULE_DEBUG)
+# error "module e_log depends on: e_debug"
+#endif /* !defined (E_CONFIG_MODULE_DEBUG) */
+
 /*! e_alloc *******************************************************************
  * 
  * This module provides various allocation-related functions. It also provides
@@ -13,6 +17,7 @@
  * terminate the programme and print an error message.
  *
  * Module dependencies:
+ *  - e_debug
  *  - e_log (optional)
  *
  ******************************************************************************/

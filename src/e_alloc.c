@@ -19,6 +19,8 @@ __e_mem_alloc (usize size)
 {
 	void *ptr;
 
+	e_debug_assert (size != 0, "size for e_alloc cannot be 0");
+
 	ptr = malloc (size);
 	if (ptr == nullptr) {
 		DIE ("failed to alloc %zu bytes", size);
@@ -32,6 +34,8 @@ void *
 __e_mem_calloc (usize nmemb, usize size)
 {
 	void *ptr;
+
+	e_debug_assert (size != 0, "size for e_calloc cannot be 0");
 
 	ptr = calloc (nmemb, size);
 	if (ptr == nullptr) {

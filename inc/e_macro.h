@@ -28,4 +28,9 @@
  */
 #define E_CONTAINER_OF(ptr, type, member) ((type *) ((char *) (ptr) - offsetof (type, member)))
 
+/**
+ * Expands __FILE__ and __LINE__ to a string like "main.c:42"
+ */
+#define E_MACRO_FILE_LINE __FILE__ ":" E_MACRO_STRINGIFY (__LINE__)
+
 #endif /* _EMPOWER_MACRO_H_ */
