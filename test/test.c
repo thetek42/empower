@@ -579,4 +579,19 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_pop_slice 2 returned len", usize, len, 5);
 
 	e_vec_int_deinit (&vec);
+
+	vec = e_vec_int_repeat (42, 3);
+	e_test_assert_eq ("e_vec_repeat ptr[0]", int, vec.ptr[0], 42);
+	e_test_assert_eq ("e_vec_repeat ptr[1]", int, vec.ptr[1], 42);
+	e_test_assert_eq ("e_vec_repeat ptr[2]", int, vec.ptr[2], 42);
+	e_test_assert_eq ("e_vec_repeat len", usize, vec.len, 3);
+	e_vec_int_deinit (&vec);
+
+	vec = e_vec_int_repeat_slice (slice2, 2, 2);
+	e_test_assert_eq ("e_vec_repeat ptr[0]", int, vec.ptr[0], 3);
+	e_test_assert_eq ("e_vec_repeat ptr[1]", int, vec.ptr[1], 4);
+	e_test_assert_eq ("e_vec_repeat ptr[2]", int, vec.ptr[2], 3);
+	e_test_assert_eq ("e_vec_repeat ptr[3]", int, vec.ptr[3], 4);
+	e_test_assert_eq ("e_vec_repeat len", usize, vec.len, 4);
+	e_vec_int_deinit (&vec);
 }

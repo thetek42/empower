@@ -80,6 +80,18 @@
 	type_name prefix##_from_allocated (T *ptr, usize len, usize cap);      \
                                                                                \
 	/**                                                                    \
+	 * Initialise a vector with \n repeated items with value \item.        \
+	 */                                                                    \
+	type_name prefix##_repeat (T item, usize n);                           \
+                                                                               \
+	/**                                                                    \
+	 * Initialise a vector with a slice \slice of length \len repeated     \
+	 * \rep times. If \slice is `nullptr`, 0 repetitions are put into the  \
+	 * vector, regardless of \len.
+	 */                                                                    \
+	type_name prefix##_repeat_slice (const T *slice, usize len, usize rep);\
+                                                                               \
+	/**                                                                    \
 	 * Deinitialise a vector and free the memory occupied by it. If the    \
 	 * vector is used for storing allocated pointers to data, the user     \
 	 * must free this memory, as it is not done here.                      \
@@ -346,6 +358,38 @@
 			.len = len,                                            \
 			.cap = cap,                                            \
 		};                                                             \
+	}                                                                      \
+                                                                               \
+	type_name                                                              \
+	prefix##_repeat (T item, usize n)                                      \
+	{                                                                      \
+		T *ptr;                                                        \
+		usize i;                                                       \
+                                                                               \
+		if (n == 0) return prefix##_init ();                           \
+                                                                               \
+		ptr = e_alloc (T, n);                                          \
+		for (i = 0; i < n; i++) {                                      \
+			ptr[i] = item;                                         \
+		}                                                              \
+		                                                               \
+		return prefix##_from_allocated (ptr, n, n);                    \
+	}                                                                      \
+                                                                               \
+	type_name                                                              \
+	prefix##_repeat_slice (const T *slice, usize len, usize rep)           \
+	{                                                                      \
+		T *ptr;                                                        \
+		usize i;                                                       \
+                                                                               \
+		if (!slice || len == 0 || rep == 0) return prefix##_init ();   \
+                                                                               \
+		ptr = e_alloc (T, len * rep);                                  \
+		for (i = 0; i < rep; i++) {                                    \
+			memcpy (&ptr[i * len], slice, sizeof (T) * len);       \
+		}                                                              \
+		                                                               \
+		return prefix##_from_allocated (ptr, len * rep, len * rep);    \
 	}                                                                      \
                                                                                \
 	void                                                                   \
