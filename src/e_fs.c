@@ -20,8 +20,7 @@ e_fs_read_file (const char *path, char **out, usize *len_out)
 
 	if (!path || !out) return E_ERR_INVALID_ARGUMENT;
 
-	res = e_fs_file_open (&file, path, E_FS_OPEN_MODE_READ_ONLY);
-	if (res != E_OK) return res;
+	E_TRY (e_fs_file_open (&file, path, E_FS_OPEN_MODE_READ_ONLY));
 
 	res = e_fs_file_read_all (&file, out, len_out);
 	if (res != E_OK) {
@@ -43,9 +42,7 @@ e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode)
 	if (!file_out || !path) return E_ERR_INVALID_ARGUMENT;
 
 	handle = fopen (path, mode_str_table[mode]);
-	if (handle == nullptr) {
-		return (E_Result) errno;
-	}
+	if (handle == nullptr) return E_RESULT_FROM_ERRNO ();
 
 	file_out->handle = handle;
 	return E_OK;
@@ -83,7 +80,7 @@ e_fs_file_get_remaining_size (E_File *file, usize *size_out)
 	return E_OK;
 err:
 	*size_out = 0;
-	return (E_Result) errno;
+	return E_RESULT_FROM_ERRNO ();
 }
 
 E_ATTR_NODISCARD ("E_Result must be checked")
@@ -111,7 +108,7 @@ e_fs_file_get_size (E_File *file, usize *size_out)
 	return E_OK;
 err:
 	*size_out = 0;
-	return (E_Result) errno;
+	return E_RESULT_FROM_ERRNO ();
 }
 
 E_ATTR_NODISCARD ("E_Result must be checked")
@@ -125,7 +122,7 @@ e_fs_file_get_pos (E_File *file, usize *pos)
 	p = ftell (file->handle);
 	if (p < 0) {
 		*pos = 0;
-		return (E_Result) errno;
+		return E_RESULT_FROM_ERRNO ();
 	}
 
 	*pos = (usize) p;
@@ -141,7 +138,7 @@ e_fs_file_set_pos (E_File *file, usize pos)
 	if (!file || pos > LONG_MAX) return E_ERR_INVALID_ARGUMENT;
 
 	ret = fseek (file->handle, (long) pos, SEEK_SET);
-	if (ret < 0) return (E_Result) errno;
+	if (ret < 0) return E_RESULT_FROM_ERRNO ();
 
 	return E_OK;
 }
@@ -155,7 +152,7 @@ e_fs_file_set_pos_end (E_File *file, usize pos)
 	if (!file || pos > LONG_MAX) return E_ERR_INVALID_ARGUMENT;
 
 	ret = fseek (file->handle, -((long) pos), SEEK_END);
-	if (ret < 0) return (E_Result) errno;
+	if (ret < 0) return E_RESULT_FROM_ERRNO ();
 
 	return E_OK;
 }
@@ -341,7 +338,7 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 
 	if (!path) return E_ERR_INVALID_ARGUMENT;
 	ret = mkdir (path, (mode_t) perm);
-	if (ret < 0) return (E_Result) errno;
+	if (ret < 0) return E_RESULT_FROM_ERRNO ();
 	return E_OK;
 }
 

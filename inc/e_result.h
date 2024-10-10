@@ -10,7 +10,61 @@
  * This module provides error handling functionality as well as various
  * pre-defined error codes based on `<errno.h>`.
  *
+ * Module dependencies:
+ *  - `e_log` (optional)
+ *
  ******************************************************************************/
+
+#if E_CONFIG_MODULE_LOG
+# define __E_RESULT_DIE(...) e_die (__VA_ARGS__)
+#else /* E_CONFIG_MODULE_LOG */
+# define __E_RESULT_DIE(...)                                                   \
+	do {                                                                   \
+		fprintf (stderr, "ERROR: " __VA_ARGS__);                       \
+		exit (EXIT_FAILURE);                                           \
+	} while (0)
+#endif /* E_CONFIG_MODULE_LOG */
+
+/**
+ * Check if an E_Result is OK. If it is not OK, return the result from the
+ * current function.
+ */
+#define E_TRY(expr)                                                            \
+	do {                                                                   \
+		E_Result res = (expr);                                         \
+		if (res != E_OK) {                                             \
+			return res;                                            \
+		}                                                              \
+	} while (0)
+
+/**
+ * Check if an E_Result is OK. If it is not OK, goto a label.
+ */
+#define E_GOTO_ON_ERR(expr, label)                                             \
+	do {                                                                   \
+		E_Result res = (expr);                                         \
+		if (res != E_OK) {                                             \
+			goto label;                                            \
+		}                                                              \
+	} while (0)
+
+/**
+ * Check if an E_Result is OK. If it is not OK, print an error message and
+ * terminate the programme.
+ */
+#define E_UNWRAP(expr)                                                         \
+	do {                                                                   \
+		E_Result res = (expr);                                         \
+		if (res != E_OK) {                                             \
+			__E_RESULT_DIE ("`%s` returned error: %s", #expr,      \
+			                e_result_to_str (res));                \
+		}                                                              \
+	} while (0)
+
+/**
+ * Get an E_Result based on the current errno.
+ */
+#define E_RESULT_FROM_ERRNO() ((E_Result) errno)
 
 /**
  * Used for storing whether the execution of a function was successful or

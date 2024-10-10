@@ -22,8 +22,7 @@ e_ini_parse_file (E_Ini *ini, const char *path)
 	usize len;
 	char *buf;
 
-	res = e_fs_read_file (path, &buf, &len);
-	if (res != E_OK) return res;
+	E_TRY (e_fs_read_file (path, &buf, &len));
 
 	res = __e_ini_parse_str (ini, buf, len);
 	if (res != E_OK) goto ret;
