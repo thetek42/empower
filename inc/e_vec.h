@@ -64,6 +64,22 @@
 	type_name prefix##_init_with_cap (usize cap);                          \
                                                                                \
 	/**                                                                    \
+	 * Create a vector from a region of memory pointed to by \ptr with     \
+	 * length \len. If \ptr is `nullptr`, an empty vector is initialized   \
+	 * regardless of \len. The memory from \ptr is copied into a newly     \
+	 * allocated buffer.                                                   \
+	 */                                                                    \
+	type_name prefix##_from (const T *ptr, usize len);                     \
+                                                                               \
+	/**                                                                    \
+	 * Create a vector from a pointer \ptr, a length \len and the capacity \
+	 * \cap. \ptr must be allocated on the heap using `e_alloc` and it     \
+	 * must be capable of storing \cap items. \len is the number of items  \
+	 * actually stored in \ptr.                                            \
+	 */                                                                    \
+	type_name prefix##_from_allocated (T *ptr, usize len, usize cap);      \
+                                                                               \
+	/**                                                                    \
 	 * Deinitialise a vector and free the memory occupied by it. If the    \
 	 * vector is used for storing allocated pointers to data, the user     \
 	 * must free this memory, as it is not done here.                      \
@@ -290,6 +306,31 @@
 		return (type_name) {                                           \
 			.ptr = e_alloc (T, cap),                               \
 			.len = 0,                                              \
+			.cap = cap,                                            \
+		};                                                             \
+	}                                                                      \
+                                                                               \
+	type_name                                                              \
+	prefix##_from (const T *ptr, usize len)                                \
+	{                                                                      \
+		T *out;                                                        \
+                                                                               \
+		out = e_alloc (T, len);                                        \
+		memcpy (out, ptr, sizeof (T) * len);                           \
+                                                                               \
+		return (type_name) {                                           \
+			.ptr = out,                                            \
+			.len = len,                                            \
+			.cap = len,                                            \
+		};                                                             \
+	}                                                                      \
+                                                                               \
+	type_name                                                              \
+	prefix##_from_allocated (T *ptr, usize len, usize cap)                 \
+	{                                                                      \
+		return (type_name) {                                           \
+			.ptr = ptr,                                            \
+			.len = len,                                            \
 			.cap = cap,                                            \
 		};                                                             \
 	}                                                                      \
