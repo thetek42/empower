@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_STR_H_
 #define _EMPOWER_STR_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_STR
-
-#if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_VEC
-# error "module e_str depends on: e_cstr, e_vec"
-#endif /* !E_CONFIG_MODULE_VEC */
 
 /*! e_str *********************************************************************
  * 
@@ -22,6 +16,15 @@
  *  - e_log (transient; optional)
  *
  ******************************************************************************/
+
+#if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_VEC
+# error "module e_str depends on: e_cstr, e_vec"
+#endif /* !E_CONFIG_MODULE_VEC */
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_cstr.h"
+#include "e_vec.h"
 
 E_VEC_DECLARE (char, __E_Vec_Char, __e_vec_char);
 

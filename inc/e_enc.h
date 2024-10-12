@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_ENC_H_
 #define _EMPOWER_ENC_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_ENC
-
-#if !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_RESULT
-# error "module e_enc depends on: e_alloc"
-#endif /* !E_CONFIG_MODULE_ALLOC */
 
 /*! e_enc *********************************************************************
  * 
@@ -16,8 +10,8 @@
  *
  * Module dependencies:
  *  - e_alloc (optional)
- *  - e_debug (optional; transitive)
- *  - e_log (optional; transient)
+ *  - e_debug (transitive; optional)
+ *  - e_log (transitive; optional)
  *
  * Example:
  *  | char *plain = "Hello, World!\n";
@@ -27,6 +21,10 @@
  *  | e_free (encoded);
  *
  ******************************************************************************/
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
 
 usize e_base64_get_enc_len (const char *plain);
 usize e_base64_get_dec_len (const char *encoded);

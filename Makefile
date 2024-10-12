@@ -12,6 +12,7 @@ endif
 ifeq ($(CC),gcc)
 
 CFLAGS := -std=$(STDC) -Iinc
+CFLAGS += -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-attributes -Wno-stringop-truncation -pedantic
 CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
 
@@ -26,6 +27,7 @@ endif
 else ifeq ($(CC),clang)
 
 CFLAGS := -std=$(STDC) -Iinc
+CFLAGS += -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wno-sign-conversion -Wno-unknown-attributes -pedantic
 CFLAGS_DEP = -MD -MP -MF $(@:%.o=%.dep)
 

@@ -1,6 +1,8 @@
-#include "empower.h"
+#include "e_str.h"
 
 #if E_CONFIG_MODULE_STR
+
+#include <stdarg.h>
 
 E_VEC_IMPLEMENT (char, __E_Vec_Char, __e_vec_char);
 

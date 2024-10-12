@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_INI_H_
 #define _EMPOWER_INI_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_INI
-
-#if !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
-# error "module e_ini depends on: e_cstr, e_log, e_parse, e_result, e_vec"
-#endif /* !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
 
 /*! e_ini *********************************************************************
  * 
@@ -36,6 +30,20 @@
  *  | e_ini_deinit (&ini);
  *
  ******************************************************************************/
+
+#if !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC
+# error "module e_ini depends on: e_alloc, e_cstr, e_log, e_parse, e_result, e_vec"
+#endif /* !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
+#include "e_cstr.h"
+#include "e_fs.h"
+#include "e_log.h"
+#include "e_parse.h"
+#include "e_result.h"
+#include "e_vec.h"
 
 /* TODO: ini format documentation */
 /* TODO: multiline values */

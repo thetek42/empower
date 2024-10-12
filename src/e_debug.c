@@ -1,6 +1,8 @@
-#include "empower.h"
+#include "e_debug.h"
 
 #if E_CONFIG_MODULE_DEBUG
+
+#include <string.h>
 
 /**
  * Print a hexdump of a region of memory.

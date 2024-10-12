@@ -1,6 +1,8 @@
-#include "empower.h"
+#include "e_ini.h"
 
 #if E_CONFIG_MODULE_INI
+
+#include <ctype.h>
 
 E_VEC_IMPLEMENT (E_Ini_Entry, __E_Vec_Ini_Entry, __e_vec_ini_entry);
 E_VEC_IMPLEMENT (E_Ini_Section, __E_Vec_Ini_Section, __e_vec_ini_section);

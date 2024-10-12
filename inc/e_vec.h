@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_VEC_H_
 #define _EMPOWER_VEC_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_VEC
-
-#if !E_CONFIG_MODULE_ALLOC
-# error "module e_vec depends on: e_alloc"
-#endif /* !E_CONFIG_MODULE_ALLOC */
 
 /*! e_vec *********************************************************************
  * 
@@ -18,9 +12,19 @@
  * Module dependencies:
  *  - e_alloc
  *  - e_debug (transient)
- *  - e_log (optional; transient)
+ *  - e_log (transient; optional)
  *
  ******************************************************************************/
+
+#if !E_CONFIG_MODULE_ALLOC
+# error "module e_vec depends on: e_alloc"
+#endif /* !E_CONFIG_MODULE_ALLOC */
+
+#include <stdbit.h>
+#include <string.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
 
 /**
  * Declare the struct and functions required for a vector of type \T. The type

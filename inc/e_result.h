@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_RESULT_H_
 #define _EMPOWER_RESULT_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_RESULT
 
 /*! e_result ******************************************************************
@@ -14,6 +12,13 @@
  *  - `e_log` (optional)
  *
  ******************************************************************************/
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_log.h"
 
 #if E_CONFIG_MODULE_LOG
 # define __E_RESULT_DIE(...) e_die (__VA_ARGS__)

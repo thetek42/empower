@@ -1,6 +1,9 @@
-#include "empower.h"
+#include "e_enc.h"
 
 #if E_CONFIG_MODULE_ENC
+
+#include <ctype.h>
+#include <string.h>
 
 static bool base64_is_valid_char (char c);
 

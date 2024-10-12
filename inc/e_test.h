@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_TEST_H_
 #define _EMPOWER_TEST_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_TEST
 
 /*! e_test ********************************************************************
@@ -19,6 +17,16 @@
  *  - TYPE_INFERENCE: Enable type inference in C23
  *
  ******************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_debug.h"
+#include "e_macro.h"
+#include "e_mem.h"
+#include "e_result.h"
 
 struct __e_test_result {
 	usize success;

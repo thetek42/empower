@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_MEM_H_
 #define _EMPOWER_MEM_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_MEM
 
 /*! e_mem *********************************************************************
@@ -11,10 +9,15 @@
  *
  * Module dependencies:
  *  - e_alloc (optional)
+ *  - e_log (optional)
  *  - e_debug (optional; transitive)
- *  - e_log (transitive, optional)
  *
  ******************************************************************************/
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
+#include "e_log.h"
 
 bool e_mem_is_zero (const void *ptr, usize n);
 bool e_mem_eq (const void *a, const void *b, usize n);

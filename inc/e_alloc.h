@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_ALLOC_H_
 #define _EMPOWER_ALLOC_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_ALLOC
-
-#if !defined (E_CONFIG_MODULE_DEBUG)
-# error "module e_log depends on: e_debug"
-#endif /* !defined (E_CONFIG_MODULE_DEBUG) */
 
 /*! e_alloc *******************************************************************
  * 
@@ -29,6 +23,16 @@
  *  | ptr = e_new (Node);                 // create a single `Node`
  *
  ******************************************************************************/
+
+#if !defined (E_CONFIG_MODULE_DEBUG)
+# error "module e_log depends on: e_debug"
+#endif /* !defined (E_CONFIG_MODULE_DEBUG) */
+
+#include <stdlib.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_debug.h"
+#include "e_log.h"
 
 #define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
 #define e_alloc_size(size) __e_mem_alloc ((size))

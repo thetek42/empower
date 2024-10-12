@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_ARENA_H_
 #define _EMPOWER_ARENA_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_ARENA
-
-#if !E_CONFIG_MODULE_ALLOC
-# error "module e_arena depends on: e_alloc"
-#endif /* !E_CONFIG_MODULE_ALLOC */
 
 /*! e_arena *******************************************************************
  * 
@@ -16,8 +10,8 @@
  *
  * Module dependencies:
  *  - e_alloc
- *  - e_log (optional; transitive)
  *  - e_debug (transitive)
+ *  - e_log (transitive, optional)
  *
  * Example:
  *  | E_Arena = e_arena_init (64);                  // initialize arena and allocate 64 bytes for it
@@ -28,8 +22,20 @@
  *
  ******************************************************************************/
 
+#if !E_CONFIG_MODULE_ALLOC
+# error "module e_arena depends on: e_alloc"
+#endif /* !E_CONFIG_MODULE_ALLOC */
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
+#include "e_vec.h"
+
 E_VEC_DECLARE (u8, __E_Vec_Byte, __e_vec_byte);
 
+/**
+ * The struct for the arena allocator. Refer to the module documentation.
+ */
 typedef __E_Vec_Byte E_Arena;
 
 #if !__E_ALIGNOF_NOT_SUPPORTED

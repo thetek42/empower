@@ -1,6 +1,9 @@
-#include "empower.h"
+#include "e_cstr.h"
 
 #if E_CONFIG_MODULE_CSTR
+
+#include <ctype.h>
+#include <string.h>
 
 /**
  * Count the number of occurances of a character \c in the nul-terminated string
@@ -238,9 +241,8 @@ e_cstr_to_ascii_lower (char *s)
 
 	p = s;
 	while (s && *p) {
-		if (isupper (*p))
-			*p += 32;
-		p++;
+		*p = (char) tolower (*p);
+		p += 1;
 	}
 	return s;
 }
@@ -256,9 +258,8 @@ e_cstr_to_ascii_upper (char *s)
 
 	p = s;
 	while (s && *p) {
-		if (islower (*p))
-			*p -= 32;
-		p++;
+		*p = (char) toupper (*p);
+		p += 1;
 	}
 	return s;
 }

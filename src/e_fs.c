@@ -1,6 +1,10 @@
-#include "empower.h"
+#include "e_fs.h"
 
 #if E_CONFIG_MODULE_FS
+
+#include <limits.h>
+#include <stdarg.h>
+#include <unistd.h>
 
 static const char *const mode_str_table[] = {
 	"r", /* E_FS_OPEN_MODE_READ_ONLY */
@@ -217,7 +221,7 @@ e_fs_file_read (E_File *file, char *out, usize max_len, usize *len_out)
 			return E_ERR_FAIL;
 		}
 	}
-	assert (offset <= max_len - 1 && "Read more from file than allowed");
+	e_debug_assert (offset <= max_len - 1, "Read more from file than allowed");
 
 	out[offset] = 0;
 	if (len_out) *len_out = offset;

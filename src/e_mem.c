@@ -1,6 +1,8 @@
-#include "empower.h"
+#include "e_mem.h"
 
 #if E_CONFIG_MODULE_MEM
+
+#include <string.h>
 
 /**
  * Check if the memory region pointed to by \ptr with size of \n bytes is

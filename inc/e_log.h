@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_LOG_H_
 #define _EMPOWER_LOG_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_LOG
 
 /*! e_log *********************************************************************
@@ -19,6 +17,12 @@
  *  - `LOG_WITH_FILE_LINE`: Source file and line will be appended.
  *
  ******************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_attrs.h"
 
 #if E_CONFIG_LOG_COLOURED
 # define __E_LOG_COLOUR_RESET "\x1b[0m"

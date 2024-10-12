@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_COMPAT_H_
 #define _EMPOWER_COMPAT_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 
 /*! e_compat ******************************************************************
  * 
@@ -11,9 +9,40 @@
  *
  ******************************************************************************/
 
+/* c version checks ***********************************************************/
+
+#define E_STDC_VERSION_C99 199901L
+#define E_STDC_VERSION_C11 201112L
+#define E_STDC_VERSION_C17 201710L
+#define E_STDC_VERSION_C23 202000L /* should be 202311L in the future */
+
+#if !defined (__STDC_VERSION__) || __STDC_VERSION__ < E_STDC_VERSION_C99
+# error "Empower requires at least C99 to run."
+#endif /* !defined (__STDC_VERSION__) || __STDC_VERSION__ < E_STDC_VERSION_C99 */
+
+#define E_STDC_VERSION __STDC_VERSION__
+
+/* compiler checks ************************************************************/
+
+#if defined (__clang__)
+# define E_COMPILER_CLANG
+#elif defined (__GNUC__) /* defined (__clang__) */
+# define E_COMPILER_GCC
+#elif defined (_MSC_VER) /* defined (__GNUC__) */
+# define E_COMPILER_MSVC
+#endif /*defined (_MSC_VER) */
+
+/* includes *******************************************************************/
+
+#include <assert.h>
+#include <stddef.h>
+#include "e_macro.h"
+
 /* c23 backports **************************************************************/
 
 #if E_STDC_VERSION < E_STDC_VERSION_C23
+
+# include <stdbool.h>
 
 # define nullptr ((nullptr_t) NULL)
 typedef void *nullptr_t; /* not exactly the same behaviour but whatever */

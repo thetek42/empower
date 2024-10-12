@@ -1,15 +1,24 @@
 #ifndef _EMPOWER_DEBUG_H_
 #define _EMPOWER_DEBUG_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_DEBUG
 
 /*! e_debug *******************************************************************
  * 
  * This module provides utilities for quick debugging.
  *
+ * Module dependencies:
+ *  - e_log (optional)
+ *
  ******************************************************************************/
+
+#include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_log.h"
+#include "e_macro.h"
 
 #if E_STDC_VERSION >= E_STDC_VERSION_C11
 

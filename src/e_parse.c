@@ -1,6 +1,9 @@
-#include "empower.h"
+#include "e_parse.h"
 
 #if E_CONFIG_MODULE_PARSE
+
+#include <ctype.h>
+#include <string.h>
 
 static const char *e_parse_advance (const char **s, usize n);
 

@@ -7,6 +7,7 @@
 #endif /* __E_CONFIG_TEST_FORCE_TYPES */
 
 #include "empower.h"
+#include <ctype.h>
 
 E_VEC_DECLARE (int, E_Vec_Int, e_vec_int);
 E_VEC_IMPLEMENT (int, E_Vec_Int, e_vec_int);

@@ -1,4 +1,4 @@
-#include "empower.h"
+#include "e_arena.h"
 
 #if E_CONFIG_MODULE_ARENA
 

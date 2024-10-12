@@ -3,12 +3,8 @@ Diagnostics:
 
 ---
 
-If:
-  PathExclude: ["inc/empower.h"]
 CompileFlags:
   Add:
-    - -include
-    - inc/empower.h
     - -D__E_CONFIG_TEST_FORCE_TYPES
 
 # vi: ft=yaml sw=2 ts=2 et

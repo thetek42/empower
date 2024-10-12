@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_FS_H_
 #define _EMPOWER_FS_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_FS
-
-#if !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_RESULT
-# error "module e_fs depends on: e_alloc, e_result"
-#endif /* !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_RESULT */
 
 /*! e_fs **********************************************************************
  * 
@@ -15,11 +9,23 @@
  *
  * Module dependencies:
  *  - e_result
+ *  - e_debug
  *  - e_alloc (optional)
- *  - e_debug (optional; transitive)
- *  - e_log (optional; transient)
+ *  - e_log (transient; optional)
  *
  ******************************************************************************/
+
+#if !E_CONFIG_MODULE_RESULT
+# error "module e_fs depends on: e_result"
+#endif /* !E_CONFIG_MODULE_RESULT */
+
+#include <stdio.h>
+#include <sys/stat.h>
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
+#include "e_debug.h"
+#include "e_result.h"
 
 /**
  * Specifies which mode to use for opening files.

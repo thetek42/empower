@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_MACRO_H_
 #define _EMPOWER_MACRO_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 
 /*! e_macro *******************************************************************
  * 

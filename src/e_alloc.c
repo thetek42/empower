@@ -1,4 +1,7 @@
-#include "empower.h"
+#include "e_alloc.h"
+
+#if E_CONFIG_MODULE_ALLOC
+
 #include <stdlib.h>
 
 #if E_CONFIG_MODULE_LOG
@@ -10,8 +13,6 @@
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
 #endif /* E_CONFIG_MODULE_LOG */
-
-#if E_CONFIG_MODULE_ALLOC
 
 void *
 __e_mem_alloc (usize size)

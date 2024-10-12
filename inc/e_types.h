@@ -1,14 +1,16 @@
 #ifndef _EMPOWER_TYPES_H_
 #define _EMPOWER_TYPES_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 
 /*! e_test ********************************************************************
  * 
  * This module provides convenience typedefs.
  *
  ******************************************************************************/
+
+#include <stdint.h>
+#include <sys/types.h>
+#include "e_compat.h"
 
 typedef int8_t i8;
 typedef int16_t i16;

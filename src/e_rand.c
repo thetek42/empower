@@ -1,6 +1,9 @@
-#include "empower.h"
+#include "e_rand.h"
 
 #if E_CONFIG_MODULE_RAND
+
+#include <stdlib.h>
+#include <time.h>
 
 /**
  * Seed the POSIX pseudo-random number source with the value \seed.

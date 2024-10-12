@@ -1,8 +1,6 @@
 #ifndef _EMPOWER_CSTR_H_
 #define _EMPOWER_CSTR_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_CSTR
 
 /*! e_cstr ********************************************************************
@@ -12,9 +10,14 @@
  *
  * Module dependencies:
  *  - e_alloc (optional)
- *  - e_debug (optional; transitive)
+ *  - e_debug (transitive; optional)
+ *  - e_log (transitive; optional)
  *
  ******************************************************************************/
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_alloc.h"
 
 /**
  * A pointer to a function that evaulates whether the ASCII character \c matches

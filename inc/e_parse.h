@@ -1,13 +1,7 @@
 #ifndef _EMPOWER_PARSE_H_
 #define _EMPOWER_PARSE_H_
-#ifndef _EMPOWER_H_
-#error "do not include this file directly, only include empower.h"
-#endif /* _EMPOWER_H_ */
+#include "empower_config.h"
 #if E_CONFIG_MODULE_PARSE
-
-#if !E_CONFIG_MODULE_CSTR
-# error "module e_fs depends on: e_cstr"
-#endif /* !E_CONFIG_MODULE_CSTR */
 
 /*! e_parse *******************************************************************
  *
@@ -40,6 +34,14 @@
  *  | printf ("name: \"%s\" (len %zu)\n", name, name_len);
  *
  ******************************************************************************/
+
+#if !E_CONFIG_MODULE_CSTR
+# error "module e_fs depends on: e_cstr"
+#endif /* !E_CONFIG_MODULE_CSTR */
+
+#include "e_compat.h"
+#include "e_types.h"
+#include "e_cstr.h"
 
 const char *e_parse_char (const char **s, char c);
 const char *e_parse_char_not (const char **s, char c);
