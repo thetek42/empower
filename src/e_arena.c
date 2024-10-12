@@ -4,12 +4,18 @@
 
 E_VEC_IMPLEMENT (u8, __E_Vec_Byte, __e_vec_byte);
 
+/**
+ * Initialize an arena allocator with a capacity of \cap bytes.
+ */
 E_Arena
 e_arena_init (usize cap)
 {
 	return __e_vec_byte_init_with_cap (cap);
 }
 
+/**
+ * Deinitialize an arena allocator \arena and free its occupied memory.
+ */
 void
 e_arena_deinit (E_Arena *arena)
 {

@@ -49,263 +49,38 @@
 		usize cap;                                                     \
 	} type_name;                                                           \
                                                                                \
-	/**                                                                    \
-	 * Initialise a vector with capacity 0. This function does not perform \
-	 * an allocation. The vector must be freed by the user using           \
-	 * `e_vec_deinit`.                                                     \
-	 */                                                                    \
 	type_name prefix##_init (void);                                        \
-                                                                               \
-	/**                                                                    \
-	 * Initialise a vector with a given capacity. This function allocates  \
-	 * enough memory to store \cap items. The vector must be freed by the  \
-	 * user using `e_vec_deinit`.                                          \
-	 */                                                                    \
 	type_name prefix##_init_with_cap (usize cap);                          \
-                                                                               \
-	/**                                                                    \
-	 * Create a vector from a region of memory pointed to by \ptr with     \
-	 * length \len. If \ptr is `nullptr`, an empty vector is initialized   \
-	 * regardless of \len. The memory from \ptr is copied into a newly     \
-	 * allocated buffer.                                                   \
-	 */                                                                    \
 	type_name prefix##_from (const T *ptr, usize len);                     \
-                                                                               \
-	/**                                                                    \
-	 * Create a vector from a pointer \ptr, a length \len and the capacity \
-	 * \cap. \ptr must be allocated on the heap using `e_alloc` and it     \
-	 * must be capable of storing \cap items. \len is the number of items  \
-	 * actually stored in \ptr.                                            \
-	 */                                                                    \
 	type_name prefix##_from_allocated (T *ptr, usize len, usize cap);      \
-                                                                               \
-	/**                                                                    \
-	 * Initialise a vector with \n repeated items with value \item.        \
-	 */                                                                    \
 	type_name prefix##_repeat (T item, usize n);                           \
-                                                                               \
-	/**                                                                    \
-	 * Initialise a vector with a slice \slice of length \len repeated     \
-	 * \rep times. If \slice is `nullptr`, 0 repetitions are put into the  \
-	 * vector, regardless of \len.
-	 */                                                                    \
 	type_name prefix##_repeat_slice (const T *slice, usize len, usize rep);\
-                                                                               \
-	/**                                                                    \
-	 * Deinitialise a vector and free the memory occupied by it. If the    \
-	 * vector is used for storing allocated pointers to data, the user     \
-	 * must free this memory, as it is not done here.                      \
-	 */                                                                    \
 	void prefix##_deinit (type_name *vec);                                 \
-                                                                               \
-	/**                                                                    \
-	 * Grow the memory of a vector \vec to at least \cap items. If \cap is \
-	 * lower than the current capacity of the vector, no action will be    \
-	 * performed. Internally, it rounds up \cap to the next power of two   \
-	 * and reallocates the memory to the new capacity.                     \
-	 */                                                                    \
 	void prefix##_grow (type_name *vec, usize cap);                        \
-                                                                               \
-	/**                                                                    \
-	 * Clear all items from a vector \vec. The memory is freed. This is    \
-	 * the same as calling `e_vec_deinit` followed by `e_vec_init`.        \
-	 */                                                                    \
 	void prefix##_clear (type_name *vec);                                  \
-                                                                               \
-	/**                                                                    \
-	 * Truncate a vector \vec to \n items. The memory is reallocated (i.e. \
-	 * shrank) to fit the new number of items. If \n is larger than the    \
-	 * length of the vector, no action is performed.                       \
-	 */                                                                    \
 	void prefix##_trunc (type_name *vec, usize n);                         \
-                                                                               \
-	/**                                                                    \
-	 * Clone a vector. This function allocates memory which must be freed  \
-	 * by the user using \e_vec_deinit. If \vec is `nullptr`, an empty     \
-	 * vector is returned.                                                 \
-	 */                                                                    \
 	type_name prefix##_clone (type_name *vec);                             \
-                                                                               \
-	/**                                                                    \
-	 * Add the item \item to the end of the vector \vec. If the vector     \
-	 * does not have enough capacity, its data will be reallocated to      \
-	 * accommodate for the new item.                                       \
-	 */                                                                    \
 	void prefix##_append (type_name *vec, T item);                         \
-                                                                               \
-	/**                                                                    \
-	 * Adds \slice_len items from the memory location \slice to the end of \
-	 * the vector \vec. If the vector does not have enough capacity, its   \
-	 * data will be reallocated to accommodate for the new item.           \
-	 */                                                                    \
-	void prefix##_append_slice (type_name *vec, const T *slice,            \
-	                            usize slice_len);                          \
-                                                                               \
-	/**                                                                    \
-	 * Pop the last item from the vector \vec. The item will be stored in  \
-	 * \item_out. If \vec is empty or `nullptr`, \item_out will be set to  \
-	 * `nullptr`. The length field of the vector will be decremented. If   \
-	 * \item_out is `nullptr`, the item will be popped and the length      \
-	 * field will be updated, but \item_out will not be filled. The memory \
-	 * of \item_out will remain valid until the vector buffer is           \
-	 * reallocated. If the vector is used for storing allocated pointers   \
-	 * to data, the user must free this memory, as it is not done here.    \
-	 */                                                                    \
+	void prefix##_append_slice (type_name *vec, const T *slice, usize slice_len); \
 	void prefix##_pop (type_name *vec, T **item_out);                      \
-                                                                               \
-	/**                                                                    \
-	 * Pop the last items from the vector \vec. \max_len represents the    \
-	 * maxmimum number of items that should be popped. The number of items \
-	 * which were actually popped is returned. \slice_out will be set to   \
-	 * point to the first of the popped items. If \vec is empty or         \
-	 * `nullptr`, \slice_out will be set to `nullptr` and 0 will be        \
-	 * returned. The length field of the vector will be decremented by the \
-	 * number of popped items. If \slice_out is `nullptr`, the items will  \
-	 * be popped, the length field will be updated and the number of       \
-	 * popped items will be returned, but \slice_out will not be filled.   \
-	 * The memory of \slice_out will remain valid until the vector buffer  \
-	 * is reallocated. If the vector is used for storing allocated         \
-	 * pointers to data, the user must free this memory, as it is not done \
-	 * here.                                                               \
-	 */                                                                    \
-	usize prefix##_pop_slice (type_name *vec, T **slice_out,               \
-	                          usize max_len);                              \
-                                                                               \
-	/**                                                                    \
-	 * Find the position of \item in the vector \vec. In order to find the \
-	 * item, `memcmp` between \item and the items in the vector is used.   \
-	 * Returns a pointer to the item. If you want to get the index instead \
-	 * of the pointer, use `e_vec_find_idx`. If \item is not found or \vec \
-	 * is `nullptr`, `nullptr` is returned.                                \
-	 */                                                                    \
+	usize prefix##_pop_slice (type_name *vec, T **slice_out, usize max_len); \
 	const T *prefix##_find (const type_name *vec, T item);                 \
-                                                                               \
-	/**                                                                    \
-	 * Find the position of \item in the vector \vec. In order to find the \
-	 * item, `memcmp` between \item and the items in the vector is used.   \
-	 * Returns the index of the item. If you want to get the pointer       \
-	 * instead of the index, use `e_vec_find`. If \item is not found or    \
-	 * \vec is `nullptr`, -1 is returned.                                  \
-	 */                                                                    \
 	isize prefix##_find_idx (const type_name *vec, T item);                \
-                                                                               \
-	/**                                                                    \
-	 * Find the position of a slice of memory \slice with length \len in   \
-	 * the vector \vec. In order to find the items, `memcmp` between       \
-	 * \slice and the items in the vector is used. Returns a pointer to    \
-	 * the first item of the matched slice. If you want to get the index   \
-	 * instead of the pointer, use `e_vec_find_slice_idx`. If \item is     \
-	 * not found or \vec is `nullptr`, `nullptr` is returned. If \slice is \
-	 * `nullptr` or \len is 0 and \vec is has at least one element, a      \
-	 * pointer to that element is returned.                                \
-	 */                                                                    \
-	const T *prefix##_find_slice (const type_name *vec, const T *slice,    \
-	                              usize len);                              \
-                                                                               \
-	/**                                                                    \
-	 * Find the position of a slice of memory \slice with length \len in   \
-	 * the vector \vec. In order to find the items, `memcmp` between       \
-	 * \slice and the items in the vector is used. Returns the index of    \
-	 * the first item of the matched slice. If you want to get the pointer \
-	 * instead of the index of the first item, use `e_vec_find_slice`. If  \
-	 * \item is not found or \vec is `nullptr`, `nullptr` is returned. If  \
-	 * \slice is `nullptr` or \len is 0 and \vec has at least one element, \
-	 * the first element's index (i.e. 0) is returned, -1 otherwise.       \
-	 */                                                                    \
-	isize prefix##_find_slice_idx (const type_name *vec, const T *slice,   \
-	                               usize len);                             \
-                                                                               \
-	/**                                                                    \
-	 * Check if the vector \vec contains the item \item. For comparing the \
-	 * items in \vec with \item, `memcmp` is used. Returns `true` if the   \
-	 * item is found, `false` otherwise. If \vec is `nullptr`, `false` is  \
-	 * returned.                                                           \
-	 */                                                                    \
+	const T *prefix##_find_slice (const type_name *vec, const T *slice, usize len); \
+	isize prefix##_find_slice_idx (const type_name *vec, const T *slice, usize len); \
 	bool prefix##_contains (const type_name *vec, T item);                 \
-                                                                               \
-	/**                                                                    \
-	 * Check if the vector \vec contains the slice \slice of length \len.  \
-	 * For comparing the items in \vec with \slice, `memcmp` is used.      \
-	 * Returns `true` if the slice is found, `false` otherwise. If \vec is \
-	 * `nullptr`, `false` is returned. If \slice is `nullptr` or \len is   \
-	 * 0, `true` is returned.                                              \
-	 */                                                                    \
-	bool prefix##_contains_slice (const type_name *vec, const T *slice,    \
-	                              usize len);                              \
-                                                                               \
-	/**                                                                    \
-	 * Get the item at index \idx of the vector \vec. Returns a poitner to \
-	 * the item. If \vec is `nullptr` or \idx is out of range, `nullptr`   \
-	 * is returned.                                                        \
-	 */                                                                    \
+	bool prefix##_contains_slice (const type_name *vec, const T *slice, usize len); \
 	const T *prefix##_get (const type_name *vec, usize idx);               \
-                                                                               \
-	/**                                                                    \
-	 * Set the item at index \idx of the vector \vec to \item. When \idx   \
-	 * is out of range, the item is not set. No reallocation is performed. \
-	 * When the item was set, `true` is returned. When the item was not    \
-	 * set or \vec is `nullptr`, `false` is returned.                      \
-	 */                                                                    \
 	bool prefix##_set (const type_name *vec, usize idx, T item);           \
-                                                                               \
-	/**                                                                    \
-	 * Set the items beginning at index \idx of the vector \vec to the     \
-	 * slice \slice of length \len. When \idx is out of range, the items   \
-	 * are not set. No reallocation is performed. When the items were set, \
-	 * `true` is returned. When the items were not set or \vec is          \
-	 * `nullptr`, `false` is returned.                                     \
-	 */                                                                    \
-	bool prefix##_set_slice (const type_name *vec, usize idx,              \
-	                         const T *slice, usize len);                   \
-                                                                               \
-	/**                                                                    \
-	 * Insert \item at the position \idx into the vector \vec. The rest of \
-	 * the vector is shifted backwards. If \idx is out of range, the item  \
-	 * is appended to the vector. The memory is reallocated if necessary.  \
-	 */                                                                    \
+	bool prefix##_set_slice (const type_name *vec, usize idx, const T *slice, usize len); \
 	void prefix##_insert (type_name *vec, usize idx, T item);              \
-                                                                               \
-	/**                                                                    \
-	 * Insert a slice \slice of \len items at position \idx into the       \
-	 * vector \vec. The rest of the vector is shifted backwards. If \idx   \
-	 * is out of range, the items are appended to the vector. The memory   \
-	 * is reallocated if necessary.                                        \
-	 */                                                                    \
-	void prefix##_insert_slice (type_name *restrict vec, usize idx,        \
-	                            const T *restrict slice, usize len);       \
-                                                                               \
-	/**                                                                    \
-	 * Remove \count items from the vector \vec starting at position \idx. \
-	 * No action is performed for items at positions which would be out of \
-	 * bounds. When removing memory in the middle of the vector, the       \
-	 * memory is shifted accordingly. Returns the number of removed        \
-	 * elements.                                                           \
-	 */                                                                    \
+	void prefix##_insert_slice (type_name *restrict vec, usize idx, const T *restrict slice, usize len); \
 	usize prefix##_remove (type_name *vec, usize idx, usize count);        \
-                                                                               \
-	/**                                                                    \
-	 * Count the number of occurances of \item in the vector \vec. If \vec \
-	 * is `nullptr`, 0 is returned. For comparing the items, `memcmp` is   \
-	 * used.                                                               \
-	 */                                                                    \
 	usize prefix##_count (const type_name *vec, T item);                   \
+	usize prefix##_count_slice (const type_name *vec, const T *slice, usize len); \
+	usize prefix##_count_slice_overlap (const type_name *vec, const T *slice, usize len); \
                                                                                \
-	/**                                                                    \
-	 * Count the number of occurances of a slice \slice of length \len     \
-	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
-	 * comparing the items, `memcmp` is used. Overlap is not counted.      \
-	 */                                                                    \
-	usize prefix##_count_slice (const type_name *vec, const T *slice,      \
-	                            usize len);                                \
-                                                                               \
-	/**                                                                    \
-	 * Count the number of occurances of a slice \slice of length \len     \
-	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
-	 * comparing the items, `memcmp` is used. Overlap is counted.          \
-	 */                                                                    \
-	usize prefix##_count_slice_overlap (const type_name *vec,              \
-	                                    const T *slice, usize len);        \
-                                                                               \
+        /* ensure that ; must follow macro invokation: */                      \
 	static_assert (true, "")
 
 /**
@@ -315,6 +90,11 @@
  */
 #define E_VEC_IMPLEMENT(T, type_name, prefix)                                  \
                                                                                \
+	/**                                                                    \
+	 * Initialise a vector with capacity 0. This function does not perform \
+	 * an allocation. The vector must be freed by the user using           \
+	 * `e_vec_deinit`.                                                     \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_init (void)                                                   \
 	{                                                                      \
@@ -325,6 +105,11 @@
 		};                                                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Initialise a vector with a given capacity. This function allocates  \
+	 * enough memory to store \cap items. The vector must be freed by the  \
+	 * user using `e_vec_deinit`.                                          \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_init_with_cap (usize cap)                                     \
 	{                                                                      \
@@ -335,6 +120,12 @@
 		};                                                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Create a vector from a region of memory pointed to by \ptr with     \
+	 * length \len. If \ptr is `nullptr`, an empty vector is initialized   \
+	 * regardless of \len. The memory from \ptr is copied into a newly     \
+	 * allocated buffer.                                                   \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_from (const T *ptr, usize len)                                \
 	{                                                                      \
@@ -350,6 +141,12 @@
 		};                                                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Create a vector from a pointer \ptr, a length \len and the capacity \
+	 * \cap. \ptr must be allocated on the heap using `e_alloc` and it     \
+	 * must be capable of storing \cap items. \len is the number of items  \
+	 * actually stored in \ptr.                                            \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_from_allocated (T *ptr, usize len, usize cap)                 \
 	{                                                                      \
@@ -360,6 +157,9 @@
 		};                                                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Initialise a vector with \n repeated items with value \item.        \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_repeat (T item, usize n)                                      \
 	{                                                                      \
@@ -376,6 +176,11 @@
 		return prefix##_from_allocated (ptr, n, n);                    \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Initialise a vector with a slice \slice of length \len repeated     \
+	 * \rep times. If \slice is `nullptr`, 0 repetitions are put into the  \
+	 * vector, regardless of \len.                                         \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_repeat_slice (const T *slice, usize len, usize rep)           \
 	{                                                                      \
@@ -392,6 +197,11 @@
 		return prefix##_from_allocated (ptr, len * rep, len * rep);    \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Deinitialise a vector and free the memory occupied by it. If the    \
+	 * vector is used for storing allocated pointers to data, the user     \
+	 * must free this memory, as it is not done here.                      \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_deinit (type_name *vec)                                       \
 	{                                                                      \
@@ -400,6 +210,12 @@
 		}                                                              \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Grow the memory of a vector \vec to at least \cap items. If \cap is \
+	 * lower than the current capacity of the vector, no action will be    \
+	 * performed. Internally, it rounds up \cap to the next power of two   \
+	 * and reallocates the memory to the new capacity.                     \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_grow (type_name *vec, usize cap)                              \
 	{                                                                      \
@@ -409,6 +225,10 @@
 		vec->ptr = e_realloc (vec->ptr, T, vec->cap);                  \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Clear all items from a vector \vec. The memory is freed. This is    \
+	 * the same as calling `e_vec_deinit` followed by `e_vec_init`.        \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_clear (type_name *vec)                                        \
 	{                                                                      \
@@ -417,6 +237,11 @@
 		*vec = prefix##_init ();                                       \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Truncate a vector \vec to \n items. The memory is reallocated (i.e. \
+	 * shrank) to fit the new number of items. If \n is larger than the    \
+	 * length of the vector, no action is performed.                       \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_trunc (type_name *vec, usize n)                               \
 	{                                                                      \
@@ -427,6 +252,11 @@
 		vec->ptr = e_realloc (vec->ptr, T, n);                         \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Clone a vector. This function allocates memory which must be freed  \
+	 * by the user using \e_vec_deinit. If \vec is `nullptr`, an empty     \
+	 * vector is returned.                                                 \
+	 */                                                                    \
 	type_name                                                              \
 	prefix##_clone (type_name *vec)                                        \
         {                                                                      \
@@ -444,12 +274,22 @@
 		};                                                             \
         }                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Add the item \item to the end of the vector \vec. If the vector     \
+	 * does not have enough capacity, its data will be reallocated to      \
+	 * accommodate for the new item.                                       \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_append (type_name *vec, T item)                               \
 	{                                                                      \
 		prefix##_append_slice (vec, &item, 1);                         \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Adds \slice_len items from the memory location \slice to the end of \
+	 * the vector \vec. If the vector does not have enough capacity, its   \
+	 * data will be reallocated to accommodate for the new item.           \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_append_slice (type_name *vec, const T *slice, usize slice_len)\
 	{                                                                      \
@@ -461,6 +301,16 @@
 		vec->len += slice_len;                                         \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Pop the last item from the vector \vec. The item will be stored in  \
+	 * \item_out. If \vec is empty or `nullptr`, \item_out will be set to  \
+	 * `nullptr`. The length field of the vector will be decremented. If   \
+	 * \item_out is `nullptr`, the item will be popped and the length      \
+	 * field will be updated, but \item_out will not be filled. The memory \
+	 * of \item_out will remain valid until the vector buffer is           \
+	 * reallocated. If the vector is used for storing allocated pointers   \
+	 * to data, the user must free this memory, as it is not done here.    \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_pop (type_name *vec, T **item_out)                            \
 	{                                                                      \
@@ -477,6 +327,21 @@
 		}                                                              \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Pop the last items from the vector \vec. \max_len represents the    \
+	 * maxmimum number of items that should be popped. The number of items \
+	 * which were actually popped is returned. \slice_out will be set to   \
+	 * point to the first of the popped items. If \vec is empty or         \
+	 * `nullptr`, \slice_out will be set to `nullptr` and 0 will be        \
+	 * returned. The length field of the vector will be decremented by the \
+	 * number of popped items. If \slice_out is `nullptr`, the items will  \
+	 * be popped, the length field will be updated and the number of       \
+	 * popped items will be returned, but \slice_out will not be filled.   \
+	 * The memory of \slice_out will remain valid until the vector buffer  \
+	 * is reallocated. If the vector is used for storing allocated         \
+	 * pointers to data, the user must free this memory, as it is not done \
+	 * here.                                                               \
+	 */                                                                    \
 	usize                                                                  \
 	prefix##_pop_slice (type_name *vec, T **slice_out, usize max_len)      \
 	{                                                                      \
@@ -498,6 +363,13 @@
 		}                                                              \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Find the position of \item in the vector \vec. In order to find the \
+	 * item, `memcmp` between \item and the items in the vector is used.   \
+	 * Returns a pointer to the item. If you want to get the index instead \
+	 * of the pointer, use `e_vec_find_idx`. If \item is not found or \vec \
+	 * is `nullptr`, `nullptr` is returned.                                \
+	 */                                                                    \
 	const T *                                                              \
 	prefix##_find (const type_name *vec, T item)                           \
 	{                                                                      \
@@ -508,6 +380,13 @@
 		return (const T *) &vec->ptr[idx];                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Find the position of \item in the vector \vec. In order to find the \
+	 * item, `memcmp` between \item and the items in the vector is used.   \
+	 * Returns the index of the item. If you want to get the pointer       \
+	 * instead of the index, use `e_vec_find`. If \item is not found or    \
+	 * \vec is `nullptr`, -1 is returned.                                  \
+	 */                                                                    \
 	isize                                                                  \
 	prefix##_find_idx (const type_name *vec, T item)                       \
 	{                                                                      \
@@ -522,6 +401,16 @@
 		return -1;                                                     \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Find the position of a slice of memory \slice with length \len in   \
+	 * the vector \vec. In order to find the items, `memcmp` between       \
+	 * \slice and the items in the vector is used. Returns a pointer to    \
+	 * the first item of the matched slice. If you want to get the index   \
+	 * instead of the pointer, use `e_vec_find_slice_idx`. If \item is     \
+	 * not found or \vec is `nullptr`, `nullptr` is returned. If \slice is \
+	 * `nullptr` or \len is 0 and \vec is has at least one element, a      \
+	 * pointer to that element is returned.                                \
+	 */                                                                    \
 	const T *                                                              \
 	prefix##_find_slice (const type_name *vec, const T *slice, usize len)  \
 	{                                                                      \
@@ -532,6 +421,16 @@
 		return (const T *) &vec->ptr[idx];                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Find the position of a slice of memory \slice with length \len in   \
+	 * the vector \vec. In order to find the items, `memcmp` between       \
+	 * \slice and the items in the vector is used. Returns the index of    \
+	 * the first item of the matched slice. If you want to get the pointer \
+	 * instead of the index of the first item, use `e_vec_find_slice`. If  \
+	 * \item is not found or \vec is `nullptr`, `nullptr` is returned. If  \
+	 * \slice is `nullptr` or \len is 0 and \vec has at least one element, \
+	 * the first element's index (i.e. 0) is returned, -1 otherwise.       \
+	 */                                                                    \
 	isize                                                                  \
 	prefix##_find_slice_idx (const type_name *vec, const T *slice,         \
 	                         usize len)                                    \
@@ -548,12 +447,25 @@
 		return -1;                                                     \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Check if the vector \vec contains the item \item. For comparing the \
+	 * items in \vec with \item, `memcmp` is used. Returns `true` if the   \
+	 * item is found, `false` otherwise. If \vec is `nullptr`, `false` is  \
+	 * returned.                                                           \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_contains (const type_name *vec, T item)                       \
 	{                                                                      \
 		return prefix##_find_idx (vec, item) >= 0;                     \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Check if the vector \vec contains the slice \slice of length \len.  \
+	 * For comparing the items in \vec with \slice, `memcmp` is used.      \
+	 * Returns `true` if the slice is found, `false` otherwise. If \vec is \
+	 * `nullptr`, `false` is returned. If \slice is `nullptr` or \len is   \
+	 * 0, `true` is returned.                                              \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_contains_slice (const type_name *vec, const T *slice,         \
 	                         usize len)                                    \
@@ -561,6 +473,11 @@
 		return prefix##_find_slice_idx (vec, slice, len) >= 0;         \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Get the item at index \idx of the vector \vec. Returns a poitner to \
+	 * the item. If \vec is `nullptr` or \idx is out of range, `nullptr`   \
+	 * is returned.                                                        \
+	 */                                                                    \
 	const T *                                                              \
 	prefix##_get (const type_name *vec, usize idx)                         \
 	{                                                                      \
@@ -569,6 +486,12 @@
 		return (const T *) &vec->ptr[idx];                             \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Set the item at index \idx of the vector \vec to \item. When \idx   \
+	 * is out of range, the item is not set. No reallocation is performed. \
+	 * When the item was set, `true` is returned. When the item was not    \
+	 * set or \vec is `nullptr`, `false` is returned.                      \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_set (const type_name *vec, usize idx, T item)                 \
 	{                                                                      \
@@ -578,6 +501,13 @@
 		return true;                                                   \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Set the items beginning at index \idx of the vector \vec to the     \
+	 * slice \slice of length \len. When \idx is out of range, the items   \
+	 * are not set. No reallocation is performed. When the items were set, \
+	 * `true` is returned. When the items were not set or \vec is          \
+	 * `nullptr`, `false` is returned.                                     \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_set_slice (const type_name *vec, usize idx, const T *slice,   \
 	                    usize len)                                         \
@@ -588,12 +518,23 @@
 		return true;                                                   \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Insert \item at the position \idx into the vector \vec. The rest of \
+	 * the vector is shifted backwards. If \idx is out of range, the item  \
+	 * is appended to the vector. The memory is reallocated if necessary.  \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_insert (type_name *vec, usize idx, T item)                    \
 	{                                                                      \
 		prefix##_insert_slice (vec, idx, &item, 1);                    \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Insert a slice \slice of \len items at position \idx into the       \
+	 * vector \vec. The rest of the vector is shifted backwards. If \idx   \
+	 * is out of range, the items are appended to the vector. The memory   \
+	 * is reallocated if necessary.                                        \
+	 */                                                                    \
 	void                                                                   \
 	prefix##_insert_slice (type_name *restrict vec, usize idx,             \
 	                       const T *restrict slice, usize len)             \
@@ -612,6 +553,13 @@
 		vec->len += len;                                               \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Remove \count items from the vector \vec starting at position \idx. \
+	 * No action is performed for items at positions which would be out of \
+	 * bounds. When removing memory in the middle of the vector, the       \
+	 * memory is shifted accordingly. Returns the number of removed        \
+	 * elements.                                                           \
+	 */                                                                    \
 	usize                                                                  \
 	prefix##_remove (type_name *vec, usize idx, usize count)               \
 	{                                                                      \
@@ -627,12 +575,22 @@
 		return count;                                                  \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Count the number of occurances of \item in the vector \vec. If \vec \
+	 * is `nullptr`, 0 is returned. For comparing the items, `memcmp` is   \
+	 * used.                                                               \
+	 */                                                                    \
 	usize                                                                  \
 	prefix##_count (const type_name *vec, T item)                          \
 	{                                                                      \
 		return prefix##_count_slice_overlap (vec, &item, 1);           \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Count the number of occurances of a slice \slice of length \len     \
+	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
+	 * comparing the items, `memcmp` is used. Overlap is not counted.      \
+	 */                                                                    \
 	usize                                                                  \
 	prefix##_count_slice (const type_name *vec, const T *slice, usize len) \
 	{                                                                      \
@@ -652,6 +610,11 @@
 		return count;                                                  \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Count the number of occurances of a slice \slice of length \len     \
+	 * in the vector \vec. If \vec is `nullptr`, 0 is returned. For        \
+	 * comparing the items, `memcmp` is used. Overlap is counted.          \
+	 */                                                                    \
 	usize                                                                  \
 	prefix##_count_slice_overlap (const type_name *vec, const T *slice,    \
 	                              usize len)                               \
@@ -669,6 +632,7 @@
 		return count;                                                  \
 	}                                                                      \
                                                                                \
+        /* ensure that ; must follow macro invokation: */                      \
 	static_assert (true, "")
 
 #endif /* E_CONFIG_MODULE_VEC */

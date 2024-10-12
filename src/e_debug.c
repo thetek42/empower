@@ -2,6 +2,9 @@
 
 #if E_CONFIG_MODULE_DEBUG
 
+/**
+ * Print a hexdump of a region of memory.
+ */
 void
 e_debug_hexdump (const void *ptr, usize len)
 {

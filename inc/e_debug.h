@@ -64,6 +64,9 @@
 	} while (0)
 #endif /* E_CONFIG_MODULE_LOG */
 
+/**
+ * This is the same as `assert()`, but with slightly better error reporting.
+ */
 #ifdef NDEBUG
 # define e_debug_assert(expr, msg)
 #else /* NDEBUG */
@@ -75,9 +78,6 @@
 	} while (0)
 #endif /* NDEBUG */
 
-/**
- * Print a hexdump of a region of memory.
- */
 void e_debug_hexdump (const void *ptr, usize len);
 
 #endif /* E_CONFIG_MODULE_DEBUG */

@@ -2,7 +2,10 @@
 
 #if E_CONFIG_MODULE_RESULT
 
-E_ATTR_UNSEQUENCED
+/**
+ * Convert an `E_Result` \res into a human-readable string. If \res is not a
+ * valid result, `nullptr` is returned.
+ */
 const char *
 e_result_to_str (E_Result res)
 {

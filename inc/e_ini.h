@@ -11,11 +11,7 @@
 
 /*! e_ini *********************************************************************
  * 
- * This module provides a simple INI parser. Example INI file:
- *
- * | [user]
- * | name = admin
- * | pass = password123
+ * This module provides a simple INI parser.
  *
  * Module dependencies:
  *  - e_alloc
@@ -26,6 +22,18 @@
  *  - e_vec
  *  - e_debug (transitive)
  *  - e_fs (optional)
+ *
+ * Example INI file:
+ *  | [user]
+ *  | name = admin
+ *  | pass = password123
+ *
+ * Example code:
+ *  | E_Ini ini;
+ *  | E_TRY (e_ini_parse_file (&ini, "config.ini"))
+ *  | E_Entry *entry = e_ini_get_entry (&ini, "section", "key");
+ *  | if (entry) e_log_debug ("Entry value: ", entry->value);
+ *  | e_ini_deinit (&ini);
  *
  ******************************************************************************/
 
@@ -67,42 +75,14 @@ typedef struct {
 	__E_Vec_Ini_Section sections;
 } E_Ini;
 
-/**
- * Parse an INI file from a string \str. The parsed file will be stored in \ini.
- * A result is returned, indicating whether the parsing was successful or not.
- * In case of a parsing error, the error is printed using `e_log_error`.
- */
 E_Result e_ini_parse_str (E_Ini *ini, const char *str);
+void e_ini_deinit (E_Ini *ini);
+E_Ini_Entry *e_ini_get_entry (E_Ini *ini, const char *section, const char *key);
+void e_ini_debug (E_Ini *ini);
 
 #if E_CONFIG_MODULE_FS
-
-/**
- * Parse an INI file from a file located at \path. The parsed file will be
- * stored in \ini. A result is returned, indicating whether the parsing was
- * successful or not. In case of a parsing error, the error is printed using
- * `e_log_error`.
- */
 E_Result e_ini_parse_file (E_Ini *ini, const char *path);
-
 #endif /* E_CONFIG_MODULE_FS */
-
-/**
- * Deinitialise the parsed INI file \ini and free its occupied memory.
- */
-void e_ini_deinit (E_Ini *ini);
-
-/**
- * Obtain an entry within the INI file \ini, located in the section \section
- * with the key \key. Entries that are not stored in a section can be retrieved
- * using `nullptr` for \section. If no entry is found or \ini or \key are
- * `nullptr`, `nullptr` is returned.
- */
-E_Ini_Entry *e_ini_get_entry (E_Ini *ini, const char *section, const char *key);
-
-/**
- * Debug print a parsed INI file.
- */
-void e_ini_debug (E_Ini *ini);
 
 #endif /* E_CONFIG_MODULE_INI */
 #endif /* _EMPOWER_INI_H_ */

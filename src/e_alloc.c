@@ -13,7 +13,6 @@
 
 #if E_CONFIG_MODULE_ALLOC
 
-E_ATTR_NODISCARD ("e_mem_alloc allocates memory which must be freed")
 void *
 __e_mem_alloc (usize size)
 {
@@ -29,7 +28,6 @@ __e_mem_alloc (usize size)
 	return ptr;
 }
 
-E_ATTR_NODISCARD ("e_mem_calloc allocates memory which must be freed")
 void *
 __e_mem_calloc (usize nmemb, usize size)
 {
@@ -45,7 +43,6 @@ __e_mem_calloc (usize nmemb, usize size)
 	return ptr;
 }
 
-E_ATTR_NODISCARD ("e_mem_realloc allocates memory which must be freed")
 void *
 __e_mem_realloc (void *ptr, usize size)
 {

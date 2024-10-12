@@ -2,7 +2,10 @@
 
 #if E_CONFIG_MODULE_MEM
 
-E_ATTR_REPRODUCIBLE
+/**
+ * Check if the memory region pointed to by \ptr with size of \n bytes is
+ * zeroed. When \ptr is `nullptr` or \n is 0, `true` is returned.
+ */
 bool
 e_mem_is_zero (const void *ptr, usize n)
 {
@@ -20,7 +23,13 @@ e_mem_is_zero (const void *ptr, usize n)
 	return true;
 }
 
-E_ATTR_REPRODUCIBLE
+/**
+ * Check if two memory regions \a and \b with a size of \n bytes are equal. When
+ * the memory of \a and \b is equal or if both \a and \b are `nullptr`, `true`
+ * is returned. Otherwise, `false` is returned. This is like calling `memcmp`,
+ * except that it allows for `nullptr` (which would cause undefined behaviour
+ * with `memcmp`).
+ */
 bool
 e_mem_eq (const void *a, const void *b, usize n)
 {
@@ -29,7 +38,10 @@ e_mem_eq (const void *a, const void *b, usize n)
 	return memcmp (a, b, n) == 0;
 }
 
-E_ATTR_REPRODUCIBLE
+/**
+ * Swaps \n bytes of memory from \a and \b. If \a or \b is `nullptr`, no action
+ * is performed.
+ */
 void
 e_mem_swap (void *a, void *b, usize n)
 {
@@ -46,7 +58,9 @@ e_mem_swap (void *a, void *b, usize n)
 	}
 }
 
-E_ATTR_UNSEQUENCED
+/**
+ * Checks if the pointer \ptr is aligned to \align bytes.
+ */
 bool
 e_mem_is_aligned (const void *ptr, usize align)
 {
@@ -65,7 +79,12 @@ e_mem_is_aligned (const void *ptr, usize align)
 	} while (0)
 #endif /* E_CONFIG_MODULE_LOG */
 
-E_ATTR_NODISCARD ("e_mem_strdup allocates memory which must be freed")
+/**
+ * Duplicate a string. This is equivalent to `strdup`, except that it terminates
+ * the programme in case the memory allocation fails. This function only returns
+ * `nullptr` if \s is `nullptr`. The allocated memory must be freed by the user
+ * using `e_free`.
+ */
 char *
 e_mem_strdup (const char *s)
 {
@@ -79,7 +98,12 @@ e_mem_strdup (const char *s)
 	return res;
 }
 
-E_ATTR_NODISCARD ("e_mem_strndup allocates memory which must be freed")
+/**
+ * Duplicate up to \n characters of a string \s. This is equivalent to
+ * `strndup`, except that it terminates the programme in case the memory
+ * allocation fails. This function only returns `nullptr` if \s is `nullptr`.
+ * The allocated memory must be freed by the user using `e_free`.
+ */
 char *
 e_mem_strndup (const char *s, usize n)
 {
@@ -93,7 +117,11 @@ e_mem_strndup (const char *s, usize n)
 	return res;
 }
 
-E_ATTR_NODISCARD ("e_mem_dup allocates memory which must be freed")
+/**
+ * Duplicate \n bytes of memory from the pointer \ptr. The memory is allocated
+ * using `e_alloc` and must be freed with `e_free`. If \ptr is `nullptr` or \n
+ * is 0, no allocation is performed and `nullptr` is returned.
+ */
 void *
 e_mem_dup (const void *ptr, usize n)
 {

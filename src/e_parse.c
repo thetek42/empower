@@ -4,6 +4,11 @@
 
 static const char *e_parse_advance (const char **s, usize n);
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is matched,
+ * a pointer to the character (i.e. \s) is returned and \s is advanced. If \c is
+ * not matched or \s is `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_char (const char **s, char c)
 {
@@ -12,6 +17,12 @@ e_parse_char (const char **s, char c)
 	return nullptr;
 }
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is not
+ * matched, a pointer to the character (i.e. \s) is returned and \s is advanced.
+ * If \c is matched or \s is `nullptr`, `nullptr` is returned and \s is not
+ * advanced.
+ */
 const char *
 e_parse_char_not (const char **s, char c)
 {
@@ -20,6 +31,12 @@ e_parse_char_not (const char **s, char c)
 	return nullptr;
 }
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is matched
+ * by (i.e. contained in) the pattern \accept, a pointer to the character (i.e.
+ * \s) is returned and \s is advanced. If \c is not matched or either \s or
+ * \accept are `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_char_pat (const char **s, const char *accept)
 {
@@ -28,6 +45,12 @@ e_parse_char_pat (const char **s, const char *accept)
 	return nullptr;
 }
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is not
+ * matched by (i.e. contained in) the pattern \reject or \reject is `nullptr`, a
+ * pointer to the character (i.e. \s) is returned and \s is advanced. If \c is
+ * matched or \s is `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_char_not_pat (const char **s, const char *reject)
 {
@@ -37,6 +60,12 @@ e_parse_char_not_pat (const char **s, const char *reject)
 	return nullptr;
 }
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is matched
+ * by the E_Char_Predicate \func, a pointer to the character (i.e. \s) is
+ * returned and \s is advanced. If \c is not matched or either \s or \func are
+ * `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_char_func (const char **s, E_Char_Predicate func)
 {
@@ -45,6 +74,12 @@ e_parse_char_func (const char **s, E_Char_Predicate func)
 	return nullptr;
 }
 
+/**
+ * Parse a single character \c in a nul-terminated string \s. If \c is not
+ * matched by the E_Char_Predicate \func, a pointer to the character (i.e. \s)
+ * is returned and \s is advanced. If \c is matched or either \s or \func are
+ * `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_char_not_func (const char **s, E_Char_Predicate func)
 {
@@ -53,6 +88,12 @@ e_parse_char_not_func (const char **s, E_Char_Predicate func)
 	return nullptr;
 }
 
+/**
+ * Parse a nul-terminated string \match in a nul-terminated string \s. If \match
+ * the found at the start of \s, \s is advanced to after the match and a pointer
+ * to the match (i.e. \s) is returned. If the string is not matched or either \s
+ * or \match are `nullptr`, `nullptr` is returned and \s is not advanced.
+ */
 const char *
 e_parse_str_match (const char **s, const char *match)
 {
@@ -63,6 +104,10 @@ e_parse_str_match (const char **s, const char *match)
 	return nullptr;
 }
 
+/**
+ * Consume a nul-terminated string \s while a character \c is matched and
+ * advance \s to the first character which is not matched. Returns \s.
+ */
 const char *
 e_parse_consume_while_char (const char **s, char c)
 {
@@ -73,6 +118,11 @@ e_parse_consume_while_char (const char **s, char c)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s while a character is matched by (i.e.
+ * contained in) the pattern \accept and advance \s to the first character which
+ * is not matched. Returns \s.
+ */
 const char *
 e_parse_consume_while_pat (const char **s, const char *accept)
 {
@@ -84,6 +134,11 @@ e_parse_consume_while_pat (const char **s, const char *accept)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s while a character is matched by the
+ * E_Char_Predicate \func and advance \s to the first character which is not
+ * matched. Returns \s.
+ */
 const char *
 e_parse_consume_while_func (const char **s, E_Char_Predicate func)
 {
@@ -95,6 +150,10 @@ e_parse_consume_while_func (const char **s, E_Char_Predicate func)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s until a character \c is matched and
+ * advance \s to the first character which is matched. Returns \s.
+ */
 const char *
 e_parse_consume_until_char (const char **s, char c)
 {
@@ -105,6 +164,11 @@ e_parse_consume_until_char (const char **s, char c)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s until a character is matched by (i.e.
+ * contained in) the pattern \accept and advance \s to the first character which
+ * is matched. Returns \s.
+ */
 const char *
 e_parse_consume_until_pat (const char **s, const char *accept)
 {
@@ -116,6 +180,11 @@ e_parse_consume_until_pat (const char **s, const char *accept)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s until a character is matched by the
+ * E_Char_Predicate \func and advance \s to the first character which is
+ * matched. Returns \s.
+ */
 const char *
 e_parse_consume_until_func (const char **s, E_Char_Predicate func)
 {
@@ -127,18 +196,36 @@ e_parse_consume_until_func (const char **s, E_Char_Predicate func)
 	return r;
 }
 
+/**
+ * Consume a nul-terminated string \s until the end of the line and advance \s
+ * to the newline character or end of string. Returns \s. Note that the newline
+ * character is not consumed and needs to be checked.
+ */
 const char *
 e_parse_consume_line (const char **s)
 {
 	return e_parse_consume_until_char (s, '\n');
 }
 
+/**
+ * Consume whitespace in a nul-terminated string \s and advance \s to the first
+ * non-whitespace character. Returns \s.
+ */
 const char *
 e_parse_consume_whitespace (const char **s)
 {
 	return e_parse_consume_while_func (s, isspace);
 }
 
+
+/**
+ * Consume whitespace in a nul-terminated string \s and advance \s to the first
+ * non-whitespace or newline character. Returns \s. Note that the newline
+ * character is not consumed and needs to be checked:
+ *
+ *  | e_parse_consume_whitespace_until_newline (&s);
+ *  | if (!e_parse_char (&s, '\n')) return FAIL ("unexpected trailing chars");
+ */
 const char *
 e_parse_consume_whitespace_until_newline (const char **s)
 {

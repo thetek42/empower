@@ -7,34 +7,20 @@ E_VEC_IMPLEMENT (E_Ini_Section, __E_Vec_Ini_Section, __e_vec_ini_section);
 
 static E_Result __e_ini_parse_str (E_Ini *ini, const char *str, usize len);
 
+/**
+ * Parse an INI file from a string \str. The parsed file will be stored in \ini.
+ * A result is returned, indicating whether the parsing was successful or not.
+ * In case of a parsing error, the error is printed using `e_log_error`.
+ */
 E_Result
 e_ini_parse_str (E_Ini *ini, const char *str)
 {
 	return __e_ini_parse_str (ini, str, strlen (str));
 }
 
-#if E_CONFIG_MODULE_FS
-
-E_Result
-e_ini_parse_file (E_Ini *ini, const char *path)
-{
-	E_Result res;
-	usize len;
-	char *buf;
-
-	E_TRY (e_fs_read_file (path, &buf, &len));
-
-	res = __e_ini_parse_str (ini, buf, len);
-	if (res != E_OK) goto ret;
-
-	res = E_OK;
-ret:
-	e_free (buf);
-	return res;
-}
-
-#endif /* E_CONFIG_MODULE_FS */
-
+/**
+ * Deinitialise the parsed INI file \ini and free its occupied memory.
+ */
 void
 e_ini_deinit (E_Ini *ini)
 {
@@ -44,6 +30,12 @@ e_ini_deinit (E_Ini *ini)
 	__e_vec_ini_section_deinit (&ini->sections);
 }
 
+/**
+ * Obtain an entry within the INI file \ini, located in the section \section
+ * with the key \key. Entries that are not stored in a section can be retrieved
+ * using `nullptr` for \section. If no entry is found or \ini or \key are
+ * `nullptr`, `nullptr` is returned.
+ */
 E_Ini_Entry *
 e_ini_get_entry (E_Ini *ini, const char *section, const char *key)
 {
@@ -66,6 +58,9 @@ e_ini_get_entry (E_Ini *ini, const char *section, const char *key)
 	return nullptr;
 }
 
+/**
+ * Debug print a parsed INI file.
+ */
 static E_Result
 __e_ini_parse_str (E_Ini *ini, const char *str, usize len)
 {
@@ -212,5 +207,33 @@ e_ini_debug (E_Ini *ini)
 	}
 	fprintf (stderr, "\n");
 }
+
+#if E_CONFIG_MODULE_FS
+
+/**
+ * Parse an INI file from a file located at \path. The parsed file will be
+ * stored in \ini. A result is returned, indicating whether the parsing was
+ * successful or not. In case of a parsing error, the error is printed using
+ * `e_log_error`.
+ */
+E_Result
+e_ini_parse_file (E_Ini *ini, const char *path)
+{
+	E_Result res;
+	usize len;
+	char *buf;
+
+	E_TRY (e_fs_read_file (path, &buf, &len));
+
+	res = __e_ini_parse_str (ini, buf, len);
+	if (res != E_OK) goto ret;
+
+	res = E_OK;
+ret:
+	e_free (buf);
+	return res;
+}
+
+#endif /* E_CONFIG_MODULE_FS */
 
 #endif /* E_CONFIG_MODULE_INI */

@@ -11,12 +11,20 @@
 
 /*! e_arena *******************************************************************
  * 
- * This module provides a simple arena allocator.
+ * This module provides a simple arena allocator. Similar to `e_alloc`, the
+ * allocation functions never return `nullptr`.
  *
  * Module dependencies:
  *  - e_alloc
  *  - e_log (optional; transitive)
  *  - e_debug (transitive)
+ *
+ * Example:
+ *  | E_Arena = e_arena_init (64);                  // initialize arena and allocate 64 bytes for it
+ *  | u32 *x = e_arena_alloc (&arena, u32, 4);      // alloc four `u32`, aligned to 4 bytes
+ *  | u8 *y = e_arena_alloc_zero_size (&arena, 8);  // alloc 8 bytes, aligned to `alignof (max_align_t)`, memory zeroed
+ *  | u8 *z = e_arena_alloc_aligned (&arena, 1, 4); // alloc 1 byte, aligned to 4 bytes
+ *  | e_arena_deinit (&arena);                      // free all the memory at once
  *
  ******************************************************************************/
 
@@ -24,68 +32,17 @@ E_VEC_DECLARE (u8, __E_Vec_Byte, __e_vec_byte);
 
 typedef __E_Vec_Byte E_Arena;
 
-/**
- * Allocate \nmemb items of type \T in the arena allocator \arena. Returns a
- * `void *` pointer to the item. The pointer will be aligned to `alignof (T)`.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`.
- */
 #if !__E_ALIGNOF_NOT_SUPPORTED
 # define e_arena_alloc(arena, T, nmemb) __e_arena_alloc ((arena), sizeof (T) * (nmemb), alignof (T))
+# define e_arena_alloc_zero(arena, T, nmemb) __e_arena_alloc_zero ((arena), sizeof (T) * (nmemb), alignof (T))
 #endif /* !__E_ALIGNOF_NOT_SUPPORTED */
 
-/**
- * Allocate \size bytes of memory in the arena allocator \arena. Returns a
- * `void *` pointer to the memory. The pointer will be aligned to
- * `alignof (max_alignt_t)`, meaning that it will be compatible with all types.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`.
- */
 #define e_arena_alloc_size(arena, size) __e_arena_alloc ((arena), (size), E_MAX_ALIGN)
-
-/**
- * Allocate \size bytes of memory in the arena allocator \arena. Returns a
- * `void *` pointer to the memory. The pointer will be aligned to \align bytes.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`.
- */
 #define e_arena_alloc_aligned(arena, size, align) __e_arena_alloc ((arena), (size), (align))
-
-/**
- * Allocate \nmemb items of type \T in the arena allocator \arena. Returns a
- * `void *` pointer to the item. The pointer will be aligned to `alignof (T)`.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`.
- */
-#if !__E_ALIGNOF_NOT_SUPPORTED
-#define e_arena_alloc_zero(arena, T, nmemb) __e_arena_alloc_zero ((arena), sizeof (T) * (nmemb), alignof (T))
-#endif /* !__E_ALIGNOF_NOT_SUPPORTED */
-
-/**
- * Allocate \size bytes of memory in the arena allocator \arena. Returns a
- * `void *` pointer to the memory. The pointer will be aligned to
- * `alignof (max_alignt_t)`, meaning that it will be compatible with all types.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`. The memory will be zeroed.
- */
 #define e_arena_alloc_zero_size(arena, size) __e_arena_alloc_zero ((arena), (size), E_MAX_ALIGN)
-
-/**
- * Allocate \size bytes of memory in the arena allocator \arena. Returns a
- * `void *` pointer to the memory. The pointer will be aligned to \align bytes.
- * When no memory can be allocated, the programme is terminated; only returns
- * `nullptr` when \arena is `nullptr`. The memory will be zeroed.
- */
 #define e_arena_alloc_zero_aligned(arena, size, align) __e_arena_alloc_zero ((arena), (size), (align))
 
-/**
- * Initialize an arena allocator with a capacity of \cap bytes.
- */
 E_Arena e_arena_init (usize cap);
-
-/**
- * Deinitialize an arena allocator \arena and free its occupied memory.
- */
 void e_arena_deinit (E_Arena *arena);
 
 void *__e_arena_alloc (E_Arena *arena, usize size, usize align);

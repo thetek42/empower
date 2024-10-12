@@ -217,11 +217,6 @@ enum {
 	E_ERR_FAIL,
 };
 
-/**
- * Convert an `E_Result` \res into a human-readable string. If \res is not a
- * valid result, `nullptr` is returned.
- */
-E_ATTR_UNSEQUENCED
 const char *e_result_to_str (E_Result res);
 
 #endif /* E_CONFIG_MODULE_RESULT */
