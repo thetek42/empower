@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 #include <stdint.h>
-#include <sys/types.h>
+#include "convey.h"
 #include "e_compat.h"
 
 typedef int8_t i8;
@@ -21,7 +21,7 @@ typedef uint32_t u32;
 typedef int64_t i64;
 typedef uint64_t u64;
 typedef size_t usize;
-typedef ssize_t isize;
+typedef c_ssize_t isize;
 typedef signed char ichar;
 typedef signed long long llong;
 typedef unsigned char uchar;

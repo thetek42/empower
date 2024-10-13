@@ -2,6 +2,7 @@
 
 #if E_CONFIG_MODULE_CSTR
 
+#include "convey.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -199,7 +200,7 @@ usize e_cstr_len (const char *s)
 bool
 e_cstr_is_ascii (const char *s)
 {
-	return e_cstr_matches_predicate (s, isascii);
+	return e_cstr_matches_predicate (s, c_isascii);
 }
 
 /**

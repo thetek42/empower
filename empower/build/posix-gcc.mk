@@ -46,7 +46,10 @@ test: $(TEST_BIN)
 	@echo -e '\x1b[34mTEST\x1b[0m $(TEST_BIN)'
 	@./$(TEST_BIN)
 
-.PHONY: all clean test
+$(CONVEY_LIB):
+	@make -C ../convey --file ../convey/build/posix-gcc.mk MODE=$(MODE) STDC=$(STDC)
+
+.PHONY: all clean test $(CONVEY_LIB)
 
 
 $(LIB_BIN): $(LIB_OBJ) $(CONVEY_LIB)
@@ -68,9 +71,6 @@ obj/test-$(IDENT)/%.o: test/%.c
 	@mkdir -p $(@D)
 	@echo -e '\x1b[32mCC  \x1b[0m $<'
 	@$(CC) $(CFLAGS) -c $< -o $@ -MD -MP -MF $(@:%.o=%.dep)
-
-$(CONVEY_LIB):
-	@make -C ../convey --file ../convey/build/posix-gcc.mk MODE=$(MODE) STDC=$(STDC)
 
 
 -include $(LIB_DEP)

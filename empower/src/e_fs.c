@@ -5,7 +5,6 @@
 #include "convey.h"
 #include <limits.h>
 #include <stdarg.h>
-#include <unistd.h>
 
 static const char *const mode_str_table[] = {
 	"r", /* E_FS_OPEN_MODE_READ_ONLY */
@@ -290,7 +289,7 @@ E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...
 bool
 e_fs_path_exists (const char *path)
 {
-	return access (path, F_OK) == 0;
+	return c_access (path, C_ACCESS_MODE_EXISTS) == 0;
 }
 
 /**
@@ -299,9 +298,9 @@ e_fs_path_exists (const char *path)
 bool
 e_fs_is_file (const char *path)
 {
-	struct stat s;
-	stat (path, &s);
-	return S_ISREG (s.st_mode);
+	C_Stat s;
+	c_stat (path, &s);
+	return s.type == C_FILE_TYPE_FILE;
 }
 
 /**
@@ -310,9 +309,9 @@ e_fs_is_file (const char *path)
 bool
 e_fs_is_dir (const char *path)
 {
-	struct stat s;
-	stat (path, &s);
-	return S_ISDIR (s.st_mode);
+	C_Stat s;
+	c_stat (path, &s);
+	return s.type == C_FILE_TYPE_DIRECTORY;
 }
 
 /**
@@ -321,9 +320,9 @@ e_fs_is_dir (const char *path)
 bool
 e_fs_is_link (const char *path)
 {
-	struct stat s;
-	stat (path, &s);
-	return S_ISLNK (s.st_mode);
+	C_Stat s;
+	c_stat (path, &s);
+	return s.type == C_FILE_TYPE_SYMLINK;
 }
 
 /**

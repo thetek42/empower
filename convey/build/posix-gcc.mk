@@ -28,6 +28,7 @@ LIB_BIN := bin/$(IDENT)/convey.a
 
 
 all: $(LIB_BIN)
+	@:
 
 clean:
 	rm -rf obj/ bin/

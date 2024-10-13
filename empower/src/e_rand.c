@@ -2,6 +2,7 @@
 
 #if E_CONFIG_MODULE_RAND
 
+#include "convey.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -11,7 +12,7 @@
 void
 e_math_rand_seed (u32 seed)
 {
-	srand48 ((long) seed);
+	c_rand_seed (seed);
 }
 
 /**
@@ -24,7 +25,7 @@ e_math_rand_seed_time (void)
 	time_t seed;
 
 	seed = time (nullptr);
-	srand48 ((long) seed);
+	c_rand_seed ((u32) seed);
 }
 
 /**
@@ -33,7 +34,7 @@ e_math_rand_seed_time (void)
 u32
 e_math_rand_u32 (void)
 {
-	return (u32) mrand48 ();
+	return c_rand_uint ();
 }
 
 /**
@@ -42,7 +43,7 @@ e_math_rand_u32 (void)
 u64
 e_math_rand_u64 (void)
 {
-	return ((u64) mrand48 () << 32) | ((u64) mrand48 ());
+	return ((u64) c_rand_uint () << 32) | ((u64) c_rand_uint ());
 }
 
 /**
@@ -52,7 +53,7 @@ e_math_rand_u64 (void)
 f32
 e_math_rand_f32 (void)
 {
-	return (f32) drand48 ();
+	return (f32) c_rand_double ();
 }
 
 /**
@@ -62,7 +63,7 @@ e_math_rand_f32 (void)
 f64
 e_math_rand_f64 (void)
 {
-	return drand48 ();
+	return c_rand_double ();
 }
 
 #endif /* E_CONFIG_MODULE_RAND */
