@@ -15,7 +15,7 @@
  *
  ******************************************************************************/
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_alloc.h"
 

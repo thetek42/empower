@@ -1,7 +1,7 @@
 #include "e_log.h"
 
 #if E_CONFIG_MODULE_LOG
-#if E_STDC_VERSION < E_STDC_VERSION_C23 || !defined (E_COMPILER_GCC)
+#if C_STDC_VERSION < C_STDC_VERSION_C23 || !defined (C_COMPILER_GCC)
 
 #include <stdarg.h>
 
@@ -16,5 +16,5 @@ __e_log_impl (const char *file_pos, const char *fmt, ...)
 	fprintf (stderr, "%s", file_pos);
 }
 
-#endif /* E_STDC_VERSION < E_STDC_VERSION_C23 || !defined (E_COMPILER_GCC) */
+#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 || !defined (C_COMPILER_GCC) */
 #endif /* E_CONFIG_MODULE_LOG */

@@ -26,7 +26,7 @@
 # error "module e_arena depends on: e_alloc"
 #endif /* !E_CONFIG_MODULE_ALLOC */
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_alloc.h"
 #include "e_vec.h"

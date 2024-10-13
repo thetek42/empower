@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include "convey.h"
-#include "e_compat.h"
 #include "e_types.h"
 #include "e_alloc.h"
 #include "e_debug.h"
@@ -77,7 +76,7 @@ E_Result e_fs_file_set_pos_end (E_File *file, usize pos);
 E_Result e_fs_file_rewind (E_File *file);
 E_Result e_fs_file_read (E_File *file, char *out, usize max_len, usize *len_out);
 E_Result e_fs_file_write (E_File *file, const char *data, usize len);
-E_ATTR_FORMAT (printf, 3, 4) E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...);
+C_ATTR_FORMAT (printf, 3, 4) E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...);
 bool e_fs_path_exists (const char *path);
 bool e_fs_is_file (const char *path);
 bool e_fs_is_dir (const char *path);

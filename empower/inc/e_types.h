@@ -10,7 +10,6 @@
 
 #include <stdint.h>
 #include "convey.h"
-#include "e_compat.h"
 
 typedef int8_t i8;
 typedef int16_t i16;

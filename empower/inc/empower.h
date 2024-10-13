@@ -1,12 +1,12 @@
 #ifndef _EMPOWER_H_
 #define _EMPOWER_H_
 
+#include "convey.h"
+
 #include "empower_config.h"
 
 #include "e_alloc.h"
 #include "e_arena.h"
-#include "e_attrs.h"
-#include "e_compat.h"
 #include "e_cstr.h"
 #include "e_debug.h"
 #include "e_enc.h"

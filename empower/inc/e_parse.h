@@ -39,7 +39,7 @@
 # error "module e_fs depends on: e_cstr"
 #endif /* !E_CONFIG_MODULE_CSTR */
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_cstr.h"
 

@@ -29,7 +29,7 @@
 #endif /* !defined (E_CONFIG_MODULE_DEBUG) */
 
 #include <stdlib.h>
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_debug.h"
 #include "e_log.h"

@@ -15,12 +15,12 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_log.h"
 #include "e_macro.h"
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C11
+#if C_STDC_VERSION >= C_STDC_VERSION_C11
 
 /**
  * Obtain the formatting argument for `printf`-like functions for the generic
@@ -56,7 +56,7 @@
 		         ")\x1b[0m\n");                                        \
 	} while (0)
 
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 */
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
 
 #if E_CONFIG_MODULE_LOG
 # if E_CONFIG_LOG_WITH_FILE_LINE

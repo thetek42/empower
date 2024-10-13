@@ -21,7 +21,7 @@
 # error "module e_str depends on: e_cstr, e_vec"
 #endif /* !E_CONFIG_MODULE_VEC */
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_cstr.h"
 #include "e_vec.h"
@@ -44,8 +44,8 @@ E_Str e_str_clone (E_Str *str);
 void e_str_append_char (E_Str *str, char c);
 usize e_str_append_cstr (E_Str *str, const char *s);
 void e_str_append_slice (E_Str *str, const char *s, usize len);
-E_ATTR_FORMAT (printf, 3, 4) usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
-E_ATTR_FORMAT (printf, 2, 3) usize e_str_append_fmt_all (E_Str *str, const char *fmt, ...);
+C_ATTR_FORMAT (printf, 3, 4) usize e_str_append_fmt (E_Str *str, usize max_fmt_len, const char *fmt, ...);
+C_ATTR_FORMAT (printf, 2, 3) usize e_str_append_fmt_all (E_Str *str, const char *fmt, ...);
 void e_str_insert_char (E_Str *str, usize idx, char c);
 usize e_str_insert_cstr (E_Str *str, usize idx, const char *s);
 void e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len);

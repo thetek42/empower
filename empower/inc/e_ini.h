@@ -35,7 +35,7 @@
 # error "module e_ini depends on: e_alloc, e_cstr, e_log, e_parse, e_result, e_vec"
 #endif /* !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_CSTR || !E_CONFIG_MODULE_LOG || !E_CONFIG_MODULE_PARSE || !E_CONFIG_MODULE_RESULT || !E_CONFIG_MODULE_VEC */
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_alloc.h"
 #include "e_cstr.h"

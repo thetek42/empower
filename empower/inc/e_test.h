@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 #include "e_debug.h"
 #include "e_macro.h"
@@ -62,7 +62,7 @@ extern struct __e_test_result __e_global_test;
 		}                                                              \
 	} while (0)
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG
+#if C_STDC_VERSION >= C_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG
 # define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, result, other)                  \
 	do {                                                                   \
 		fprintf (stderr, "%s \x1b[36mgot\x1b[0m ", #expr);             \
@@ -70,10 +70,10 @@ extern struct __e_test_result __e_global_test;
 		fprintf (stderr, " \x1b[36mwant\x1b[0m ");                     \
 		fprintf (stderr, E_DEBUG_AUTO_FMT (other), other);             \
 	} while (0)
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
+#else /* C_STDC_VERSION >= C_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
 # define __E_TEST_ASSERT_EQ_PRINT_VALUES(expr, a, b)                           \
 	fprintf (stderr, "\x1b[36mfailed\x1b[0m")
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 && E_CONFIG_MODULE_DEBUG */
 
 /**
  * Assert that two values equal each other and update the global test
@@ -261,13 +261,13 @@ extern struct __e_test_result __e_global_test;
 #define e_test_assert_null(name, expr)                                         \
 	e_test_assert_ptr_eq (name, expr, nullptr)
 
-#if E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES)
+#if C_STDC_VERSION >= C_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES)
 # define e_test_assert_eq(name, expr, check) __e_test_assert_eq (name, auto, expr, check);
 # define e_test_assert_not_eq(name, expr, check) __e_test_assert_not_eq (name, auto, expr, check);
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
+#else /* C_STDC_VERSION >= C_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
 # define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (name, type, expr, check);
 # define e_test_assert_not_eq(name, type, expr, check) __e_test_assert_not_eq (name, type, expr, check);
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C23 && E_CONFIG_TEST_TYPE_INFERENCE && !defined (__E_CONFIG_TEST_FORCE_TYPES) */
 
 #endif /* E_CONFIG_MODULE_TEST */
 #endif /* _EMPOWER_TEST_H_ */

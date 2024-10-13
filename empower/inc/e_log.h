@@ -20,9 +20,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
-#include "e_attrs.h"
 
 #if E_CONFIG_LOG_COLOURED
 # define __E_LOG_COLOUR_RESET "\x1b[0m"
@@ -47,7 +46,7 @@
 #endif /* E_CONFIG_LOG_WITH_FILE_LINE */
 
 /* TODO when clang finally supports __VA_OPT__ properly, enable it for clang */
-#if E_STDC_VERSION >= E_STDC_VERSION_C23 && defined (E_COMPILER_GCC)
+#if C_STDC_VERSION >= C_STDC_VERSION_C23 && defined (C_COMPILER_GCC)
 
 # ifdef NDEBUG
 #  define e_log_debug(fmt, ...)
@@ -63,7 +62,7 @@
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
 
-#else /* E_STDC_VERSION >= E_STDC_VERSION_C23 && defined (E_COMPILER_GCC) */
+#else /* C_STDC_VERSION >= C_STDC_VERSION_C23 && defined (C_COMPILER_GCC) */
 
 # ifdef NDEBUG
 #  define e_log_debug(...)
@@ -79,9 +78,9 @@
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
 
-E_ATTR_FORMAT (printf, 2, 3) void __e_log_impl (const char *file_pos, const char *fmt, ...);
+C_ATTR_FORMAT (printf, 2, 3) void __e_log_impl (const char *file_pos, const char *fmt, ...);
 
-#endif /* E_STDC_VERSION >= E_STDC_VERSION_C23 && defined (E_COMPILER_GCC) */
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C23 && defined (C_COMPILER_GCC) */
 
 #endif /* E_CONFIG_MODULE_LOG */
 #endif /* _EMPOWER_LOG_H_ */

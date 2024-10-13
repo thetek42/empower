@@ -11,14 +11,14 @@
 /**
  * Turn any expression into a string.
  */
-#define E_MACRO_STRINGIFY(x) __E_MACRO_STRINGIFY_HELPER (x)
 #define __E_MACRO_STRINGIFY_HELPER(x) #x
+#define E_MACRO_STRINGIFY(x) __E_MACRO_STRINGIFY_HELPER (x)
 
 /**
  * Concatenate any two expressions.
  */
-#define E_MACRO_CONCAT(a, b) __E_MACRO_CONCAT_HELPER (a, b)
 #define __E_MACRO_CONCAT_HELPER(a, b) a##b
+#define E_MACRO_CONCAT(a, b) __E_MACRO_CONCAT_HELPER (a, b)
 
 /**
  * Obtain the parent of type \type from the pointer \ptr to its member called

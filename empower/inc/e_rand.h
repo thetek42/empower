@@ -9,7 +9,7 @@
  *
  ******************************************************************************/
 
-#include "e_compat.h"
+#include "convey.h"
 #include "e_types.h"
 
 void e_math_rand_seed (u32 seed);

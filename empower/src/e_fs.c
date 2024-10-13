@@ -259,7 +259,7 @@ e_fs_file_write (E_File *file, const char *data, usize len)
  * the number of bytes written will be stored in \written. If an error occurs,
  * \written is set to 0.
  */
-E_ATTR_FORMAT (printf, 3, 4)
+C_ATTR_FORMAT (printf, 3, 4)
 E_Result e_fs_file_write_fmt (E_File *file, usize *written, const char *fmt, ...)
 {
 	va_list ap;
