@@ -2,6 +2,7 @@
 
 #if E_CONFIG_MODULE_FS
 
+#include "convey.h"
 #include <limits.h>
 #include <stdarg.h>
 #include <unistd.h>
@@ -334,7 +335,7 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 	int ret;
 
 	if (!path) return E_ERR_INVALID_ARGUMENT;
-	ret = mkdir (path, (mode_t) perm);
+	ret = c_mkdir (path, (C_Permissions) perm);
 	if (ret < 0) return E_RESULT_FROM_ERRNO ();
 	return E_OK;
 }

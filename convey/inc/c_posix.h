@@ -1,0 +1,26 @@
+#ifndef _CONVEY_POSIX_H_
+#define _CONVEY_POSIX_H_
+
+#define _XOPEN_SOURCE 600
+#define _POSIX_C_SOURCE 200809L
+
+#include <sys/stat.h>
+
+typedef enum {
+	/* individual options */
+	C_PERM_USER_READ = S_IRUSR,
+	C_PERM_USER_WRITE = S_IWUSR,
+	C_PERM_USER_EXEC = S_IXUSR,
+	C_PERM_GROUP_READ = S_IRGRP,
+	C_PERM_GROUP_WRITE = S_IWGRP,
+	C_PERM_GROUP_EXEC = S_IXGRP,
+	C_PERM_OTHER_READ = S_IROTH,
+	C_PERM_OTHER_WRITE = S_IWOTH,
+	C_PERM_OTHER_EXEC = S_IXOTH,
+	/* combined options */
+	C_PERM_USER_RWX = S_IRWXU,
+	C_PERM_GROUP_RWX = S_IRWXG,
+	C_PERM_OTHER_RWX = S_IRWXO,
+} C_Permissions;
+
+#endif /* _CONVEY_POSIX_H_ */
