@@ -429,6 +429,161 @@ e_cstr_find_str (const char *haystack, const char *needle)
 }
 
 /**
+ * Find the character \c in the nul-terminated string \s starting from the end
+ * of the string. If no match is found within the string, `nullptr` is returned.
+ * Otherwise, a pointer to the matched character is returned. If \s is
+ * `nullptr`, `nullptr` is returned. This is essentially like `strrchr`, except
+ * that it allows for `nullptr` (which would cause undefined behaviour in
+ * `strrchr`).
+ */
+const char *
+e_cstr_rfind_char (const char *s, char c)
+{
+	if (!s) return s;
+	return strrchr (s, (int) c);
+}
+
+/**
+ * Find the last character which is not \c in the nul-terminated string \s. If
+ * no match is found within the string, `nullptr` is returned. Otherwise, a
+ * pointer to the matched character is returned. If \s is `nullptr`, `nullptr`
+ * is returned.
+ */
+const char *
+e_cstr_rfind_char_not (const char *s, char c)
+{
+	const char *ret;
+
+	if (!s) return s;
+
+	ret = nullptr;
+	while (*s) {
+		if (*s != c) ret = s;
+		s++;
+	}
+
+	return ret;
+}
+
+/**
+ * Find the last character in the nul-terminated string \s which is also
+ * contained in the nul-terminated string \accept. If no match is found within
+ * the string, `nullptr` is returned. Otherwise, a pointer to the matched
+ * character is returned. If \s or \accept are `nullptr`, `nullptr` is returned.
+ */
+const char *
+e_cstr_rfind_char_pat (const char *s, const char *accept)
+{
+	const char *ret;
+
+	if (!s || !accept) return nullptr;
+
+	ret = nullptr;
+	while (*s) {
+		if (strchr (accept, *s)) ret = s;
+		s++;
+	}
+
+	return ret;
+}
+
+/**
+ * Find the last character in the nul-terminated string \s which is not
+ * contained in the nul-terminated string \reject. If no match is found within
+ * the string, `nullptr` is returned. Otherwise, a pointer to the matched
+ * character is returned. If \s or \reject are `nullptr`, \s is returned.
+ */
+const char *
+e_cstr_rfind_char_not_pat (const char *s, const char *reject)
+{
+	const char *ret;
+
+	if (!s || !reject) return s;
+
+	ret = nullptr;
+	while (*s) {
+		if (!strchr (reject, *s)) ret = s;
+		s++;
+	}
+
+	return ret;
+}
+
+/**
+ * Find the last character in the nul-terminated string \s which matches the
+ * predicate \func. If no match is found within the string, `nullptr` is
+ * returned. Otherwise, a pointer to the matched character is returned. If \s or
+ * \func are `nullptr`, `nullptr` is returned.
+ */
+const char *
+e_cstr_rfind_char_func (const char *s, E_Char_Predicate func)
+{
+	const char *ret;
+
+	if (!s || !func) return s;
+
+	ret = nullptr;
+	while (*s) {
+		if (func (*s)) ret = s;
+		s++;
+	}
+
+	return ret;
+}
+
+/**
+ * Find the last character in the nul-terminated string \s which is rejected by
+ * the predicate \func. If no match is found within the string, `nullptr` is
+ * returned. Otherwise, a pointer to the matched character is returned. If \s is
+ * `nullptr`, `nullptr` is returned. If \func is `nullptr`, \s is returned.
+ */
+const char *
+e_cstr_rfind_char_not_func (const char *s, E_Char_Predicate func)
+{
+	const char *ret;
+
+	if (!s || !func) return s;
+
+	ret = nullptr;
+	while (*s) {
+		if (!func (*s)) ret = s;
+		s++;
+	}
+
+	return ret;
+}
+
+/**
+ * Find the last substring \needle in the nul-terminated string \haystack. If no
+ * match is found within the string, `nullptr` is returned. Otherwise, a pointer
+ * to the matched substring is returned. If \haystack is `nullptr`, `nullptr` is
+ * returned. If \needle is `nullptr`, \haystack is returned.
+ */
+const char *
+e_cstr_rfind_str (const char *haystack, const char *needle)
+{
+	usize haystack_len, needle_len;
+
+	if (!haystack || !needle) return haystack;
+
+	haystack_len = strlen (haystack);
+	needle_len = strlen (needle);
+	if (haystack_len == 0 || needle_len > haystack_len) return nullptr;
+	if (needle_len == 0) return &haystack[haystack_len - 1];
+
+	haystack_len -= needle_len;
+	for (;;) {
+		if (!strncmp (&haystack[haystack_len], needle, needle_len)) {
+			return &haystack[haystack_len];
+		}
+		if (haystack_len == 0) break;
+		haystack_len -= 1;
+	}
+
+	return nullptr;
+}
+
+/**
  * Check if the nul-terminated string \haystack contains the nul-terminated
  * string \needle. If \haystack is `nullptr`, `false` is returned. If \needle is
  * `nullptr`, `true` is returned.
