@@ -5,6 +5,12 @@ C applications faster and with more joy.
 
 ## Modules
 
+Empower consists of two parts:
+- _Empower_ itself contains the main library code
+- _Convey_ is a cross platform and compiler agnostic utility library
+
+Empower contains the following modules:
+
 | Module         | Description              |
 | -------------- | ------------------------ |
 | **e_alloc**    | Memory allocation        |
@@ -32,22 +38,39 @@ C applications faster and with more joy.
 - A compiler that understands C99 or newer. Both GCC and Clang are tested.
 - An operating system that conforms to POSIX.
 
-Support for other compilers and operating systems may be added in the future.
+Support for other compilers and operating systems will be added in the future.
 
 ## Usage
 
+In the future, pre-built libraries will be provided, but for now you have to do these steps
+manually.
+
 1. Download the library, e.g. to `lib/empower`
-2. Optional: Modify the configuration file in `lib/empower/inc/empower_config.h`
+2. Optional: Modify the configuration file in `lib/empower/empower/inc/empower_config.h`
 3. Adapt your build system:
-   - Build the library by calling `make -C lib/empower CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release|release-safe]`
-   - Add the include directory `lib/empower/inc` (usually done with `-I`)
-   - Link your application with the static library in `lib/empower/bin/empower-<CC>-<STDC>-<MODE>.a`
+   - Build the library by calling `make -C lib/empower --file lib/empower/build/[SYSTEM].mk` (see [Building](#Building))
+   - Add the include directories `lib/empower/empower/inc` and `lib/empower/convey/inc` (usually done with `-I`)
+   - Link your application with the static library in `lib/empower/empower/bin/<SYSTEM>-<STDC>-<MODE>/empower.a` and `lib/empower/convey/bin/<SYSTEM>-<STDC>-<MODE>/convey.a`
 4. Include `<empower.h>` in your code.
 5. Have fun! Documentation for all functions and types can be found in the header files.
 
+## Building
+
+Makefiles for building the library are provided in `empower/build`. Choose one that fits the system
+you are targeting. The currently supported systems are `posix-gcc` and `posix-clang`.
+
+You can pass two options to the Makefiles:
+- `MODE` tells the compiler in which mode to compile. Accepted values: `debug`, `release`, `release-safe`, `native`
+- `STDC` is the C standard that should be use. Accepted values: `c99`, `c11`, `c17`, `c23`
+
 ## Development
 
-For running the tests, use `make test CC=[gcc|clang] STDC=[c99|c11|c23] MODE=[debug|release-safe]`
+For running the tests, use the `test` target of the Makefiles in `empower/build`.
 
 For generating a `compile_commands.json` that will allow for LSP support with clangd, download
-[Bear](https://github.com/rizsotto/Bear) and run `bear -- make test CC=clang`.
+[Bear](https://github.com/rizsotto/Bear) and run the following commands:
+
+```sh
+make -C empower --file build/posix-clang.mk clean
+bear -- make -C empower --file build/posix-clang.mk test
+```
