@@ -1,9 +1,9 @@
 #ifndef _CONVEY_POSIX_H_
 #define _CONVEY_POSIX_H_
 
-#include <sys/types.h>
+#include <basetsd.h>
 
-typedef ssize_t __c_ssize_t;
+typedef SSIZE_T __c_ssize_t;
 
 #define ENOTBLK		200
 #define ECHRNG		201

@@ -3,3 +3,4 @@ obj/
 .cache/
 empower/test/test.txt
 compile_commands.json
+*.pdb

@@ -1,4 +1,4 @@
-STDC ?= c23
+STDC ?= c2x
 MODE ?= debug
 
 CC     := x86_64-w64-mingw32-gcc

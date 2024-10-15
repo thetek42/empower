@@ -36,9 +36,9 @@
  */
 #define E_TRY(expr)                                                            \
 	do {                                                                   \
-		E_Result res = (expr);                                         \
-		if (res != E_OK) {                                             \
-			return res;                                            \
+		E_Result __e_try_res = (expr);                                 \
+		if (__e_try_res != E_OK) {                                     \
+			return __e_try_res;                                    \
 		}                                                              \
 	} while (0)
 
@@ -47,8 +47,8 @@
  */
 #define E_GOTO_ON_ERR(expr, label)                                             \
 	do {                                                                   \
-		E_Result res = (expr);                                         \
-		if (res != E_OK) {                                             \
+		E_Result __e_try_res = (expr);                                 \
+		if (__e_try_res != E_OK) {                                     \
 			goto label;                                            \
 		}                                                              \
 	} while (0)
@@ -59,8 +59,8 @@
  */
 #define E_UNWRAP(expr)                                                         \
 	do {                                                                   \
-		E_Result res = (expr);                                         \
-		if (res != E_OK) {                                             \
+		E_Result __e_try_res = (expr);                                 \
+		if (__e_try_res != E_OK) {                                     \
 			__E_RESULT_DIE ("`%s` returned error: %s", #expr,      \
 			                e_result_to_str (res));                \
 		}                                                              \

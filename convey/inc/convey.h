@@ -29,11 +29,11 @@
 /* operating system checks ****************************************************/
 
 #if defined (__MINGW32__)
-# define C_SYSTEM_MINGW32
+# define C_SYSTEM_MINGW
 # include "c_mingw.h"
 #elif defined (_WIN32) || defined (WIN32) /* defined (__MINGW32__) */
 # define C_SYSTEM_WIN32
-# error "Windows not supported yet"
+# include "c_win32.h"
 #elif defined (__unix__) /* defined (_WIN32) || defined (WIN32) */
 # define C_SYSTEM_POSIX
 # include "c_posix.h"
@@ -54,19 +54,20 @@
 
 /* c23 backports **************************************************************/
 
-#if C_STDC_VERSION < C_STDC_VERSION_C23
+#if C_STDC_VERSION < C_STDC_VERSION_C23 || defined (C_COMPILER_MSVC)
 # include <stdbool.h>
 # define nullptr ((nullptr_t) NULL)
 typedef void *nullptr_t; /* not exactly the same behaviour but whatever */
-# if C_STDC_VERSION >= C_STDC_VERSION_C11
-#  include <stdalign.h>
-# endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
-#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 */
+#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 || defined (C_COMPILER_MSVC) */
 
-#if C_STDC_VERSION >= C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32)
+#if C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSOIN < C_STDC_VERSION_C23
+# include <stdalign.h>
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSOIN < C_STDC_VERSION_C23 */
+
+#if C_STDC_VERSION >= C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW) && !defined (C_SYSTEM_WIN32)
 # define __C_STDBIT_SUPPORTED 1
 # include <stdbit.h>
-#else /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32) */
+#else /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW) && !defined (C_SYSTEM_WIN32) */
 # define __C_STDBIT_SUPPORTED 0
 /* TODO better stdbit.h */
 uint64_t stdc_bit_ceil_u64 (uint64_t x);
@@ -77,7 +78,7 @@ uint64_t stdc_bit_ceil_u64 (uint64_t x);
 	uint32_t: (uint32_t) stdc_bit_ceil_u64 (x),                            \
 	uint64_t: (uint64_t) stdc_bit_ceil_u64 (x))
 # endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
-#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32) */
+#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW) */
 
 /* c11 backports **************************************************************/
 
@@ -142,6 +143,10 @@ uint64_t stdc_bit_ceil_u64 (uint64_t x);
 # define C_MAX_ALIGN sizeof (uint64_t)
 #endif /* defined (C_COMPILER_GCC) || define (C_COMPILER_CLANG) */
 
+/* msvc stupidity *************************************************************/
+
+#define strdup _strdup
+
 /* types **********************************************************************/
 
 typedef __c_ssize_t c_ssize_t;
@@ -163,6 +168,7 @@ typedef enum {
 	C_PERM_OTHER_RWX = 07,
 } C_Permissions;
 
+/* TODO this should probably be flag enum i guess */
 typedef enum {
 	C_ACCESS_MODE_EXISTS,
 	C_ACCESS_MODE_READ,
