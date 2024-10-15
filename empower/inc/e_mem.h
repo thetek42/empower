@@ -26,7 +26,6 @@ bool e_mem_is_aligned (const void *ptr, usize align);
 
 #if E_CONFIG_MODULE_ALLOC
 char *e_mem_strdup (const char *s);
-char *e_mem_strndup (const char *s, usize n);
 void *e_mem_dup (const void *ptr, usize n);
 #endif /* E_CONFIG_MODULE_ALLOC */
 

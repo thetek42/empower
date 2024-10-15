@@ -101,25 +101,6 @@ e_mem_strdup (const char *s)
 }
 
 /**
- * Duplicate up to \n characters of a string \s. This is equivalent to
- * `strndup`, except that it terminates the programme in case the memory
- * allocation fails. This function only returns `nullptr` if \s is `nullptr`.
- * The allocated memory must be freed by the user using `e_free`.
- */
-char *
-e_mem_strndup (const char *s, usize n)
-{
-	char *res;
-
-	res = strndup (s, n);
-	if (res == nullptr) {
-		DIE ("failed to strndup");
-	}
-
-	return res;
-}
-
-/**
  * Duplicate \n bytes of memory from the pointer \ptr. The memory is allocated
  * using `e_alloc` and must be freed with `e_free`. If \ptr is `nullptr` or \n
  * is 0, no allocation is performed and `nullptr` is returned.

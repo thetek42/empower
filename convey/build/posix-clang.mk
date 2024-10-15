@@ -22,8 +22,8 @@ endif
 
 IDENT   := posix-clang-$(STDC)-$(MODE)
 LIB_HDR := inc/convey.h inc/c_posix.h
-LIB_SRC := src/c_posix.c
-LIB_OBJ := obj/$(IDENT)/c_posix.o
+LIB_SRC := src/c_common.c src/c_posix.c
+LIB_OBJ := $(LIB_SRC:src/%.c=obj/$(IDENT)/%.o)
 LIB_BIN := bin/$(IDENT)/convey.a
 
 

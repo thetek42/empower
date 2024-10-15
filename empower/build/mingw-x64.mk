@@ -1,10 +1,9 @@
 STDC ?= c23
 MODE ?= debug
 
-AR     := ar
-CC     := gcc
+CC     := x86_64-w64-mingw32-gcc
+AR     := x86_64-w64-mingw32-ar
 CFLAGS := -std=$(STDC) -Iinc -I../convey/inc
-CFLAGS += -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -pedantic
 CFLAGS += -Wno-sign-conversion -Wno-attributes -Wno-stringop-truncation
 
@@ -13,14 +12,14 @@ CFLAGS += -DNDEBUG -O3 -march=native
 else ifeq ($(MODE),release)
 CFLAGS += -DNDEBUG -O3
 else ifeq ($(MODE),release-safe)
-CFLAGS += -DDEBUG -O3 -fsanitize=undefined,address,leak
+CFLAGS += -DDEBUG -O3
 else ifeq ($(MODE),debug)
-CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
+CFLAGS += -DDEBUG -Og -ggdb3
 else
 $(error Invalid MODE `$(MODE)`, expected one of: native, release, release-safe, debug)
 endif
 
-IDENT := posix-gcc-$(STDC)-$(MODE)
+IDENT := mingw-x64-$(STDC)-$(MODE)
 
 LIB_SRC := $(wildcard src/*.c)
 LIB_OBJ := $(LIB_SRC:src/%.c=obj/$(IDENT)/%.o)
@@ -29,10 +28,10 @@ LIB_BIN := bin/$(IDENT)/empower.a
 TEST_SRC := $(wildcard test/*.c)
 TEST_OBJ := $(TEST_SRC:test/%.c=obj/test-$(IDENT)/%.o)
 TEST_DEP := $(TEST_SRC:test/%.c=obj/test-$(IDENT)/%.dep)
-TEST_BIN := bin/$(IDENT)/empower-test
+TEST_BIN := bin/$(IDENT)/empower-test.exe
 
 CONVEY_LIB := ../convey/bin/$(IDENT)/convey.a
-CONVEY_MK  := make -C ../convey --file ../convey/build/posix-gcc.mk
+CONVEY_MK  := make -C ../convey --file ../convey/build/mingw-x64.mk
 
 MAKEFLAGS += --no-print-directory
 

@@ -33,6 +33,7 @@ TEST_DEP := $(TEST_SRC:test/%.c=obj/test-$(IDENT)/%.dep)
 TEST_BIN := bin/$(IDENT)/empower-test
 
 CONVEY_LIB := ../convey/bin/$(IDENT)/convey.a
+CONVEY_MK  := make -C ../convey --file ../convey/build/posix-clang.mk
 
 MAKEFLAGS += --no-print-directory
 
@@ -41,14 +42,14 @@ all: $(LIB_BIN)
 
 clean:
 	rm -rf obj/ bin/
-	make -C ../convey --file ../convey/build/posix-clang.mk clean
+	$(CONVEY_MK) clean
 
 test: $(TEST_BIN)
 	@echo -e '\x1b[34mTEST\x1b[0m $(TEST_BIN)'
 	@./$(TEST_BIN)
 
 $(CONVEY_LIB):
-	@make -C ../convey --file ../convey/build/posix-clang.mk MODE=$(MODE) STDC=$(STDC)
+	@$(CONVEY_MK) MODE=$(MODE) STDC=$(STDC)
 
 .PHONY: all clean test $(CONVEY_LIB)
 

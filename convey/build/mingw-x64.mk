@@ -1,10 +1,9 @@
 STDC ?= c23
 MODE ?= debug
 
-CC     := gcc
-AR     := ar
+CC     := x86_64-w64-mingw32-gcc
+AR     := x86_64-w64-mingw32-ar
 CFLAGS := -std=$(STDC) -Iinc
-CFLAGS += -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -pedantic
 CFLAGS += -Wno-sign-conversion -Wno-attributes -Wno-stringop-truncation
 
@@ -13,16 +12,16 @@ CFLAGS += -DNDEBUG -O3 -march=native
 else ifeq ($(MODE),release)
 CFLAGS += -DNDEBUG -O3
 else ifeq ($(MODE),release-safe)
-CFLAGS += -DDEBUG -O3 -fsanitize=undefined,address,leak
+CFLAGS += -DDEBUG -O3
 else ifeq ($(MODE),debug)
-CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
+CFLAGS += -DDEBUG -Og -ggdb3
 else
 $(error Invalid MODE `$(MODE)`, expected one of: native, release, release-safe, debug)
 endif
 
-IDENT   := posix-gcc-$(STDC)-$(MODE)
-LIB_HDR := inc/convey.h inc/c_posix.h
-LIB_SRC := src/c_common.c src/c_posix.c
+IDENT   := mingw-x64-$(STDC)-$(MODE)
+LIB_HDR := inc/convey.h inc/c_mingw.h
+LIB_SRC := src/c_common.c src/c_mingw.c
 LIB_OBJ := $(LIB_SRC:src/%.c=obj/$(IDENT)/%.o)
 LIB_BIN := bin/$(IDENT)/convey.a
 

@@ -28,7 +28,10 @@
 
 /* operating system checks ****************************************************/
 
-#if defined (_WIN32) || defined (WIN32)
+#if defined (__MINGW32__)
+# define C_SYSTEM_MINGW32
+# include "c_mingw.h"
+#elif defined (_WIN32) || defined (WIN32) /* defined (__MINGW32__) */
 # define C_SYSTEM_WIN32
 # error "Windows not supported yet"
 #elif defined (__unix__) /* defined (_WIN32) || defined (WIN32) */
@@ -59,6 +62,22 @@ typedef void *nullptr_t; /* not exactly the same behaviour but whatever */
 #  include <stdalign.h>
 # endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
 #endif /* C_STDC_VERSION < C_STDC_VERSION_C23 */
+
+#if C_STDC_VERSION >= C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32)
+# define __C_STDBIT_SUPPORTED 1
+# include <stdbit.h>
+#else /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32) */
+# define __C_STDBIT_SUPPORTED 0
+/* TODO better stdbit.h */
+uint64_t stdc_bit_ceil_u64 (uint64_t x);
+# if C_STDC_VERSION >= C_STDC_VERSION_C11
+#  define stdc_bit_ceil(x) _Generic ((x),                                      \
+	uint8_t:  (uint8_t)  stdc_bit_ceil_u64 (x),                            \
+	uint16_t: (uint16_t) stdc_bit_ceil_u64 (x),                            \
+	uint32_t: (uint32_t) stdc_bit_ceil_u64 (x),                            \
+	uint64_t: (uint64_t) stdc_bit_ceil_u64 (x))
+# endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
+#endif /* C_STDC_VERSION < C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW32) */
 
 /* c11 backports **************************************************************/
 

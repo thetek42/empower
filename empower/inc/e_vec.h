@@ -20,7 +20,6 @@
 # error "module e_vec depends on: e_alloc"
 #endif /* !E_CONFIG_MODULE_ALLOC */
 
-#include <stdbit.h>
 #include <string.h>
 #include "convey.h"
 #include "e_types.h"
