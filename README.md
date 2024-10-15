@@ -49,7 +49,7 @@ manually.
 1. Download the library, e.g. to `lib/empower`
 2. Optional: Modify the configuration file in `lib/empower/empower/inc/empower_config.h`
 3. Adapt your build system:
-   - Build the library by calling `make -C lib/empower --file lib/empower/build/[SYSTEM].mk` (see [Building](#Building))
+   - Build the library by calling `make -C lib/empower/empower --file lib/empower/empower/build/[SYSTEM].mk` (see [Building](#Building))
    - Add the include directories `lib/empower/empower/inc` and `lib/empower/convey/inc` (usually done with `-I`)
    - Link your application with the static library in `lib/empower/empower/bin/<SYSTEM>-<STDC>-<MODE>/empower.a` and `lib/empower/convey/bin/<SYSTEM>-<STDC>-<MODE>/convey.a`
 4. Include `<empower.h>` in your code.
