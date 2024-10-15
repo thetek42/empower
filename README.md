@@ -35,10 +35,11 @@ Empower contains the following modules:
 
 ## Requirements
 
-- A compiler that understands C99 or newer. Both GCC and Clang are tested.
-- An operating system that conforms to POSIX, or MinGW for Windows support.
-
-Support for other compilers and operating systems will be added in the future.
+- **Supported C standards:** C99 and newer are supported. C23 is recommended.
+- **Supported platforms:**
+  - POSIX: Support for GCC and Clang. Tested on Linux with glibc.
+  - Windows: Support for MinGW and MSVC. Tested with Wine, but _not_ on an actual Windows machine or
+    VM. Thus, support may be a bit flaky.
 
 ## Usage
 
@@ -57,7 +58,9 @@ manually.
 ## Building
 
 Makefiles for building the library are provided in `empower/build`. Choose one that fits the system
-you are targeting. The currently supported systems are `posix-gcc`, `posix-clang` and `mingw-x64`.
+you are targeting. The currently supported systems are `posix-gcc`, `posix-clang`, `mingw-x64` and
+`win32`. The `win32` Makefile probably won't work on Windows, but it does when executing `cl`
+through Wine on Linux and since that's all I have, that's what you'll get as well :).
 
 You can pass two options to the Makefiles:
 - `MODE` tells the compiler in which mode to compile. Accepted values: `debug`, `release`, `release-safe`, `native`
@@ -74,3 +77,6 @@ For generating a `compile_commands.json` that will allow for LSP support with cl
 make -C empower --file build/posix-clang.mk clean
 bear -- make -C empower --file build/posix-clang.mk test
 ```
+
+This will not work for MinGW and MSVC stuff. I might get around to implementing some kind of
+workaround for that, but I don't care enough about Windows to justify the time investment.
