@@ -36,7 +36,7 @@ Empower contains the following modules:
 ## Requirements
 
 - A compiler that understands C99 or newer. Both GCC and Clang are tested.
-- An operating system that conforms to POSIX.
+- An operating system that conforms to POSIX, or MinGW for Windows support.
 
 Support for other compilers and operating systems will be added in the future.
 
@@ -57,7 +57,7 @@ manually.
 ## Building
 
 Makefiles for building the library are provided in `empower/build`. Choose one that fits the system
-you are targeting. The currently supported systems are `posix-gcc` and `posix-clang`.
+you are targeting. The currently supported systems are `posix-gcc`, `posix-clang` and `mingw-x64`.
 
 You can pass two options to the Makefiles:
 - `MODE` tells the compiler in which mode to compile. Accepted values: `debug`, `release`, `release-safe`, `native`
