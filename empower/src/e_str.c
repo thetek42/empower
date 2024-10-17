@@ -303,6 +303,41 @@ e_str_remove (E_Str *str, usize idx, usize count)
 }
 
 /**
+ * Remove a prefix from a string \str. If the prefix as given by the
+ * nul-terminated string \prefix is found, it is removed. Otherwise, no action
+ * is performed. Returns whether the prefix was removed, or `false` if one of
+ * the parameters was `nullptr`.
+ */
+bool
+e_str_remove_prefix (E_Str *str, const char *prefix)
+{
+	if (!str || !prefix) return false;
+	if (e_cstr_starts_with (str->ptr, prefix)) {
+		e_str_remove (str, 0, strlen (prefix));
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Remove a suffix from a string \str. If the suffix as given by the
+ * nul-terminated string \suffix is found, it is removed. Otherwise, no action
+ * is performed. Returns whether the suffix was removed, or `false` if one of
+ * the parameters was `nullptr`.
+ */
+bool
+e_str_remove_suffix (E_Str *str, const char *suffix)
+{
+	if (!str || !suffix) return false;
+	if (e_cstr_ends_with (str->ptr, suffix)) {
+		str->len -= strlen (suffix);
+		str->ptr[str->len] = 0;
+		return true;
+	}
+	return false;
+}
+
+/**
  * Trim whitespace at the start of the string \str. \str is modified.
  */
 void

@@ -389,6 +389,24 @@ test_str (void)
 	e_test_assert_eq ("e_str_remove end len", usize, str.len, strlen ("HelXYZABCl123 dec:42,hex:2a 123 123"));
 	e_test_assert_eq ("e_str_remove end len_ret", usize, len_ret, 5);
 
+	e_test_assert ("e_str_remove_prefix true ret", e_str_remove_prefix (&str, "Hel"));
+	e_test_assert_str_eq ("e_str_remove_prefix true ptr", str.ptr, "XYZABCl123 dec:42,hex:2a 123 123");
+	e_test_assert_eq ("e_str_remove_prefix true len", usize, str.len, strlen ("XYZABCl123 dec:42,hex:2a 123 123"));
+	e_test_assert ("e_str_remove_prefix false ret", !e_str_remove_prefix (&str, "Hel"));
+	e_test_assert_str_eq ("e_str_remove_prefix false ptr", str.ptr, "XYZABCl123 dec:42,hex:2a 123 123");
+	e_test_assert_eq ("e_str_remove_prefix false len", usize, str.len, strlen ("XYZABCl123 dec:42,hex:2a 123 123"));
+	e_test_assert ("e_str_remove_suffix true ret", e_str_remove_suffix (&str, "123 123"));
+	e_test_assert_str_eq ("e_str_remove_suffix true ptr", str.ptr, "XYZABCl123 dec:42,hex:2a ");
+	e_test_assert_eq ("e_str_remove_suffix true len", usize, str.len, strlen ("XYZABCl123 dec:42,hex:2a "));
+	e_test_assert ("e_str_remove_suffix false ret", !e_str_remove_suffix (&str, "123 123"));
+	e_test_assert_str_eq ("e_str_remove_suffix false ptr", str.ptr, "XYZABCl123 dec:42,hex:2a ");
+	e_test_assert_eq ("e_str_remove_suffix false len", usize, str.len, strlen ("XYZABCl123 dec:42,hex:2a "));
+
+	len_ret = e_str_remove (&str, 0, str.len);
+	e_test_assert_str_eq ("e_str_remove entire", str.ptr, "");
+	e_test_assert_eq ("e_str_remove entire len", usize, str.len, 0);
+	e_test_assert_eq ("e_str_remove entire len_ret", usize, len_ret, strlen ("XYZABCl123 dec:42,hex:2a "));
+
 	e_str_deinit (&str);
 
 	str = e_str_from_cstr ("   foo bar baz   ");

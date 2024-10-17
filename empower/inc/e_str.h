@@ -55,6 +55,8 @@ void e_str_insert_char (E_Str *str, usize idx, char c);
 usize e_str_insert_cstr (E_Str *str, usize idx, const char *s);
 void e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len);
 usize e_str_remove (E_Str *str, usize idx, usize count);
+bool e_str_remove_prefix (E_Str *str, const char *prefix);
+bool e_str_remove_suffix (E_Str *str, const char *suffix);
 void e_str_trim_start (E_Str *str);
 void e_str_trim_end (E_Str *str);
 void e_str_trim (E_Str *str);
