@@ -24,6 +24,7 @@
 #include "convey.h"
 #include "e_types.h"
 #include "e_alloc.h"
+#include "e_mem.h"
 
 /**
  * Declare the struct and functions required for a vector of type \T. The type
@@ -135,7 +136,7 @@
 		T *out;                                                        \
                                                                                \
 		out = e_alloc (T, len);                                        \
-		memcpy (out, ptr, sizeof (T) * len);                           \
+		e_memcpy (out, ptr, T, len);                                   \
                                                                                \
 		return (type_name) {                                           \
 			.ptr = out,                                            \
@@ -194,7 +195,7 @@
                                                                                \
 		ptr = e_alloc (T, len * rep);                                  \
 		for (i = 0; i < rep; i++) {                                    \
-			memcpy (&ptr[i * len], slice, sizeof (T) * len);       \
+			e_memcpy (&ptr[i * len], slice, T, len);               \
 		}                                                              \
 		                                                               \
 		return prefix##_from_allocated (ptr, len * rep, len * rep);    \
@@ -268,7 +269,7 @@
 		if (!vec) return prefix##_init ();                             \
                                                                                \
 		ptr = e_alloc (T, vec->cap);                                   \
-		memcpy (ptr, vec->ptr, vec->len);                              \
+		e_memcpy (ptr, vec->ptr, T, vec->len);                         \
 		                                                               \
 		return (type_name) {                                           \
 			.ptr = ptr,                                            \
@@ -300,7 +301,7 @@
 		if (vec->len + slice_len > vec->cap) {                         \
 			prefix##_grow (vec, vec->len + slice_len);             \
 		}                                                              \
-		memcpy (&vec->ptr[vec->len], slice, slice_len * sizeof (T));   \
+		e_memcpy (&vec->ptr[vec->len], slice, T, slice_len);           \
 		vec->len += slice_len;                                         \
 	}                                                                      \
                                                                                \
@@ -517,7 +518,7 @@
 	{                                                                      \
 		if (!vec) return false;                                        \
 		if (idx + len - 1 >= vec->len) return false;                   \
-		memcpy (&vec->ptr[idx], slice, sizeof (T) * len);              \
+		e_memcpy (&vec->ptr[idx], slice, T, len);                      \
 		return true;                                                   \
 	}                                                                      \
                                                                                \
@@ -550,9 +551,9 @@
 		if (vec->len >= vec->cap) {                                    \
 			prefix##_grow (vec, vec->cap + len);                   \
 		}                                                              \
-		memmove (vec->ptr + idx + len, vec->ptr + idx,                 \
-			 sizeof (T) * (vec->len - idx));                       \
-		memcpy (vec->ptr + idx, slice, sizeof (T) * len);              \
+		e_memmove (vec->ptr + idx + len, vec->ptr + idx, T,            \
+			   (vec->len - idx));                                  \
+		e_memcpy (vec->ptr + idx, slice, T, len);                      \
 		vec->len += len;                                               \
 	}                                                                      \
                                                                                \
@@ -572,8 +573,7 @@
 			return count;                                          \
 		}                                                              \
 		count = idx + count > vec->len ? vec->len - idx : count;       \
-		memmove (vec->ptr + idx, vec->ptr + idx + count,               \
-		         sizeof (T) * count);                                  \
+		e_memmove (vec->ptr + idx, vec->ptr + idx + count, T, count);  \
 		vec->len -= count;                                             \
 		return count;                                                  \
 	}                                                                      \

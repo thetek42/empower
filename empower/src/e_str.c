@@ -3,6 +3,7 @@
 #if E_CONFIG_MODULE_STR
 
 #include <stdarg.h>
+#include "e_mem.h"
 
 E_VEC_IMPLEMENT (char, __E_Vec_Char, __e_vec_char);
 
@@ -63,7 +64,7 @@ e_str_from_slice (const char *s, usize len)
 	char *out;
 
 	out = e_alloc (char, len + 1);
-	memcpy (out, s, sizeof (char) * len);
+	e_memcpy (out, s, char, len);
 	out[len] = 0;
 
 	return (E_Str) {
@@ -275,7 +276,8 @@ e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len)
 		e_str_grow (str, str->len + len + 1);
 	}
 
-	memmove (&str->ptr[idx + len], &str->ptr[idx], str->len - idx + 1);
+	e_memmove (&str->ptr[idx + len], &str->ptr[idx], char,
+	           str->len - idx + 1);
 	strncpy (&str->ptr[idx], s, len);
 	str->len += len;
 }
@@ -295,8 +297,8 @@ e_str_remove (E_Str *str, usize idx, usize count)
 		return count;
 	}
 	count = idx + count > str->len ? str->len - idx : count;
-	memmove (&str->ptr[idx], &str->ptr[idx + count],
-	         str->len - idx - count + 1);
+	e_memmove (&str->ptr[idx], &str->ptr[idx + count], char,
+	           str->len - idx - count + 1);
 	str->len -= count;
 	str->ptr[str->len] = 0;
 	return count;
@@ -350,7 +352,7 @@ e_str_trim_start (E_Str *str)
 	start = e_cstr_trim_start (str->ptr);
 	new_len = str->len - (usize) (start - str->ptr);
 	if (start != str->ptr) {
-		memmove (str->ptr, start, new_len);
+		e_memmove (str->ptr, start, char, new_len);
 		str->ptr[new_len] = 0;
 		str->len = new_len;
 	}
