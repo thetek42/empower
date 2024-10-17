@@ -145,7 +145,9 @@ uint64_t stdc_bit_ceil_u64 (uint64_t x);
 
 /* msvc stupidity *************************************************************/
 
-#define strdup _strdup
+#if defined (C_COMPILER_MSVC)
+# define strdup _strdup
+#endif /* defined (C_COMPILER_MSVC) */
 
 /* types **********************************************************************/
 

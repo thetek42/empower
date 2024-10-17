@@ -42,6 +42,51 @@ e_str_init_with_cap (usize cap)
 }
 
 /**
+ * Initialize a string from a nul-terminated string \s of length \len. The
+ * contents of \s are copied into the string's buffer.
+ */
+E_Str
+e_str_from_cstr (const char *s)
+{
+	return e_str_from_slice (s, strlen (s));
+}
+
+/**
+ * Initialize a string from a slice of memory \s of length \len. The contents of
+ * \s are copied into the string's buffer.
+ */
+E_Str
+e_str_from_slice (const char *s, usize len)
+{
+	char *out;
+
+	out = e_alloc (char, len + 1);
+	memcpy (out, s, sizeof (char) * len);
+	out[len] = 0;
+
+	return (E_Str) {
+		.ptr = out,
+		.len = len,
+		.cap = len,
+	};
+}
+
+/**
+ * Initialize a string from a pre-allocated nul-terminated string \ptr. The
+ * memory owned by \ptr should be capable of holding at least \cap bytes. \len
+ * is the length of \ptr. The returned string takes ownership of \ptr.
+ */
+E_Str
+e_str_from_allocated (char *ptr, usize len, usize cap)
+{
+	return (E_Str) {
+		.ptr = ptr,
+		.len = len,
+		.cap = cap,
+	};
+}
+
+/**
  * Deinitialise a dynamically sized string and free the memory occupied by it.
  */
 void

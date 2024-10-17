@@ -38,6 +38,9 @@ typedef __E_Vec_Char E_Str;
 
 E_Str e_str_init (void);
 E_Str e_str_init_with_cap (usize cap);
+E_Str e_str_from_cstr (const char *s);
+E_Str e_str_from_slice (const char *s, usize len);
+E_Str e_str_from_allocated (char *ptr, usize len, usize cap);
 void e_str_deinit (E_Str *str);
 void e_str_grow (E_Str *str, usize cap);
 E_Str e_str_clone (E_Str *str);
