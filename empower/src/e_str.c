@@ -6,6 +6,8 @@
 
 E_VEC_IMPLEMENT (char, __E_Vec_Char, __e_vec_char);
 
+/* dynamic string functions ***************************************************/
+
 /**
  * Initialise a dynamically sized string with capacity 0. This function
  * allocates enough memory to store a string with a nul terminating byte. When
@@ -298,6 +300,358 @@ e_str_remove (E_Str *str, usize idx, usize count)
 	str->len -= count;
 	str->ptr[str->len] = 0;
 	return count;
+}
+
+/* e_cstr wrappers ************************************************************/
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char`.
+ */
+usize
+e_str_count_char (const E_Str *s, char c)
+{
+	if (!s) return 0;
+	return e_cstr_count_char (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char_not`.
+ */
+usize
+e_str_count_char_not (const E_Str *s, char c)
+{
+	if (!s) return 0;
+	return e_cstr_count_char_not (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char_pat`.
+ */
+usize
+e_str_count_char_pat (const E_Str *s, const char *accept)
+{
+	if (!s) return 0;
+	return e_cstr_count_char_pat (s->ptr, accept);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char_not_pat`.
+ */
+usize
+e_str_count_char_not_pat (const E_Str *s, const char *reject)
+{
+	if (!s) return 0;
+	return e_cstr_count_char_not_pat (s->ptr, reject);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char_func`.
+ */
+usize
+e_str_count_char_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return 0;
+	return e_cstr_count_char_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_char_not_func`.
+ */
+usize
+e_str_count_char_not_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return 0;
+	return e_cstr_count_char_not_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_str`.
+ */
+usize
+e_str_count_str (const E_Str *haystack, const char *needle)
+{
+	if (!haystack) return 0;
+	return e_cstr_count_str (haystack->ptr, needle);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_str_overlap`.
+ */
+usize
+e_str_count_str_overlap (const E_Str *haystack, const char *needle)
+{
+	if (!haystack) return 0;
+	return e_cstr_count_str_overlap (haystack->ptr, needle);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_count_lines`.
+ */
+usize
+e_str_count_lines (const E_Str *s)
+{
+	if (!s) return 0;
+	return e_cstr_count_lines (s->ptr);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_is_ascii`.
+ */
+bool
+e_str_is_ascii (const E_Str *s)
+{
+	if (!s) return 0;
+	return e_cstr_is_ascii (s->ptr);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_is_blank`.
+ */
+bool
+e_str_is_blank (const E_Str *s)
+{
+	if (!s) return 0;
+	return e_cstr_is_blank (s->ptr);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_matches_predicate`.
+ */
+bool
+e_str_matches_predicate (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return 0;
+	return e_cstr_matches_predicate (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_to_ascii_lower`.
+ */
+void
+e_str_to_ascii_lower (E_Str *s)
+{
+	if (s) e_cstr_to_ascii_lower (s->ptr);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_to_ascii_upper`.
+ */
+void
+e_str_to_ascii_upper (E_Str *s)
+{
+	if (s) e_cstr_to_ascii_upper (s->ptr);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char`.
+ */
+const char *
+e_str_find_char (const E_Str *s, char c)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char_not`.
+ */
+const char *
+e_str_find_char_not (const E_Str *s, char c)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char_not (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char_pat`.
+ */
+const char *
+e_str_find_char_pat (const E_Str *s, const char *accept)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char_pat (s->ptr, accept);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char_not_pat`.
+ */
+const char *
+e_str_find_char_not_pat (const E_Str *s, const char *reject)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char_not_pat (s->ptr, reject);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char_func`.
+ */
+const char *
+e_str_find_char_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_char_not_func`.
+ */
+const char *
+e_str_find_char_not_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return nullptr;
+	return e_cstr_find_char_not_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_find_str`.
+ */
+const char *
+e_str_find_str (const E_Str *haystack, const char *needle)
+{
+	if (!haystack) return nullptr;
+	return e_cstr_find_str (haystack->ptr, needle);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char`.
+ */
+const char *
+e_str_rfind_char (const E_Str *s, char c)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char_not`.
+ */
+const char *
+e_str_rfind_char_not (const E_Str *s, char c)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char_not (s->ptr, c);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char_pat`.
+ */
+const char *
+e_str_rfind_char_pat (const E_Str *s, const char *accept)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char_pat (s->ptr, accept);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char_not_pat`.
+ */
+const char *
+e_str_rfind_char_not_pat (const E_Str *s, const char *reject)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char_not_pat (s->ptr, reject);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char_func`.
+ */
+const char *
+e_str_rfind_char_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_char_not_func`.
+ */
+const char *
+e_str_rfind_char_not_func (const E_Str *s, E_Char_Predicate func)
+{
+	if (!s) return nullptr;
+	return e_cstr_rfind_char_not_func (s->ptr, func);
+}
+
+/**
+ * The `E_Str` wrapper for `e_cstr_rfind_str`.
+ */
+const char *
+e_str_rfind_str (const E_Str *haystack, const char *needle)
+{
+	if (!haystack) return nullptr;
+	return e_cstr_rfind_str (haystack->ptr, needle);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_contains`.
+ */
+bool
+e_str_contains (const E_Str *haystack, const char *needle)
+{
+	if (!haystack) return false;
+	return e_cstr_contains (haystack->ptr, needle);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_eq`.
+ */
+bool
+e_str_eq (const E_Str *a, const char *b)
+{
+	if (!a && !b) return true;
+	if (!a) return false;
+	return e_cstr_eq (a->ptr, b);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_eq_n`.
+ */
+bool
+e_str_eq_n (const E_Str *a, const char *b, usize n)
+{
+	if (!a && !b) return true;
+	if (!a) return false;
+	return e_cstr_eq_n (a->ptr, b, n);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_starts_with`.
+ */
+bool
+e_str_starts_with (const E_Str *s, const char *expect)
+{
+	if (!s) return false;
+	return e_cstr_starts_with (s->ptr, expect);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_ends_with`.
+ */
+bool
+e_str_ends_with (const E_Str *s, const char *expect)
+{
+	if (!s) return false;
+	return e_cstr_ends_with (s->ptr, expect);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_continues_with`.
+ */
+bool
+e_str_continues_with (const E_Str *s, const char *expect, usize pos)
+{
+	if (!s) return false;
+	return e_cstr_continues_with (s->ptr, expect, pos);
+}
+
+/**
+ * The `E_Str` wrapper for `e_str_distance`.
+ */
+usize
+e_str_distance (const E_Str *a, const char *b)
+{
+	if (!a) return e_cstr_len (b);
+	return e_cstr_distance (a->ptr, b);
 }
 
 #endif /* E_CONFIG_MODULE_STR */
