@@ -78,8 +78,9 @@ test_cstr (void)
 	char s5[] = "  foo   ";
 	char s6[] = "";
 	char s7[] = "  foo   ";
-	char s9[] = "fooXXbarXXXXbazXX";
+	char s8[] = "fooXXbarXXXXbazXX";
 	usize len;
+	E_Str_Split split;
 
 	e_test_assert_eq ("e_cstr_count_char", usize, e_cstr_count_char (s1, 'l'), 3);
 	e_test_assert_eq ("e_cstr_count_char nul", usize, e_cstr_count_char (s1, '\0'), 0);
@@ -88,9 +89,9 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_count_char_not_pat", usize, e_cstr_count_char_not_pat (s1, "load"), strlen (s1) - 6);
 	e_test_assert_eq ("e_cstr_count_char_func", usize, e_cstr_count_char_func (s1, islower), 8);
 	e_test_assert_eq ("e_cstr_count_char_not_func", usize, e_cstr_count_char_not_func (s1, islower), strlen (s1) - 8);
-	e_test_assert_eq ("e_cstr_count_str", usize, e_cstr_count_str (s9, "XX"), 4);
+	e_test_assert_eq ("e_cstr_count_str", usize, e_cstr_count_str (s8, "XX"), 4);
 	e_test_assert_eq ("e_cstr_count_str too long", usize, e_cstr_count_str (s3, "123456"), 0);
-	e_test_assert_eq ("e_cstr_count_str_overlap", usize, e_cstr_count_str_overlap (s9, "XX"), 5);
+	e_test_assert_eq ("e_cstr_count_str_overlap", usize, e_cstr_count_str_overlap (s8, "XX"), 5);
 	e_test_assert_eq ("e_cstr_count_lines 1", usize, e_cstr_count_lines (s1), 1);
 	e_test_assert_eq ("e_cstr_count_lines 2", usize, e_cstr_count_lines (s2), 2);
 	e_test_assert_eq ("e_cstr_len", usize, e_cstr_len (s3), strlen (s3));
@@ -148,7 +149,17 @@ test_cstr (void)
 	e_test_assert ("e_cstr_continues_with false", !e_cstr_continues_with (s1, "foo", 3));
 	e_test_assert_str_eq ("e_cstr_to_ascii_lower", e_cstr_to_ascii_lower (s1), "hello, world!");
 	e_test_assert_str_eq ("e_cstr_to_ascii_upper", e_cstr_to_ascii_upper (s1), "HELLO, WORLD!");
-	e_test_assert_eq ("e_cstr_distance 1", usize, e_cstr_distance ("kitten", "sitting"), 3);
+	e_test_assert_eq ("e_cstr_distance", usize, e_cstr_distance ("kitten", "sitting"), 3);
+
+	split = e_cstr_split_char ("/foo//bar/baz", '/');
+	e_test_assert_eq ("e_cstr_split_char num_items", usize, split.num_items, 5);
+	e_test_assert_str_eq ("e_cstr_split_char_next 1", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_char_next 2", e_cstr_split_next (&split), "foo");
+	e_test_assert_str_eq ("e_cstr_split_char_next 3", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_char_next 4", e_cstr_split_next (&split), "bar");
+	e_test_assert_str_eq ("e_cstr_split_char_next 5", e_cstr_split_next (&split), "baz");
+	e_test_assert_null ("e_cstr_split_char_next 6", e_cstr_split_next (&split));
+	e_cstr_split_deinit (&split);
 }
 
 static void

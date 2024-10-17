@@ -10,6 +10,7 @@
  *
  * Module dependencies:
  *  - e_alloc (optional)
+ *  - e_mem (optional)
  *  - e_debug (transitive; optional)
  *  - e_log (transitive; optional)
  *
@@ -70,7 +71,20 @@ bool e_cstr_ends_with (const char *s, const char *expect);
 bool e_cstr_continues_with (const char *s, const char *expect, usize pos);
 
 #if E_CONFIG_MODULE_ALLOC
+typedef struct {
+	usize num_items;
+	usize __next_item;
+	char *__buf;
+	char *__next;
+} E_Str_Split;
+
 usize e_cstr_distance (const char *a, const char *b);
+E_Str_Split e_cstr_split_char (const char *s, char c);
+// TODO E_Str_Split e_cstr_split_str (const char *s, const char *delim);
+// TODO E_Str_Split e_cstr_split_lines (const char *s);
+// TODO E_Str_Split e_cstr_split_whitespace (const char *s);
+const char *e_cstr_split_next (E_Str_Split *split);
+void e_cstr_split_deinit (E_Str_Split *split);
 #endif /* E_CONFIG_MODULE_ALLOC */
 
 #endif /* E_CONFIG_MODULE_CSTR */

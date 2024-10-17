@@ -5,6 +5,7 @@
 #include "convey.h"
 #include <ctype.h>
 #include <string.h>
+#include "e_mem.h"
 
 /**
  * Count the number of occurances of a character \c in the nul-terminated string
@@ -797,6 +798,72 @@ e_cstr_distance (const char *a, const char *b)
 	i = col[a_len];
 	e_free (col);
 	return i;
+}
+
+/**
+ * Split a nul-terminated string \s at the character \c. Returns a `E_Str_Split`
+ * iterator that can be used for examining the split up string. The returned
+ * iterator must be freed with `e_cstr_split_deinit`.
+ *
+ * Example usage:
+ *  | E_Str_Split split = e_cstr_split_char ("foo/bar/baz", '/');
+ *  | const char *part1 = e_cstr_split_next (&split);
+ *  | const char *part2 = e_cstr_split_next (&split);
+ *  | const char *part3 = e_cstr_split_next (&split);
+ *  | e_cstr_split_deinit (&split);
+ */
+E_Str_Split
+e_cstr_split_char (const char *s, char c)
+{
+	char *buf, *bufiter, *pos;
+	usize count;
+
+	if (!s) return (E_Str_Split) {0};
+
+	count = 1;
+	buf = e_mem_strdup (s);
+	bufiter = buf;
+	while ((pos = (char *) e_cstr_find_char (bufiter, c))) {
+		*pos = 0;
+		bufiter = pos + 1;
+		count += 1;
+	}
+
+	return (E_Str_Split) {
+		.num_items = count,
+		.__next_item = 0,
+		.__buf = buf,
+		.__next = buf,
+	};
+}
+
+/**
+ * Get the next item in the string split iterator \split. If no item is found,
+ * `nullptr` is returned. Note that since splitting up a string requires
+ * allocating new memory for the split items, the returned pointer is NOT part
+ * of the original string that was split up.
+ */
+const char *
+e_cstr_split_next (E_Str_Split *split)
+{
+	const char *ret;
+
+	if (!split || !split->__buf || !split->__next) return nullptr;
+	if (split->__next_item + 1 > split->num_items) return nullptr;
+	ret = split->__next;
+	split->__next_item += 1;
+	split->__next += strlen (split->__next) + 1;
+
+	return ret;
+}
+
+/**
+ * Deinitialize a string split iterator \split and free its occupied memory.
+ */
+void
+e_cstr_split_deinit (E_Str_Split *split)
+{
+	if (split) e_free (split->__buf);
 }
 
 #endif /* E_CONFIG_MODULE_ALLOC */

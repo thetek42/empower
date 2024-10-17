@@ -11,14 +11,15 @@
  *
  * Module dependencies:
  *  - e_alloc
+ *  - e_mem
  *  - e_debug (transient)
  *  - e_log (transient; optional)
  *
  ******************************************************************************/
 
-#if !E_CONFIG_MODULE_ALLOC
-# error "module e_vec depends on: e_alloc"
-#endif /* !E_CONFIG_MODULE_ALLOC */
+#if !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_MEM
+# error "module e_vec depends on: e_alloc, e_mem"
+#endif /* !E_CONFIG_MODULE_ALLOC || !E_CONFIG_MODULE_MEM */
 
 #include <string.h>
 #include "convey.h"
