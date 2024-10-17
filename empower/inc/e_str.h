@@ -55,6 +55,9 @@ void e_str_insert_char (E_Str *str, usize idx, char c);
 usize e_str_insert_cstr (E_Str *str, usize idx, const char *s);
 void e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len);
 usize e_str_remove (E_Str *str, usize idx, usize count);
+void e_str_trim_start (E_Str *str);
+void e_str_trim_end (E_Str *str);
+void e_str_trim (E_Str *str);
 
 /* e_cstr wrappers ************************************************************/
 

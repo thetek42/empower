@@ -302,6 +302,50 @@ e_str_remove (E_Str *str, usize idx, usize count)
 	return count;
 }
 
+/**
+ * Trim whitespace at the start of the string \str. \str is modified.
+ */
+void
+e_str_trim_start (E_Str *str)
+{
+	const char *start;
+	usize new_len;
+
+	if (!str || !str->ptr) return;
+	start = e_cstr_trim_start (str->ptr);
+	new_len = str->len - (usize) (start - str->ptr);
+	if (start != str->ptr) {
+		memmove (str->ptr, start, new_len);
+		str->ptr[new_len] = 0;
+		str->len = new_len;
+	}
+}
+
+/**
+ * Trim whitespace at the end of the string \str. \str is modified.
+ */
+void
+e_str_trim_end (E_Str *str)
+{
+	usize new_len;
+
+	if (!str || !str->ptr) return;
+	new_len = e_cstr_trim_end_with_len (str->ptr, str->len);
+	str->len = new_len;
+	str->ptr[str->len] = 0;
+}
+
+/**
+ * Trim whitespace at the start and end of the string \str. \str is modified.
+ */
+void
+e_str_trim (E_Str *str)
+{
+	if (!str) return;
+	e_str_trim_end (str);
+	e_str_trim_start (str);
+}
+
 /* e_cstr wrappers ************************************************************/
 
 /**

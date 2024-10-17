@@ -390,6 +390,24 @@ test_str (void)
 	e_test_assert_eq ("e_str_remove end len_ret", usize, len_ret, 5);
 
 	e_str_deinit (&str);
+
+	str = e_str_from_cstr ("   foo bar baz   ");
+	e_str_trim_start (&str);
+	e_test_assert_str_eq ("e_str_trim_start ptr", str.ptr, "foo bar baz   ");
+	e_test_assert_eq ("e_str_trim_start len", usize, str.len, strlen ("foo bar baz   "));
+	e_str_deinit (&str);
+
+	str = e_str_from_cstr ("   foo bar baz   ");
+	e_str_trim_end (&str);
+	e_test_assert_str_eq ("e_str_trim_end ptr", str.ptr, "   foo bar baz");
+	e_test_assert_eq ("e_str_trim_end len", usize, str.len, strlen ("   foo bar baz"));
+	e_str_deinit (&str);
+
+	str = e_str_from_cstr ("   foo bar baz   ");
+	e_str_trim (&str);
+	e_test_assert_str_eq ("e_str_trim ptr", str.ptr, "foo bar baz");
+	e_test_assert_eq ("e_str_trim len", usize, str.len, strlen ("foo bar baz"));
+	e_str_deinit (&str);
 }
 
 static void
