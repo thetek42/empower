@@ -60,9 +60,9 @@
 typedef void *nullptr_t; /* not exactly the same behaviour but whatever */
 #endif /* C_STDC_VERSION < C_STDC_VERSION_C23 || defined (C_COMPILER_MSVC) */
 
-#if C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSOIN < C_STDC_VERSION_C23
+#if C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSION < C_STDC_VERSION_C23
 # include <stdalign.h>
-#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSOIN < C_STDC_VERSION_C23 */
+#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 && C_STDC_VERSION < C_STDC_VERSION_C23 */
 
 #if C_STDC_VERSION >= C_STDC_VERSION_C23 && !defined (C_SYSTEM_MINGW) && !defined (C_SYSTEM_WIN32)
 # define __C_STDBIT_SUPPORTED 1
