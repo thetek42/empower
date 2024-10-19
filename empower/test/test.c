@@ -153,12 +153,22 @@ test_cstr (void)
 
 	split = e_cstr_split_char ("/foo//bar/baz", '/');
 	e_test_assert_eq ("e_cstr_split_char num_items", usize, split.num_items, 5);
-	e_test_assert_str_eq ("e_cstr_split_char_next 1", e_cstr_split_next (&split), "");
-	e_test_assert_str_eq ("e_cstr_split_char_next 2", e_cstr_split_next (&split), "foo");
-	e_test_assert_str_eq ("e_cstr_split_char_next 3", e_cstr_split_next (&split), "");
-	e_test_assert_str_eq ("e_cstr_split_char_next 4", e_cstr_split_next (&split), "bar");
-	e_test_assert_str_eq ("e_cstr_split_char_next 5", e_cstr_split_next (&split), "baz");
-	e_test_assert_null ("e_cstr_split_char_next 6", e_cstr_split_next (&split));
+	e_test_assert_str_eq ("e_cstr_split_char next 1", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_char next 2", e_cstr_split_next (&split), "foo");
+	e_test_assert_str_eq ("e_cstr_split_char next 3", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_char next 4", e_cstr_split_next (&split), "bar");
+	e_test_assert_str_eq ("e_cstr_split_char next 5", e_cstr_split_next (&split), "baz");
+	e_test_assert_null ("e_cstr_split_char next 6", e_cstr_split_next (&split));
+	e_cstr_split_deinit (&split);
+
+	split = e_cstr_split_str ("XXfooXXXbarXXXXbaz", "XX");
+	e_test_assert_eq ("e_cstr_split_str num_items", usize, split.num_items, 5);
+	e_test_assert_str_eq ("e_cstr_split_str next 1", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_str next 2", e_cstr_split_next (&split), "foo");
+	e_test_assert_str_eq ("e_cstr_split_str next 3", e_cstr_split_next (&split), "Xbar");
+	e_test_assert_str_eq ("e_cstr_split_str next 4", e_cstr_split_next (&split), "");
+	e_test_assert_str_eq ("e_cstr_split_str next 5", e_cstr_split_next (&split), "baz");
+	e_test_assert_null ("e_cstr_split_str next 6", e_cstr_split_next (&split));
 	e_cstr_split_deinit (&split);
 }
 

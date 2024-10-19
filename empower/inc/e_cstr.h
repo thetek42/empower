@@ -80,9 +80,8 @@ typedef struct {
 
 usize e_cstr_distance (const char *a, const char *b);
 E_Str_Split e_cstr_split_char (const char *s, char c);
-// TODO E_Str_Split e_cstr_split_str (const char *s, const char *delim);
-// TODO E_Str_Split e_cstr_split_lines (const char *s);
-// TODO E_Str_Split e_cstr_split_whitespace (const char *s);
+E_Str_Split e_cstr_split_str (const char *s, const char *delim);
+E_Str_Split e_cstr_split_lines (const char *s);
 const char *e_cstr_split_next (E_Str_Split *split);
 void e_cstr_split_deinit (E_Str_Split *split);
 #endif /* E_CONFIG_MODULE_ALLOC */

@@ -9,6 +9,7 @@
  * inference can be used in C23 for cleaner code.
  *
  * Module dependencies:
+ *  - e_cstr (optional)
  *  - e_debug (optional)
  *  - e_mem (optional)   
  *  - e_result (optional)
@@ -23,6 +24,7 @@
 #include <string.h>
 #include "convey.h"
 #include "e_types.h"
+#include "e_cstr.h"
 #include "e_debug.h"
 #include "e_macro.h"
 #include "e_mem.h"
@@ -152,7 +154,7 @@ extern struct __e_test_result __e_global_test;
 	do {                                                                   \
 		const char *result = (expr);                                   \
 		const char *other = (check);                                   \
-		if (strcmp (result, other) == 0) {                             \
+		if (e_cstr_eq (result, other)) {                               \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \

@@ -838,6 +838,68 @@ e_cstr_split_char (const char *s, char c)
 }
 
 /**
+ * Split a nul-terminated string \s at the delimiter given by the nul-terminated
+ * string \delim. Returns a `E_Str_Split` iterator that can be used for
+ * examining the split up string. The returned iterator must be freed with
+ * `e_cstr_split_deinit`. See `e_cstr_split_cstr` for an example.
+ */
+E_Str_Split
+e_cstr_split_str (const char *s, const char *delim)
+{
+	usize count, size, offset, len, delim_len;
+	char *buf, *bufiter, *pos;
+
+	if (!s) return (E_Str_Split) {0};
+
+	if (!delim || strlen (delim) == 0) {
+		buf = e_mem_strdup (s);
+		return (E_Str_Split) {
+			.num_items = 1,
+			.__next_item = 0,
+			.__buf = buf,
+			.__next = buf,
+		};
+	}
+
+	delim_len = strlen (delim);
+	count = e_cstr_count_str (s, delim);
+	size = strlen (s) - count * delim_len + count + 1;
+	buf = e_alloc (char, size);
+	bufiter = buf;
+	count = 0;
+	offset = 0;
+	while ((pos = (char *) e_cstr_find_str (s + offset, delim))) {
+		len = pos - (s + offset);
+		e_memcpy (bufiter, s + offset, char, len);
+		bufiter[len] = 0;
+		offset = pos - s + delim_len;
+		bufiter += len + 1;
+		count += 1;
+	}
+	strcpy (bufiter, s + offset);
+	count += 1;
+
+	return (E_Str_Split) {
+		.num_items = count,
+		.__next_item = 0,
+		.__buf = buf,
+		.__next = buf,
+	};
+}
+
+/**
+ * Split a nul-terminated string \s at newline characters. Returns a
+ * `E_Str_Split` iterator that can be used for examining the split up string.
+ * The returned iterator must be freed with `e_cstr_split_deinit`. See
+ * `e_cstr_split_char` for an example.
+ */
+E_Str_Split
+e_cstr_split_lines (const char *s)
+{
+	return e_cstr_split_char (s, '\n');
+}
+
+/**
  * Get the next item in the string split iterator \split. If no item is found,
  * `nullptr` is returned. Note that since splitting up a string requires
  * allocating new memory for the split items, the returned pointer is NOT part
