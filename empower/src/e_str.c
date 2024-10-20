@@ -63,9 +63,7 @@ e_str_from_slice (const char *s, usize len)
 {
 	char *out;
 
-	out = e_alloc (char, len + 1);
-	e_memcpy (out, s, char, len);
-	out[len] = 0;
+	out = e_mem_strdup (s);
 
 	return (E_Str) {
 		.ptr = out,
@@ -276,8 +274,8 @@ e_str_insert_slice (E_Str *str, usize idx, const char *s, usize len)
 		e_str_grow (str, str->len + len + 1);
 	}
 
-	e_memmove (&str->ptr[idx + len], &str->ptr[idx], char,
-	           str->len - idx + 1);
+	e_mem_move (&str->ptr[idx + len], &str->ptr[idx], char,
+	            str->len - idx + 1);
 	strncpy (&str->ptr[idx], s, len);
 	str->len += len;
 }
@@ -297,8 +295,8 @@ e_str_remove (E_Str *str, usize idx, usize count)
 		return count;
 	}
 	count = idx + count > str->len ? str->len - idx : count;
-	e_memmove (&str->ptr[idx], &str->ptr[idx + count], char,
-	           str->len - idx - count + 1);
+	e_mem_move (&str->ptr[idx], &str->ptr[idx + count], char,
+	            str->len - idx - count + 1);
 	str->len -= count;
 	str->ptr[str->len] = 0;
 	return count;
@@ -352,7 +350,7 @@ e_str_trim_start (E_Str *str)
 	start = e_cstr_trim_start (str->ptr);
 	new_len = str->len - (usize) (start - str->ptr);
 	if (start != str->ptr) {
-		e_memmove (str->ptr, start, char, new_len);
+		e_mem_move (str->ptr, start, char, new_len);
 		str->ptr[new_len] = 0;
 		str->len = new_len;
 	}

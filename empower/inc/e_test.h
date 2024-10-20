@@ -218,7 +218,7 @@ extern struct __e_test_result __e_global_test;
 #define e_test_assert_ptr_aligned(name, expr, alignment)                       \
 	do {                                                                   \
 		const void *result = (expr);                                   \
-		if (e_mem_is_aligned (result, alignment)) {                    \
+		if (e_mem_is_aligned_to (result, alignment)) {                 \
 			__e_global_test.success += 1;                          \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \

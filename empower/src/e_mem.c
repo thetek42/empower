@@ -9,7 +9,7 @@
  * zeroed. When \ptr is `nullptr` or \n is 0, `true` is returned.
  */
 bool
-e_mem_is_zero (const void *ptr, usize n)
+e_mem_is_zero_size (const void *ptr, usize n)
 {
 	const u8 *p;
 	usize i;
@@ -33,7 +33,7 @@ e_mem_is_zero (const void *ptr, usize n)
  * with `memcmp`).
  */
 bool
-e_mem_eq (const void *a, const void *b, usize n)
+e_mem_eq_size (const void *a, const void *b, usize n)
 {
 	if (a == b) return true;
 	if (!a || !b) return false;
@@ -45,7 +45,7 @@ e_mem_eq (const void *a, const void *b, usize n)
  * is performed.
  */
 void
-e_mem_swap (void *a, void *b, usize n)
+e_mem_swap_size (void *a, void *b, usize n)
 {
 	u8 *ap, *bp, tmp;
 	usize i;
@@ -64,7 +64,7 @@ e_mem_swap (void *a, void *b, usize n)
  * Checks if the pointer \ptr is aligned to \align bytes.
  */
 bool
-e_mem_is_aligned (const void *ptr, usize align)
+e_mem_is_aligned_to (const void *ptr, usize align)
 {
 	return ((uintptr_t) ptr % align) == 0;
 }
@@ -106,7 +106,7 @@ e_mem_strdup (const char *s)
  * is 0, no allocation is performed and `nullptr` is returned.
  */
 void *
-e_mem_dup (const void *ptr, usize n)
+e_mem_clone_size (const void *ptr, usize n)
 {
 	void *ret;
 

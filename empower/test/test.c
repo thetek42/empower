@@ -58,7 +58,7 @@ test_arena (void)
 	e_test_assert_ptr_eq ("e_arena_alloc_zero ptr", ptr, arena.ptr + 4);
 	e_test_assert_ptr_aligned ("e_arena_alloc_zero align", ptr, 2);
 	e_test_assert_eq ("e_arena_alloc_zero len", usize, arena.len, 6);
-	e_test_assert ("e_arena_alloc_zero mem", e_mem_is_zero (ptr, 2));
+	e_test_assert ("e_arena_alloc_zero mem", e_mem_is_zero (ptr, u16, 1));
 
 	ptr = e_arena_alloc_aligned (&arena, 8, 8);
 	e_test_assert_ptr_eq ("e_arena_alloc_aligned ptr", ptr, arena.ptr + 8);

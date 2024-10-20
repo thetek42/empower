@@ -870,7 +870,7 @@ e_cstr_split_str (const char *s, const char *delim)
 	offset = 0;
 	while ((pos = (char *) e_cstr_find_str (s + offset, delim))) {
 		len = pos - (s + offset);
-		e_memcpy (bufiter, s + offset, char, len);
+		e_mem_copy (bufiter, s + offset, char, len);
 		bufiter[len] = 0;
 		offset = pos - s + delim_len;
 		bufiter += len + 1;

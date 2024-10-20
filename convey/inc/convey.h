@@ -93,7 +93,7 @@ uint64_t stdc_bit_ceil_u64 (uint64_t x);
 # elif defined (C_COMPILER_MSVC) /* defined (C_COMPILER_GCC) || defined (C_COMPILER_CLANG) */
 #  define alignof(expr) __alignof (expr)
 # else /* defined (C_COMPILER_MSVC) */
-#  define __E_ALIGNOF_NOT_SUPPORTED
+#  define C_ALIGNOF_NOT_SUPPORTED
 # endif /* defined (C_COMPILER_MSVC) */
 #endif /* C_STDC_VERSION < C_STDC_VERSION_C11 */
 

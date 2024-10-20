@@ -38,10 +38,10 @@ E_VEC_DECLARE (u8, __E_Vec_Byte, __e_vec_byte);
  */
 typedef __E_Vec_Byte E_Arena;
 
-#if !__E_ALIGNOF_NOT_SUPPORTED
+#ifndef C_ALIGNOF_NOT_SUPPORTED
 # define e_arena_alloc(arena, T, nmemb) __e_arena_alloc ((arena), sizeof (T) * (nmemb), alignof (T))
 # define e_arena_alloc_zero(arena, T, nmemb) __e_arena_alloc_zero ((arena), sizeof (T) * (nmemb), alignof (T))
-#endif /* !__E_ALIGNOF_NOT_SUPPORTED */
+#endif /* C_ALIGNOF_NOT_SUPPORTED */
 
 #define e_arena_alloc_size(arena, size) __e_arena_alloc ((arena), (size), E_MAX_ALIGN)
 #define e_arena_alloc_aligned(arena, size, align) __e_arena_alloc ((arena), (size), (align))
