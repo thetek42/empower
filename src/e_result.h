@@ -358,7 +358,7 @@ e_result_to_str (E_Result res)
 	case E_ERR_RFKILL:                    return "rfkill error";
 	case E_ERR_HARDWARE_ERROR:            return "hardware error";
 	case E_ERR_FAIL:                      return "failure";
-	default:                              return nullptr;
+	default:                              return "(?)";
 	}
 }
 

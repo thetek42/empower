@@ -253,7 +253,7 @@ test_ini (void)
 		"rab = zab\n";
 
 	e_test_assert_ok ("e_ini_parse_str", e_ini_parse_str (&ini, ini_str));
-	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, nullptr, "no_section")->value, "123");
+	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, NULL, "no_section")->value, "123");
 	e_test_assert_str_eq ("e_ini_get_entry section", e_ini_get_entry (&ini, "bar", "rab")->value, "zab");
 	e_test_assert_str_eq ("e_ini_get_entry empty", e_ini_get_entry (&ini, "foo", "qux")->value, "");
 	e_test_assert_null ("e_ini_get_entry invalid section", e_ini_get_entry (&ini, "kjfadsf", "foo"));
@@ -496,7 +496,7 @@ test_vec (void)
 	e_test_assert ("e_vec_contains_slice true", e_vec_int_contains_slice (&vec, slice2, 2));
 	e_test_assert ("e_vec_contains_slice false", !e_vec_int_contains_slice (&vec, slice3, 2));
 	e_test_assert_ptr_eq ("e_vec_get existing", e_vec_int_get (&vec, 4), &vec.ptr[4]);
-	e_test_assert_ptr_eq ("e_vec_get nonexisting", e_vec_int_get (&vec, 42), nullptr);
+	e_test_assert_null ("e_vec_get nonexisting", e_vec_int_get (&vec, 42));
 	e_test_assert ("e_vec_set ok", e_vec_int_set (&vec, 1, 42));
 	e_test_assert ("e_vec_set out of range", !e_vec_int_set (&vec, 42, 1));
 	e_test_assert ("e_vec_set_slice ok", e_vec_int_set_slice (&vec, 1, slice4, 2));
@@ -558,7 +558,7 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_count_slice 1", usize, e_vec_int_count_slice (&vec, slice2, 2), 2);
 	e_test_assert_eq ("e_vec_count_slice 2", usize, e_vec_int_count_slice (&vec, slice5, 2), 1);
 	e_test_assert_eq ("e_vec_count_slice_overlap", usize, e_vec_int_count_slice_overlap (&vec, slice5, 2), 2);
-	e_vec_int_pop_slice (&vec, nullptr, 2);
+	e_vec_int_pop_slice (&vec, NULL, 2);
 
 	/* [1,2,3,11,4,5,3,4,6] */
 	len = e_vec_int_pop_slice (&vec, &popped, 4);

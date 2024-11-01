@@ -324,7 +324,7 @@ e_str_append_fmt (E_Str *str, const char *fmt, ...)
 	if (!str) return 0;
 
 	va_start (ap, fmt);
-	written = vsnprintf (nullptr, 0, fmt, ap);
+	written = vsnprintf (NULL, 0, fmt, ap);
 	va_end (ap);
 
 	if (str->len + (size_t) written + 1 > str->cap) {

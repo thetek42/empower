@@ -95,7 +95,7 @@ e_debug_hexdump (const void *ptr, size_t len)
 
 	fprintf (stderr, "\n---=== hexdump %p ===---\n\n", (void *) p);
 
-	if (p == nullptr) {
+	if (p == NULL) {
 		fprintf (stderr, "nullptr\n\n");
 		return;
 	}
