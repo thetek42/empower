@@ -19,7 +19,7 @@ all: $(TEST_BIN)
 	@./$(TEST_BIN)
 
 clean:
-	rm -rf bin/
+	rm -rf bin/$(IDENT)
 
 .PHONY: all clean
 
