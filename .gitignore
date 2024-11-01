@@ -1,6 +1,6 @@
 bin/
 obj/
 .cache/
-empower/test/test.txt
+test/test.txt
 compile_commands.json
 *.pdb
