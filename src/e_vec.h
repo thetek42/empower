@@ -14,6 +14,14 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+/* compatibility annoyances ***************************************************/
+
+#if !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+# define __E_SSIZE_T_DEFINED
+# include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif /* !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+
 /* public interface ***********************************************************/
 
 #define __e_vec_ensure_user_has_to_use_semicolon() size_t strlen (const char *s)
@@ -82,10 +90,30 @@
 
 /* implementation *************************************************************/
 
-#include <stdbit.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+# define e_priv_stdc_bit_ceil(x) (size_t) e_priv_stdc_bit_ceil_u64 ((uint64_t) x)
+static uint64_t
+e_priv_stdc_bit_ceil_u64 (uint64_t x)
+{
+	x--;
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+	x |= x >> 32;
+	x++;
+	return x;
+}
+#else /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+# include <stdbit.h>
+# define e_priv_stdc_bit_ceil(x) stdc_bit_ceil (x)
+#endif /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /**
  * Implement the functions required for a vector of type \T with type \type_name
@@ -236,7 +264,7 @@
 	{                                                                      \
 		if (!vec) return;                                              \
 		if (cap <= vec->cap) return;                                   \
-		vec->cap = stdc_bit_ceil (cap);                                \
+		vec->cap = e_priv_stdc_bit_ceil (cap);                         \
 		vec->ptr = realloc (vec->ptr, sizeof (T) * vec->cap);          \
 	}                                                                      \
                                                                                \
@@ -263,7 +291,7 @@
 		if (!vec) return;                                              \
 		if (vec->len >= n) return;                                     \
 		vec->len = n;                                                  \
-		vec->cap = stdc_bit_ceil (n);                                  \
+		vec->cap = e_priv_stdc_bit_ceil (n);                           \
 		vec->ptr = realloc (vec->ptr, sizeof (T) * n);                 \
 	}                                                                      \
                                                                                \

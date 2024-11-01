@@ -19,8 +19,7 @@ all: $(TEST_BIN)
 	@./$(TEST_BIN)
 
 clean:
-	rm -rf obj/ bin/
-	$(CONVEY_MK) clean
+	rm -rf bin/
 
 .PHONY: all clean
 

@@ -52,8 +52,6 @@ E_Str e_str_clone (E_Str *str);
 void e_str_append_char (E_Str *str, char c);
 size_t e_str_append_cstr (E_Str *str, const char *s);
 void e_str_append_slice (E_Str *str, const char *s, size_t len);
-__attribute__ ((format (printf, 3, 4))) size_t e_str_append_fmt_n (E_Str *str, size_t max_fmt_len, const char *fmt, ...);
-__attribute__ ((format (printf, 2, 3))) size_t e_str_append_fmt (E_Str *str, const char *fmt, ...);
 void e_str_insert_char (E_Str *str, size_t idx, char c);
 size_t e_str_insert_cstr (E_Str *str, size_t idx, const char *s);
 void e_str_insert_slice (E_Str *str, size_t idx, const char *s, size_t len);
@@ -63,6 +61,14 @@ bool e_str_remove_suffix (E_Str *str, const char *suffix);
 void e_str_trim_start (E_Str *str);
 void e_str_trim_end (E_Str *str);
 void e_str_trim (E_Str *str);
+
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+size_t e_str_append_fmt_n (E_Str *str, size_t max_fmt_len, const char *fmt, ...);
+size_t e_str_append_fmt (E_Str *str, const char *fmt, ...);
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+__attribute__ ((format (printf, 3, 4))) size_t e_str_append_fmt_n (E_Str *str, size_t max_fmt_len, const char *fmt, ...);
+__attribute__ ((format (printf, 2, 3))) size_t e_str_append_fmt (E_Str *str, const char *fmt, ...);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /* --- e_cstr wrappers --- */
 
@@ -284,7 +290,9 @@ e_str_append_slice (E_Str *str, const char *s, size_t len)
  * entire formatted string could have been appended. If the entire string was
  * appended, this is equal to the number of bytes actually written.
  */
+#if !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32))
 __attribute__ ((format (printf, 3, 4)))
+#endif /* !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)) */
 size_t
 e_str_append_fmt_n (E_Str *str, size_t max_fmt_len, const char *fmt, ...)
 {
@@ -314,7 +322,9 @@ e_str_append_fmt_n (E_Str *str, size_t max_fmt_len, const char *fmt, ...)
  * determined automatically and the string is resized accordingly. tReturns he
  * number of bytes that were written to the string.
  */
+#if !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32))
 __attribute__ ((format (printf, 2, 3)))
+#endif /* !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)) */
 size_t
 e_str_append_fmt (E_Str *str, const char *fmt, ...)
 {

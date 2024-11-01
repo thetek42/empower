@@ -78,18 +78,25 @@
 		exit (EXIT_FAILURE);                                           \
 	} while (0)
 
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+void e_log_priv_impl (const char *file_pos, const char *fmt, ...);
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 __attribute__ ((format (printf, 2, 3)))
 void e_log_priv_impl (const char *file_pos, const char *fmt, ...);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 #endif /* __STDC_VERSION__ >= 202000L && defined (__GNUC__) */
 
 /* implementation *************************************************************/
 
-#if __STDC_VERSION__ < 202000L || !defined (__GNUC__)
+#ifdef E_LOG_IMPL
+# if __STDC_VERSION__ < 202000L || !defined (__GNUC__)
 
-#include <stdarg.h>
+# include <stdarg.h>
 
+#  if !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32))
 __attribute__ ((format (printf, 2, 3)))
+#  endif /* !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)) */
 void
 e_log_priv_impl (const char *file_pos, const char *fmt, ...)
 {
@@ -101,6 +108,7 @@ e_log_priv_impl (const char *file_pos, const char *fmt, ...)
 	fprintf (stderr, "%s", file_pos);
 }
 
-#endif /* __STDC_VERSION__ < 202000L || !defined (__GNUC__) */
+# endif /* __STDC_VERSION__ < 202000L || !defined (__GNUC__) */
+#endif /* E_LOG_IMPL */
 
 #endif /* _EMPOWER_LOG_H_ */

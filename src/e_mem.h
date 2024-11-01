@@ -113,13 +113,17 @@ e_mem_is_aligned_to (const void *ptr, size_t align)
 char *
 e_mem_strdup (const char *s)
 {
+	size_t len;
 	char *res;
 
-	res = strdup (s);
+	if (!s) return NULL;
+	len = strlen (s);
+	res = malloc (sizeof (char) * (len + 1));
 	if (res == NULL) {
 		fprintf (stderr, "[e_mem] failed to strdup\n");
 		exit (EXIT_FAILURE);
 	}
+	strcpy (res, s);
 
 	return res;
 }

@@ -11,6 +11,16 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+/* compatibility annoyances ***************************************************/
+
+#if !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+# define __E_SSIZE_T_DEFINED
+# include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif /* !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+
+/* public interface ***********************************************************/
+
 typedef int8_t i8;
 typedef int16_t i16;
 typedef uint8_t u8;

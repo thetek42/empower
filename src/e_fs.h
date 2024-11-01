@@ -66,7 +66,6 @@ E_Result e_fs_file_set_pos_end (E_File *file, size_t pos);
 E_Result e_fs_file_rewind (E_File *file);
 E_Result e_fs_file_read (E_File *file, char *out, size_t max_len, size_t *len_out);
 E_Result e_fs_file_write (E_File *file, const char *data, size_t len);
-__attribute__ ((format (printf, 3, 4))) E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...);
 bool e_fs_path_exists (const char *path);
 bool e_fs_is_file (const char *path);
 bool e_fs_is_dir (const char *path);
@@ -74,6 +73,13 @@ bool e_fs_is_link (const char *path);
 E_Result e_fs_dir_create (const char *path, E_Fs_Permissions perm);
 E_Result e_fs_file_read_all (E_File *file, char **out, size_t *len_out);
 E_Result e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out);
+
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...);
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+__attribute__ ((format (printf, 3, 4)))
+E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /* implementation *************************************************************/
 
@@ -83,8 +89,19 @@ E_Result e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out);
 #include <limits.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <unistd.h>
+
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+# include <errhandlingapi.h>
+# include <fileapi.h>
+# include <io.h>
+# include <sys/stat.h>
+# include <winerror.h>
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+# include <sys/stat.h>
+# include <unistd.h>
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 static const char *const mode_str_table[] = {
 	"r", /* E_FS_OPEN_MODE_READ_ONLY */
@@ -339,7 +356,9 @@ e_fs_file_write (E_File *file, const char *data, size_t len)
  * the number of bytes written will be stored in \written. If an error occurs,
  * \written is set to 0.
  */
+#if !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32))
 __attribute__ ((format (printf, 3, 4)))
+#endif /* !(defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)) */
 E_Result
 e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...)
 {
@@ -370,7 +389,13 @@ e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...)
 bool
 e_fs_path_exists (const char *path)
 {
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES;
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 	return access (path, F_OK) == 0;
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 }
 
 /**
@@ -379,31 +404,50 @@ e_fs_path_exists (const char *path)
 bool
 e_fs_is_file (const char *path)
 {
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES /* TODO idk about this */
+	       && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 	struct stat s;
 	stat (path, &s);
 	return S_ISREG (s.st_mode);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 }
 
 /**
- * Check if a path points to a file.
+ * Check if a path points to a directory.
  */
 bool
 e_fs_is_dir (const char *path)
 {
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES
+	       && attrs & FILE_ATTRIBUTE_DIRECTORY;
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 	struct stat s;
 	stat (path, &s);
 	return S_ISDIR (s.st_mode);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 }
 
 /**
- * Check if a path points to a file.
+ * Check if a path points to a symbolic link.
  */
 bool
 e_fs_is_link (const char *path)
 {
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+	(void) path;
+	return false; /* TODO how to symlink? windows weirdness, as usual... */
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 	struct stat s;
 	stat (path, &s);
 	return S_ISLNK (s.st_mode);
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 }
 
 /**
@@ -412,12 +456,28 @@ e_fs_is_link (const char *path)
 E_Result
 e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 {
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+	DWORD error;
+	BOOL win_ret;
+	(void) perm; /* TODO do dir perms even exist on windows? */
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	win_ret = CreateDirectoryA (path, NULL); /* TODO should be W */
+	if (win_ret == 0) {
+		error = GetLastError ();
+		switch (error) {
+		case ERROR_ALREADY_EXISTS: return E_ERR_EXISTS;
+		case ERROR_PATH_NOT_FOUND: return E_ERR_FILE_NOT_FOUND;
+		default:                   return E_ERR_PERMISSION_DENIED;
+		}
+	}
+	return E_OK;
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 	int ret;
-
 	if (!path) return E_ERR_INVALID_ARGUMENT;
 	ret = mkdir (path, (mode_t) perm);
 	if (ret < 0) return E_RESULT_FROM_ERRNO ();
 	return E_OK;
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 }
 
 /**
