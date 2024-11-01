@@ -4,3 +4,4 @@ obj/
 test/test.txt
 compile_commands.json
 *.pdb
+*.obj
