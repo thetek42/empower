@@ -155,7 +155,8 @@ extern struct e_test_result e_global_test;
 	do {                                                                   \
 		const char *result = (expr);                                   \
 		const char *other = (check);                                   \
-		if (e_cstr_eq (result, other)) {                               \
+		if (result == other ||                                         \
+		    (result && other && !strcmp (result, other))) {            \
 			e_global_test.success += 1;                            \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \
@@ -219,7 +220,7 @@ extern struct e_test_result e_global_test;
 #define e_test_assert_ptr_aligned(name, expr, alignment)                       \
 	do {                                                                   \
 		const void *result = (expr);                                   \
-		if (e_mem_is_aligned_to (result, alignment)) {                 \
+		if (((uintptr_t) ptr % alignment) == 0) {                      \
 			e_global_test.success += 1;                            \
 		} else {                                                       \
 			int p = fprintf (stderr, __E_TEST_ASSERT_FMT (name));  \

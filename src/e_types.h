@@ -1,7 +1,7 @@
 #ifndef _EMPOWER_TYPES_H_
 #define _EMPOWER_TYPES_H_
 
-/*! e_test ********************************************************************
+/*! e_types *******************************************************************
  * 
  * This module provides convenience typedefs.
  *
@@ -9,17 +9,25 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 /* compatibility annoyances ***************************************************/
 
-#if !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-# define __E_SSIZE_T_DEFINED
-# include <basetsd.h>
+#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+# if !defined (__E_SSIZE_T_DEFINED)
+#  define __E_SSIZE_T_DEFINED
+#  include <basetsd.h>
 typedef SSIZE_T ssize_t;
-#endif /* !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+# endif /* !defined (__E_SSIZE_T_DEFINED) */
+#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+# include <sys/types.h>
+#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /* public interface ***********************************************************/
+
+#if __STDC_VERSION__ < 202000L
+# define nullptr NULL
+typedef void *nullptr_t;
+#endif /* __STDC_VERSION__ < 202000L */
 
 typedef int8_t i8;
 typedef int16_t i16;

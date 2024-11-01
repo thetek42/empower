@@ -86,7 +86,7 @@ test_cstr (void)
 	e_test_assert_eq ("e_cstr_count_lines 1", usize, e_cstr_count_lines (s1), 1);
 	e_test_assert_eq ("e_cstr_count_lines 2", usize, e_cstr_count_lines (s2), 2);
 	e_test_assert_eq ("e_cstr_len", usize, e_cstr_len (s3), strlen (s3));
-	e_test_assert_eq ("e_cstr_len nullptr", usize, e_cstr_len (NULL), 0);
+	e_test_assert_eq ("e_cstr_len nullptr", usize, e_cstr_len (nullptr), 0);
 	e_test_assert ("e_cstr_is_blank false", !e_cstr_is_blank (s1));
 	e_test_assert ("e_cstr_is_blank true", e_cstr_is_blank (s2));
 	e_test_assert ("e_cstr_is_ascii false", !e_cstr_is_ascii (s4));
@@ -117,8 +117,8 @@ test_cstr (void)
 	e_test_assert_null ("e_cstr_rfind_char_not_func nonexistant", e_cstr_rfind_char_not_func (s3, isdigit));
 	e_test_assert_ptr_eq ("e_cstr_rfind_str existant", e_cstr_rfind_str (s4, "en"), s4 + 24);
 	e_test_assert_null ("e_cstr_rfind_str nonexistant", e_cstr_rfind_str (s5, "es"));
-	e_test_assert ("e_cstr_eq null null", e_cstr_eq (NULL, NULL));
-	e_test_assert ("e_cstr_eq ptr null", !e_cstr_eq (s5, NULL));
+	e_test_assert ("e_cstr_eq null null", e_cstr_eq (nullptr, nullptr));
+	e_test_assert ("e_cstr_eq ptr null", !e_cstr_eq (s5, nullptr));
 	e_test_assert ("e_cstr_eq ptr eq ptr", e_cstr_eq (s5, s5));
 	e_test_assert ("e_cstr_eq eq", e_cstr_eq (s5, s7));
 	e_test_assert ("e_cstr_eq not eq", !e_cstr_eq (s5, s4));
@@ -253,7 +253,7 @@ test_ini (void)
 		"rab = zab\n";
 
 	e_test_assert_ok ("e_ini_parse_str", e_ini_parse_str (&ini, ini_str));
-	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, NULL, "no_section")->value, "123");
+	e_test_assert_str_eq ("e_ini_get_entry no_section", e_ini_get_entry (&ini, nullptr, "no_section")->value, "123");
 	e_test_assert_str_eq ("e_ini_get_entry section", e_ini_get_entry (&ini, "bar", "rab")->value, "zab");
 	e_test_assert_str_eq ("e_ini_get_entry empty", e_ini_get_entry (&ini, "foo", "qux")->value, "");
 	e_test_assert_null ("e_ini_get_entry invalid section", e_ini_get_entry (&ini, "kjfadsf", "foo"));
@@ -558,7 +558,7 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_count_slice 1", usize, e_vec_int_count_slice (&vec, slice2, 2), 2);
 	e_test_assert_eq ("e_vec_count_slice 2", usize, e_vec_int_count_slice (&vec, slice5, 2), 1);
 	e_test_assert_eq ("e_vec_count_slice_overlap", usize, e_vec_int_count_slice_overlap (&vec, slice5, 2), 2);
-	e_vec_int_pop_slice (&vec, NULL, 2);
+	e_vec_int_pop_slice (&vec, nullptr, 2);
 
 	/* [1,2,3,11,4,5,3,4,6] */
 	len = e_vec_int_pop_slice (&vec, &popped, 4);
