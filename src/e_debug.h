@@ -56,7 +56,7 @@
 		fprintf (stderr, " (" __E_DEBUG_FILE_LINE ")\n");              \
 	} while (0)
 
-#endif /* C_STDC_VERSION >= C_STDC_VERSION_C11 */
+#endif /* __STDC_VERSION__ >= 201112L */
 
 /**
  * This is the same as `assert()`, but with slightly better error reporting.
