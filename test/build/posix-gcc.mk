@@ -7,7 +7,7 @@ CFLAGS += -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -pedantic
 CFLAGS += -Wno-sign-conversion -Wno-attributes -Wno-stringop-truncation
 CFLAGS += -DDEBUG -Og -ggdb3 -fsanitize=undefined,address,leak
 
-IDENT := posix-gcc-$(STDC)-$(MODE)
+IDENT := posix-gcc-$(STDC)
 
 HEADERS := $(wildcard src/*.h)
 TEST_SRC := $(wildcard test/*.c)

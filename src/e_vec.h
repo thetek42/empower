@@ -16,6 +16,8 @@
 
 /* public interface ***********************************************************/
 
+#define __e_vec_ensure_user_has_to_use_semicolon() size_t strlen (const char *s)
+
 /**
  * Declare the struct and functions required for a vector of type \T. The type
  * of the vector will be equal to \type_name. All functions will start with
@@ -76,8 +78,7 @@
 	size_t prefix##_count_slice (const type_name *vec, const T *slice, size_t len); \
 	size_t prefix##_count_slice_overlap (const type_name *vec, const T *slice, size_t len); \
                                                                                \
-        /* ensure that ; must follow macro invokation: */                      \
-	static_assert (true, "")
+	__e_vec_ensure_user_has_to_use_semicolon ()
 
 /* implementation *************************************************************/
 
@@ -652,7 +653,6 @@
 		return count;                                                  \
 	}                                                                      \
                                                                                \
-        /* ensure that ; must follow macro invokation: */                      \
-	static_assert (true, "")
+	__e_vec_ensure_user_has_to_use_semicolon ()
 
 #endif /* _EMPOWER_VEC_H_ */
