@@ -384,103 +384,6 @@ e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...)
 }
 
 /**
- * Check if a path exists.
- */
-bool
-e_fs_path_exists (const char *path)
-{
-#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
-	return attrs != INVALID_FILE_ATTRIBUTES;
-#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-	return access (path, F_OK) == 0;
-#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-}
-
-/**
- * Check if a path points to a file.
- */
-bool
-e_fs_is_file (const char *path)
-{
-#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
-	return attrs != INVALID_FILE_ATTRIBUTES /* TODO idk about this */
-	       && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
-#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-	struct stat s;
-	stat (path, &s);
-	return S_ISREG (s.st_mode);
-#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-}
-
-/**
- * Check if a path points to a directory.
- */
-bool
-e_fs_is_dir (const char *path)
-{
-#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
-	return attrs != INVALID_FILE_ATTRIBUTES
-	       && attrs & FILE_ATTRIBUTE_DIRECTORY;
-#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-	struct stat s;
-	stat (path, &s);
-	return S_ISDIR (s.st_mode);
-#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-}
-
-/**
- * Check if a path points to a symbolic link.
- */
-bool
-e_fs_is_link (const char *path)
-{
-#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-	(void) path;
-	return false; /* TODO how to symlink? windows weirdness, as usual... */
-#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-	struct stat s;
-	stat (path, &s);
-	return S_ISLNK (s.st_mode);
-#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-}
-
-/**
- * Create a directory at path \path with permissions \perm.
- */
-E_Result
-e_fs_dir_create (const char *path, E_Fs_Permissions perm)
-{
-#if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-	DWORD error;
-	BOOL win_ret;
-	(void) perm; /* TODO do dir perms even exist on windows? */
-	if (!path) return E_ERR_INVALID_ARGUMENT;
-	win_ret = CreateDirectoryA (path, NULL); /* TODO should be W */
-	if (win_ret == 0) {
-		error = GetLastError ();
-		switch (error) {
-		case ERROR_ALREADY_EXISTS: return E_ERR_EXISTS;
-		case ERROR_PATH_NOT_FOUND: return E_ERR_FILE_NOT_FOUND;
-		default:                   return E_ERR_PERMISSION_DENIED;
-		}
-	}
-	return E_OK;
-#else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-	int ret;
-	if (!path) return E_ERR_INVALID_ARGUMENT;
-	ret = mkdir (path, (mode_t) perm);
-	if (ret < 0) return E_RESULT_FROM_ERRNO ();
-	return E_OK;
-#endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-}
-
-/**
  * Reads the entire content of the file with path \path into a buffer pointed to
  * by \out. The file will be opened and closed automatically. The behaviour and
  * arguments of this function are essentially the same as `e_fs_file_read_all`.
@@ -582,6 +485,137 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 
 	return E_OK;
 }
+
+# if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+
+/**
+ * Check if a path exists.
+ */
+bool
+e_fs_path_exists (const char *path)
+{
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES;
+}
+
+/**
+ * Check if a path points to a file.
+ */
+bool
+e_fs_is_file (const char *path)
+{
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES /* TODO idk about this */
+	       && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+/**
+ * Check if a path points to a directory.
+ */
+bool
+e_fs_is_dir (const char *path)
+{
+	DWORD attrs;
+	attrs = GetFileAttributesA (path); /* TODO should be W */
+	return attrs != INVALID_FILE_ATTRIBUTES
+	       && attrs & FILE_ATTRIBUTE_DIRECTORY;
+}
+
+/**
+ * Check if a path points to a symbolic link.
+ */
+bool
+e_fs_is_link (const char *path)
+{
+	(void) path;
+	return false; /* TODO how to symlink? windows weirdness, as usual... */
+}
+
+/**
+ * Create a directory at path \path with permissions \perm.
+ */
+E_Result
+e_fs_dir_create (const char *path, E_Fs_Permissions perm)
+{
+	DWORD error;
+	BOOL win_ret;
+
+	(void) perm; /* TODO do dir perms even exist on windows? */
+
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	win_ret = CreateDirectoryA (path, NULL); /* TODO should be W */
+	if (win_ret == 0) {
+		error = GetLastError ();
+		switch (error) {
+		case ERROR_ALREADY_EXISTS: return E_ERR_EXISTS;
+		case ERROR_PATH_NOT_FOUND: return E_ERR_FILE_NOT_FOUND;
+		default:                   return E_ERR_PERMISSION_DENIED;
+		}
+	}
+
+	return E_OK;
+}
+
+# else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+
+/**
+ * Check if a path exists.
+ */
+bool
+e_fs_path_exists (const char *path)
+{
+	return access (path, F_OK) == 0;
+}
+
+/**
+ * Check if a path points to a file.
+ */
+bool
+e_fs_is_file (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISREG (s.st_mode);
+}
+
+/**
+ * Check if a path points to a directory.
+ */
+bool
+e_fs_is_dir (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISDIR (s.st_mode);
+}
+
+/**
+ * Check if a path points to a symbolic link.
+ */
+bool
+e_fs_is_link (const char *path)
+{
+	struct stat s;
+	stat (path, &s);
+	return S_ISLNK (s.st_mode);
+}
+
+/**
+ * Create a directory at path \path with permissions \perm.
+ */
+E_Result
+e_fs_dir_create (const char *path, E_Fs_Permissions perm)
+{
+	int ret;
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	ret = mkdir (path, (mode_t) perm);
+	if (ret < 0) return E_RESULT_FROM_ERRNO ();
+	return E_OK;
+}
+
+# endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 #endif /* E_FS_IMPL */
 

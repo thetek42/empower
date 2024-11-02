@@ -24,10 +24,10 @@ typedef SSIZE_T ssize_t;
 
 /* public interface ***********************************************************/
 
-#if __STDC_VERSION__ < 202000L
+#if __STDC_VERSION__ < 202000L || defined (_MSC_VER)
 # define nullptr NULL
 typedef void *nullptr_t;
-#endif /* __STDC_VERSION__ < 202000L */
+#endif /* __STDC_VERSION__ < 202000L || defined (_MSC_VER) */
 
 typedef int8_t i8;
 typedef int16_t i16;
