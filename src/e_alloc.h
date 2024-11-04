@@ -24,15 +24,16 @@
 
 /* public interface ***********************************************************/
 
-#define e_alloc(type, nmemb) __e_mem_alloc (sizeof (type) * (nmemb))
-#define e_alloc_zero(type, nmemb) __e_mem_calloc ((nmemb), sizeof (type))
-#define e_realloc(ptr, type, nmemb) __e_mem_realloc ((ptr), sizeof (type) * (nmemb))
+#define e_alloc(type, nmemb) e_alloc_size (sizeof (type) * (nmemb))
+#define e_alloc_zero(type, nmemb) (e_alloc_zero_size) ((nmemb), sizeof (type))
+#define e_alloc_zero_size(size) (e_alloc_zero_size) ((size), sizeof (char))
+#define e_realloc(ptr, type, nmemb) e_realloc_size ((ptr), sizeof (type) * (nmemb))
 #define e_new(type) e_alloc (type, 1)
 #define e_new_zero(type) e_alloc_zero (type, 1)
 #define e_free(ptr) free ((ptr))
 
 void *e_alloc_size (size_t size);
-void *e_alloc_zero_size (size_t nmemb, size_t size);
+void *(e_alloc_zero_size) (size_t nmemb, size_t size);
 void *e_realloc_size (void *ptr, size_t size);
 
 /* implementation *************************************************************/
@@ -41,6 +42,7 @@ void *e_realloc_size (void *ptr, size_t size);
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void *
 e_alloc_size (size_t size)
@@ -59,7 +61,7 @@ e_alloc_size (size_t size)
 }
 
 void *
-e_alloc_zero_size (size_t nmemb, size_t size)
+(e_alloc_zero_size) (size_t nmemb, size_t size)
 {
 	void *ptr;
 

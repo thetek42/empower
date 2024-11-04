@@ -74,7 +74,21 @@
 	} while (0)
 #endif /* NDEBUG */
 
+#define e_debug_alloc(type, nmemb) ((e_debug_alloc_size) (sizeof (type) * (nmemb), __E_DEBUG_FILE_LINE))
+#define e_debug_alloc_size(size) ((e_debug_alloc_size) ((size), __E_DEBUG_FILE_LINE))
+#define e_debug_alloc_zero(type, nmemb) ((e_debug_alloc_zero_size) ((nmemb), sizeof (type), __E_DEBUG_FILE_LINE))
+#define e_debug_alloc_zero_size(size) ((e_debug_alloc_zero_size) ((size), sizeof (char), __E_DEBUG_FILE_LINE))
+#define e_debug_realloc(ptr, type, nmemb) ((e_debug_realloc_size) ((ptr), sizeof (type) * (nmemb), __E_DEBUG_FILE_LINE))
+#define e_debug_realloc_size(ptr, size) ((e_debug_realloc_size) ((ptr), (size), __E_DEBUG_FILE_LINE))
+#define e_debug_new(type) ((e_debug_alloc_size) (sizeof (type), __E_DEBUG_FILE_LINE))
+#define e_debug_new_zero(type) ((e_debug_alloc_zero_size) (sizeof (type), __E_DEBUG_FILE_LINE))
+#define e_debug_free(ptr) ((e_debug_free) ((ptr), __E_DEBUG_FILE_LINE))
+
 void e_debug_hexdump (const void *ptr, size_t len);
+void *(e_debug_alloc_size) (size_t size, const char *location);
+void *(e_debug_alloc_zero_size) (size_t nmemb, size_t size, const char *location);
+void *(e_debug_realloc_size) (void *ptr, size_t size, const char *location);
+void (e_debug_free) (void *ptr, const char *location);
 
 /******************************************************************************/
 
@@ -121,6 +135,71 @@ e_debug_hexdump (const void *ptr, size_t len)
 		fprintf (stderr, "%s\n", buf);
 	}
 	fputc ('\n', stderr);
+}
+
+void *
+(e_debug_alloc_size) (size_t size, const char *location)
+{
+	void *ptr;
+
+	assert (size != 0 && "size for e_alloc cannot be 0");
+
+	ptr = malloc (size);
+	if (ptr == NULL) {
+		fprintf (stderr, "[e_debug] \x1b[34malloc\x1b[0m %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, location);
+		exit (EXIT_FAILURE);
+	}
+	fprintf (stderr, "[e_debug] \x1b[34malloc\x1b[0m %zu bytes: \x1b[32m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, ptr, location);
+
+	return ptr;
+}
+
+void *
+(e_debug_alloc_zero_size) (size_t nmemb, size_t size, const char *location)
+{
+	void *ptr;
+
+	assert (size != 0 && "size for e_alloc cannot be 0");
+
+	ptr = calloc (nmemb, size);
+	if (ptr == NULL) {
+		fprintf (stderr, "[e_debug] \x1b[34malloc_zero\x1b[0m %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, location);
+		exit (EXIT_FAILURE);
+	}
+	fprintf (stderr, "[e_debug] \x1b[34malloc_zero\x1b[0m %zu bytes: \x1b[32m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, ptr, location);
+
+	return ptr;
+}
+
+void *
+(e_debug_realloc_size) (void *ptr, size_t size, const char *location)
+{
+	uintptr_t old_ptr;
+
+	assert (size != 0 && "size for e_alloc cannot be 0");
+
+	if (size == 0) {
+		fprintf (stderr, "[e_debug] \x1b[35mrealloc\x1b[0m free \x1b[33m%p\x1b[0m (size == 0) \x1b[90m(%s)\x1b[0m\n", ptr, location);
+		free (ptr);
+		return NULL;
+	}
+
+	old_ptr = (uintptr_t) ptr;
+	ptr = realloc (ptr, size);
+	if (ptr == NULL) {
+		fprintf (stderr, "[e_debug] \x1b[36mrealloc\x1b[0m %p to %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", (void *) old_ptr, size, location);
+		exit (EXIT_FAILURE);
+	}
+	fprintf (stderr, "[e_debug] \x1b[36mrealloc\x1b[0m %p to %zu bytes: \x1b[32m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", (void *) old_ptr, size, ptr, location);
+
+	return ptr;
+}
+
+void
+(e_debug_free) (void *ptr, const char *location)
+{
+	fprintf (stderr, "[e_debug] \x1b[35mfree\x1b[0m \x1b[33m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", ptr, location);
+	free (ptr);
 }
 
 #endif /* E_DEBUG_IMPL */
