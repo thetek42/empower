@@ -84,6 +84,16 @@
 #define e_debug_new_zero(type) ((e_debug_alloc_zero_size) (sizeof (type), __E_DEBUG_FILE_LINE))
 #define e_debug_free(ptr) ((e_debug_free) ((ptr), __E_DEBUG_FILE_LINE))
 
+#if __STDC_VERSION__ >= 202000L && !defined (_MSC_VER)
+# define e_unreachable() unreachable ()
+#elif defined (__GNUC__) || defined (__clang__) /* __STDC_VERSION__ >= 202000L && !defined (_MSC_VER) */
+# define e_unreachable() __builtin_unreachable ()
+#elif defined (_MSC_VER) /* defined (__GNUC__) || defined (__clang__) */
+# define e_unreachable() __assume (0) /* NOTE: this does not actually cause a panic lmao */
+#else /* defined (_MSC_VER) */
+# error "unsupported compilier"
+#endif /* defined (_MSC_VER) */
+
 void e_debug_hexdump (const void *ptr, size_t len);
 void *(e_debug_alloc_size) (size_t size, const char *location);
 void *(e_debug_alloc_zero_size) (size_t nmemb, size_t size, const char *location);
@@ -94,6 +104,8 @@ void (e_debug_free) (void *ptr, const char *location);
 
 #ifdef E_DEBUG_IMPL
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /**
