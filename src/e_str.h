@@ -29,7 +29,7 @@
 
 /* public interface ***********************************************************/
 
-E_VEC_DECL (char, E_Vec_Char, e_vec_char);
+E_VEC_DECL (char, E_Vec_Priv_Char, e_vec_priv_char);
 
 /**
  * A dynamically sized string type, internally represented as a `E_Vec` of type
@@ -37,7 +37,7 @@ E_VEC_DECL (char, E_Vec_Char, e_vec_char);
  * always terminated with a nul character. Length and capacity are stored in the
  * fields \len and \cap, respectively.
  */
-typedef E_Vec_Char E_Str;
+typedef E_Vec_Priv_Char E_Str;
 
 /* --- dynamic string functions --- */
 
@@ -117,7 +117,7 @@ size_t e_str_distance (const E_Str *a, const char *b);
 #include <stdlib.h>
 #include <string.h>
 
-E_VEC_IMPL (char, E_Vec_Char, e_vec_char);
+E_VEC_IMPL (char, E_Vec_Priv_Char, e_vec_priv_char);
 
 /* --- dynamic string functions --- */
 
@@ -132,7 +132,7 @@ e_str_init (void)
 {
 	E_Str str;
 
-	str = e_vec_char_init_with_cap (1);
+	str = e_vec_priv_char_init_with_cap (1);
 	str.ptr[0] = 0;
 
 	return str;
@@ -150,7 +150,7 @@ e_str_init_with_cap (size_t cap)
 {
 	E_Str str;
 
-	str = e_vec_char_init_with_cap (cap > 0 ? cap : 1);
+	str = e_vec_priv_char_init_with_cap (cap > 0 ? cap : 1);
 	str.ptr[0] = 0;
 
 	return str;
@@ -212,7 +212,7 @@ e_str_from_allocated (char *ptr, size_t len, size_t cap)
 void
 e_str_deinit (E_Str *str)
 {
-	e_vec_char_deinit (str);
+	e_vec_priv_char_deinit (str);
 }
 
 /**
@@ -225,7 +225,7 @@ e_str_deinit (E_Str *str)
 void
 e_str_grow (E_Str *str, size_t cap)
 {
-	e_vec_char_grow (str, cap);
+	e_vec_priv_char_grow (str, cap);
 }
 
 /**
@@ -235,7 +235,7 @@ e_str_grow (E_Str *str, size_t cap)
 E_Str
 e_str_clone (E_Str *str)
 {
-	return e_vec_char_clone (str);
+	return e_vec_priv_char_clone (str);
 }
 
 /**
@@ -342,7 +342,8 @@ e_str_append_fmt (E_Str *str, const char *fmt, ...)
 	}
 
 	va_start (ap, fmt);
-	written = vsnprintf (&str->ptr[str->len], (size_t) written + 1, fmt, ap);
+	written = vsnprintf (&str->ptr[str->len], (size_t) written + 1,
+	                     fmt, ap);
 	va_end (ap);
 
 	str->len += (size_t) written;
