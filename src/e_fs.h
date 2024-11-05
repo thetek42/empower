@@ -488,6 +488,8 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 
 # if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
 
+static E_Result e_fs_priv_win_err_to_result (DWORD err);
+
 /**
  * Check if a path exists.
  */
@@ -547,15 +549,43 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 	if (!path) return E_ERR_INVALID_ARGUMENT;
 	win_ret = CreateDirectoryA (path, NULL); /* TODO should be W */
 	if (win_ret == 0) {
-		error = GetLastError ();
-		switch (error) {
-		case ERROR_ALREADY_EXISTS: return E_ERR_EXISTS;
-		case ERROR_PATH_NOT_FOUND: return E_ERR_FILE_NOT_FOUND;
-		default:                   return E_ERR_PERMISSION_DENIED;
-		}
+		return e_fs_priv_win_err_to_result (GetLastError ());
 	}
 
 	return E_OK;
+}
+
+static E_Result
+e_fs_priv_win_err_to_result (DWORD err)
+{
+	switch (err) {
+		case ERROR_SUCCESS:             return E_OK;
+		case ERROR_ALREADY_EXISTS:      return E_ERR_EXISTS;
+		case ERROR_TIMEOUT:             return E_ERR_TIMEOUT;
+		case WAIT_TIMEOUT:              return E_ERR_TIMEOUT;
+		case WAIT_IO_COMPLETION:        return E_ERR_INTERRUPTED;
+		case ERROR_INVALID_FUNCTION:    return E_ERR_INVALID_FUNCTION;
+		case ERROR_PATH_NOT_FOUND:      return E_ERR_NOT_A_DIRECTORY;
+		case ERROR_FILE_NOT_FOUND:      return E_ERR_FILE_NOT_FOUND;
+		case ERROR_TOO_MANY_OPEN_FILES: return E_ERR_TOO_MANY_FILES;
+		case ERROR_ACCESS_DENIED:       return E_ERR_PERMISSION_DENIED;
+		case ERROR_INVALID_HANDLE:      return E_ERR_BAD_FILE;
+		case ERROR_NOT_ENOUGH_MEMORY:   return E_ERR_OUT_OF_MEMORY;
+		case ERROR_INVALID_ACCESS:      return E_ERR_PERMISSION_DENIED;
+		case ERROR_INVALID_DATA:        return E_ERR_INVALID_ARGUMENT;
+		case ERROR_NO_MORE_FILES:       return E_ERR_TOO_MANY_FILES;
+		case ERROR_WRITE_PROTECT:       return E_ERR_NOT_PERMITTED;
+		case ERROR_NOT_SUPPORTED:       return E_ERR_INVALID_FUNCTION;
+		case ERROR_DEV_NOT_EXIST:       return E_ERR_FILE_NOT_FOUND;
+		case ERROR_FILE_EXISTS:         return E_ERR_EXISTS;
+		case ERROR_INVALID_PARAMETER:   return E_ERR_INVALID_ARGUMENT;
+		case ERROR_NO_PROC_SLOTS:       return E_ERR_TRY_AGAIN;
+		case ERROR_BROKEN_PIPE:         return E_ERR_BROKEN_PIPE;
+		case ERROR_DISK_FULL:           return E_ERR_NO_SPACE_LEFT;
+		case ERROR_IO_INCOMPLETE:       return E_ERR_TRY_AGAIN;
+		case ERROR_IO_PENDING:          return E_ERR_TRY_AGAIN;
+		default:                        return E_FAIL;
+	}
 }
 
 # else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */

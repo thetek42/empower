@@ -171,7 +171,7 @@ enum {
 	E_ERR_DEADLOCK                  = EDEADLK,
 	E_ERR_FILE_NAME_TOO_LONG        = ENAMETOOLONG,
 	E_ERR_NO_LOCKS_AVAILABLE        = ENOLCK,
-	E_ERR_INVALID_SYSCALL           = ENOSYS,
+	E_ERR_INVALID_FUNCTION          = ENOSYS,
 	E_ERR_NOT_EMPTY                 = ENOTEMPTY,
 	E_ERR_SYMLINK_LOOP              = ELOOP,
 	E_ERR_WOULD_BLOCK               = EWOULDBLOCK,
@@ -323,7 +323,7 @@ e_result_to_str (E_Result res)
 	case E_ERR_DEADLOCK:                  return "deadlock";
 	case E_ERR_FILE_NAME_TOO_LONG:        return "file name too long";
 	case E_ERR_NO_LOCKS_AVAILABLE:        return "no locks available";
-	case E_ERR_INVALID_SYSCALL:           return "invalid syscall";
+	case E_ERR_INVALID_FUNCTION:          return "invalid function";
 	case E_ERR_NOT_EMPTY:                 return "not empty";
 	case E_ERR_SYMLINK_LOOP:              return "symlink loop";
 	case E_ERR_NO_MESSAGE:                return "no message";
