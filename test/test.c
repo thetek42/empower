@@ -1,9 +1,9 @@
 #include <ctype.h>
 
 #define E_ALLOC_IMPL
+#define E_BASE64_IMPL
 #define E_CSTR_IMPL
 #define E_DEBUG_IMPL
-#define E_ENC_IMPL
 #define E_FS_IMPL
 #define E_INI_IMPL
 #define E_LOG_IMPL
@@ -15,9 +15,9 @@
 #define E_TEST_IMPL
 
 #include <e_alloc.h>
+#include <e_base64.h>
 #include <e_cstr.h>
 #include <e_debug.h>
-#include <e_enc.h>
 #include <e_fs.h>
 #include <e_ini.h>
 #include <e_log.h>
@@ -34,8 +34,8 @@
 E_VEC_DECL (int, E_Vec_Int, e_vec_int);
 E_VEC_IMPL (int, E_Vec_Int, e_vec_int);
 
+static void test_base64 (void);
 static void test_cstr (void);
-static void test_enc (void);
 static void test_fs (void);
 static void test_ini (void);
 static void test_parse (void);
@@ -48,8 +48,8 @@ main (int argc, char *argv[])
 	(void) argc;
 	(void) argv;
 
+	test_base64 ();
 	test_cstr ();
-	test_enc ();
 	test_fs ();
 	test_ini ();
 	test_parse ();
@@ -57,6 +57,22 @@ main (int argc, char *argv[])
 	test_vec ();
 
 	e_test_finish ();
+}
+
+static void
+test_base64 (void)
+{
+	char *plain = "Many hands make light work.";
+	char *encoded, *plain_out;
+
+	encoded = e_base64_enc_alloc (plain);
+	plain_out = e_base64_dec_alloc (encoded);
+
+	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+	e_test_assert_str_eq ("e_base64_dec", plain_out, plain);
+
+	e_free (encoded);
+	e_free (plain_out);
 }
 
 static void
@@ -161,22 +177,6 @@ test_cstr (void)
 	e_test_assert_str_eq ("e_cstr_split_str next 5", e_cstr_split_next (&split), "baz");
 	e_test_assert_null ("e_cstr_split_str next 6", e_cstr_split_next (&split));
 	e_cstr_split_deinit (&split);
-}
-
-static void
-test_enc (void)
-{
-	char *plain = "Many hands make light work.";
-	char *encoded, *plain_out;
-
-	encoded = e_base64_enc_alloc (plain);
-	plain_out = e_base64_dec_alloc (encoded);
-
-	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
-	e_test_assert_str_eq ("e_base64_dec", plain_out, plain);
-
-	e_free (encoded);
-	e_free (plain_out);
 }
 
 static void

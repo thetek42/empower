@@ -1,14 +1,13 @@
-#ifndef _EMPOWER_ENC_H_
-#define _EMPOWER_ENC_H_
+#ifndef _EMPOWER_BASE64_H_
+#define _EMPOWER_BASE64_H_
 
-/*! e_enc *********************************************************************
+/*! e_base64 ******************************************************************
  * 
- * This module provides functions for encoding and decoding as well as
- * encrypting and decrypting data.
+ * This module provides functions for encoding and decoding base64.
  *
  * Example:
- *  | #define E_ENC_IMPL
- *  | #include <e_enc.h>
+ *  | #define E_BASE64_IMPL
+ *  | #include <e_base64.h>
  *  |
  *  | char *plain = "Hello, World!\n";
  *  | char *encoded = e_base64_enc_alloc (plain);
@@ -32,7 +31,7 @@ char *e_base64_dec_alloc (const char *encoded);
 
 /* implementation *************************************************************/
 
-#ifdef E_ENC_IMPL
+#ifdef E_BASE64_IMPL
 
 #include <ctype.h>
 #include <stdint.h>
@@ -228,6 +227,6 @@ base64_is_valid_char (char c)
 	return isalnum (c) || c == '/' || c == '+' || c == '=';
 }
 
-#endif /* E_ENC_IMPL */
+#endif /* E_BASE64_IMPL */
 
-#endif /* _EMPOWER_ENC_H_ */
+#endif /* _EMPOWER_BASE64_H_ */
