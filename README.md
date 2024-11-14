@@ -1,7 +1,7 @@
 # empower
 
-Empower is a collection of single-header libraries for C that empowers you to write C applications
-faster and with more joy.
+Empower is a collection of header-only libraries for C that empower you to write applications faster
+and with more joy.
 
 ## Modules
 
@@ -36,7 +36,7 @@ Empower contains the following modules:
 
 ## Usage
 
-The process is the same as for all STB-style single-header libraries:
+The process is the same as for all STB-style header-only libraries:
 
 1. Download the `.h` file for the libraries you need and place them somewhere in your project.
 2. Include the libraries in the files where you need them.
