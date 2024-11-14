@@ -77,6 +77,9 @@ typedef SSIZE_T ssize_t;
 	bool prefix##_contains (const type_name *vec, T item);                 \
 	bool prefix##_contains_slice (const type_name *vec, const T *slice, size_t len); \
 	const T *prefix##_get (const type_name *vec, size_t idx);              \
+	const T *prefix##_get_back (const type_name *vec, size_t idx);         \
+	const T *prefix##_get_first (const type_name *vec);                    \
+	const T *prefix##_get_last (const type_name *vec);                     \
 	bool prefix##_set (const type_name *vec, size_t idx, T item);          \
 	bool prefix##_set_slice (const type_name *vec, size_t idx, const T *slice, size_t len); \
 	void prefix##_insert (type_name *vec, size_t idx, T item);             \
@@ -523,7 +526,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 	}                                                                      \
                                                                                \
 	/**                                                                    \
-	 * Get the item at index \idx of the vector \vec. Returns a poitner to \
+	 * Get the item at index \idx of the vector \vec. Returns a pointer to \
 	 * the item. If \vec is `nullptr` or \idx is out of range, `nullptr`   \
 	 * is returned.                                                        \
 	 */                                                                    \
@@ -533,6 +536,42 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 		if (!vec) return NULL;                                         \
 		if (idx >= vec->len) return NULL;                              \
 		return (const T *) &vec->ptr[idx];                             \
+	}                                                                      \
+                                                                               \
+	/**                                                                    \
+	 * Get the item at index \idx of the vector \vec, starting at the back \
+	 * of the vector. For instance, using `idx = 2` in a vector with 10    \
+	 * 10 items will yield the 8th item. Returns a pointer to the item. If \
+	 * \vec is `nullptr` or \idx is out of range, `nullptr` is returned.   \
+	 */                                                                    \
+	const T *                                                              \
+	prefix##_get_back (const type_name *vec, size_t idx)                   \
+	{                                                                      \
+		if (!vec) return NULL;                                         \
+		if (idx >= vec->len) return NULL;                              \
+		return (const T *) &vec->ptr[vec->len - idx - 1];              \
+	}                                                                      \
+                                                                               \
+	/**                                                                    \
+	 * Get the first item of the vector \vec. If \vec is `nullptr` or if   \
+	 * the vector has zero length, `nullptr` is returned.                  \
+	 */                                                                    \
+	const T *                                                              \
+	prefix##_get_first (const type_name *vec)                              \
+	{                                                                      \
+		if (!vec || vec->len == 0) return NULL;                        \
+		return (const T *) &vec->ptr[0];                               \
+	}                                                                      \
+                                                                               \
+	/**                                                                    \
+	 * Get the last item of the vector \vec. If \vec is `nullptr` or if    \
+	 * the vector has zero length, `nullptr` is returned.                  \
+	 */                                                                    \
+	const T *                                                              \
+	prefix##_get_last (const type_name *vec)                               \
+	{                                                                      \
+		if (!vec || vec->len == 0) return NULL;                        \
+		return (const T *) &vec->ptr[vec->len - 1];                    \
 	}                                                                      \
                                                                                \
 	/**                                                                    \

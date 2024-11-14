@@ -457,6 +457,8 @@ test_vec (void)
 	e_test_assert_null ("e_vec_init ptr", vec.ptr);
 	e_test_assert_eq ("e_vec_init len", usize, vec.len, 0);
 	e_test_assert_eq ("e_vec_init cap", usize, vec.cap, 0);
+	e_test_assert_null ("e_vec_first empty", e_vec_int_get_first (&vec));
+	e_test_assert_null ("e_vec_last empty", e_vec_int_get_last (&vec));
 
 	/* [1] */
 	e_vec_int_append (&vec, 1);
@@ -497,6 +499,10 @@ test_vec (void)
 	e_test_assert ("e_vec_contains_slice false", !e_vec_int_contains_slice (&vec, slice3, 2));
 	e_test_assert_ptr_eq ("e_vec_get existing", e_vec_int_get (&vec, 4), &vec.ptr[4]);
 	e_test_assert_null ("e_vec_get nonexisting", e_vec_int_get (&vec, 42));
+	e_test_assert_ptr_eq ("e_vec_get_back existing", e_vec_int_get_back (&vec, 2), &vec.ptr[5]);
+	e_test_assert_null ("e_vec_get_back nonexisting", e_vec_int_get_back (&vec, 42));
+	e_test_assert_ptr_eq ("e_vec_first", e_vec_int_get_first (&vec), &vec.ptr[0]);
+	e_test_assert_ptr_eq ("e_vec_last", e_vec_int_get_last (&vec), &vec.ptr[7]);
 	e_test_assert ("e_vec_set ok", e_vec_int_set (&vec, 1, 42));
 	e_test_assert ("e_vec_set out of range", !e_vec_int_set (&vec, 42, 1));
 	e_test_assert ("e_vec_set_slice ok", e_vec_int_set_slice (&vec, 1, slice4, 2));
