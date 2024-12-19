@@ -7,7 +7,7 @@
  * inference can be enabled when using C23 for cleaner code.
  *
  * Configuration options:
- *  - E_TEST_CONFIG_TYPE_INFERENCE: Enable type inference in C23
+ *  - E_CONFIG_TEST_TYPE_INFERENCE: Enable type inference in C23
  *
  ******************************************************************************/
 
@@ -263,13 +263,13 @@ extern struct e_test_result e_global_test;
  */
 #define e_test_assert_null(name, expr) e_test_assert_ptr_eq (name, expr, NULL)
 
-#if __STDC_VERSION__ >= 202000L && E_TEST_CONFIG_TYPE_INFERENCE
+#if __STDC_VERSION__ >= 202000L && E_CONFIG_TEST_TYPE_INFERENCE
 # define e_test_assert_eq(name, expr, check) __e_test_assert_eq (name, auto, expr, check);
 # define e_test_assert_not_eq(name, expr, check) __e_test_assert_not_eq (name, auto, expr, check);
-#else /* __STDC_VERSION__ >= 202000L && E_TEST_CONFIG_TYPE_INFERENCE */
+#else /* __STDC_VERSION__ >= 202000L && E_CONFIG_TEST_TYPE_INFERENCE */
 # define e_test_assert_eq(name, type, expr, check) __e_test_assert_eq (name, type, expr, check);
 # define e_test_assert_not_eq(name, type, expr, check) __e_test_assert_not_eq (name, type, expr, check);
-#endif /* __STDC_VERSION__ >= 202000L && E_TEST_CONFIG_TYPE_INFERENCE */
+#endif /* __STDC_VERSION__ >= 202000L && E_CONFIG_TEST_TYPE_INFERENCE */
 
 /* implementation *************************************************************/
 

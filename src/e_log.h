@@ -11,8 +11,8 @@
  * mode (`NDEBUG` not defined).
  *
  * Configuration options:
- *  - `E_LOG_CONFIG_NO_COLOUR`: Disable ANSI escape code colouring.
- *  - `E_LOG_CONFIG_NO_FILE_LINE`: Disable source location in the log.
+ *  - `E_CONFIG_LOG_NO_COLOUR`: Disable ANSI escape code colouring.
+ *  - `E_CONFIG_LOG_NO_FILE_LINE`: Disable source location in the log.
  *
  ******************************************************************************/
 
@@ -21,29 +21,29 @@
 
 /* public interface ***********************************************************/
 
-#if E_LOG_CONFIG_NO_COLOUR
+#if E_CONFIG_LOG_NO_COLOUR
 # define __E_LOG_COLOUR_RESET ""
 # define __E_LOG_COLOUR_RED ""
 # define __E_LOG_COLOUR_GREEN ""
 # define __E_LOG_COLOUR_YELLOW ""
 # define __E_LOG_COLOUR_MAGENTA ""
 # define __E_LOG_COLOUR_GREY ""
-#else /* E_LOG_CONFIG_NO_COLOUR */
+#else /* E_CONFIG_LOG_NO_COLOUR */
 # define __E_LOG_COLOUR_RESET "\x1b[0m"
 # define __E_LOG_COLOUR_RED "\x1b[31m"
 # define __E_LOG_COLOUR_GREEN "\x1b[32m"
 # define __E_LOG_COLOUR_YELLOW "\x1b[33m"
 # define __E_LOG_COLOUR_MAGENTA "\x1b[35m"
 # define __E_LOG_COLOUR_GREY "\x1b[90m"
-#endif /* E_LOG_CONFIG_NO_COLOUR */
+#endif /* E_CONFIG_LOG_NO_COLOUR */
 
-#if E_LOG_CONFIG_NO_FILE_LINE
+#if E_CONFIG_LOG_NO_FILE_LINE
 # define __E_LOG_FILE_LINE ""
-#else /* E_LOG_CONFIG_NO_FILE_LINE */
+#else /* E_CONFIG_LOG_NO_FILE_LINE */
 # define __E_LOG_STRINGIFY_HELPER(x) #x
 # define __E_LOG_STRINGIFY(x) __E_LOG_STRINGIFY_HELPER (x)
 # define __E_LOG_FILE_LINE " " __E_LOG_COLOUR_GREY "(" __FILE__ ":" __E_LOG_STRINGIFY (__LINE__) ")" __E_LOG_COLOUR_RESET
-#endif /* E_LOG_CONFIG_NO_FILE_LINE */
+#endif /* E_CONFIG_LOG_NO_FILE_LINE */
 
 /* TODO when clang finally supports __VA_OPT__ properly, enable it for clang */
 #if __STDC_VERSION__ >= 202000L && defined (__GNUC__)
