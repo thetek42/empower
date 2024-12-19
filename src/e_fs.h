@@ -97,7 +97,10 @@ E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ..
 # include <fileapi.h>
 # include <io.h>
 # include <sys/stat.h>
+# include <stringapiset.h>
 # include <winerror.h>
+# undef E_FAIL
+# define E_FAIL 1000 /* make sure to check that this is the same as in e_result.h */
 #else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 # include <sys/stat.h>
 # include <unistd.h>
@@ -489,6 +492,7 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 # if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
 
 static E_Result e_fs_priv_win_err_to_result (DWORD err);
+static WCHAR *e_fs_priv_utf8_to_wchar (const char *s);
 
 /**
  * Check if a path exists.
@@ -496,8 +500,14 @@ static E_Result e_fs_priv_win_err_to_result (DWORD err);
 bool
 e_fs_path_exists (const char *path)
 {
+	WCHAR *wpath;
 	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
+
+	wpath = e_fs_priv_utf8_to_wchar (path);
+	if (!wpath) return false;
+	attrs = GetFileAttributesW (wpath);
+	free (wpath);
+
 	return attrs != INVALID_FILE_ATTRIBUTES;
 }
 
@@ -507,8 +517,14 @@ e_fs_path_exists (const char *path)
 bool
 e_fs_is_file (const char *path)
 {
+	WCHAR *wpath;
 	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
+
+	wpath = e_fs_priv_utf8_to_wchar (path);
+	if (!wpath) return false;
+	attrs = GetFileAttributesW (wpath);
+	free (wpath);
+
 	return attrs != INVALID_FILE_ATTRIBUTES /* TODO idk about this */
 	       && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
 }
@@ -519,8 +535,14 @@ e_fs_is_file (const char *path)
 bool
 e_fs_is_dir (const char *path)
 {
+	WCHAR *wpath;
 	DWORD attrs;
-	attrs = GetFileAttributesA (path); /* TODO should be W */
+
+	wpath = e_fs_priv_utf8_to_wchar (path);
+	if (!wpath) return false;
+	attrs = GetFileAttributesW (wpath);
+	free (wpath);
+
 	return attrs != INVALID_FILE_ATTRIBUTES
 	       && attrs & FILE_ATTRIBUTE_DIRECTORY;
 }
@@ -541,13 +563,16 @@ e_fs_is_link (const char *path)
 E_Result
 e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 {
-	DWORD error;
+	WCHAR *wpath;
 	BOOL win_ret;
 
 	(void) perm; /* TODO do dir perms even exist on windows? */
 
 	if (!path) return E_ERR_INVALID_ARGUMENT;
-	win_ret = CreateDirectoryA (path, NULL); /* TODO should be W */
+	wpath = e_fs_priv_utf8_to_wchar (path);
+	if (!wpath) return E_ERR_INVALID_ARGUMENT;
+	win_ret = CreateDirectoryW (wpath, NULL);
+	free (wpath);
 	if (win_ret == 0) {
 		return e_fs_priv_win_err_to_result (GetLastError ());
 	}
@@ -586,6 +611,24 @@ e_fs_priv_win_err_to_result (DWORD err)
 		case ERROR_IO_PENDING:          return E_ERR_TRY_AGAIN;
 		default:                        return E_FAIL;
 	}
+}
+
+static WCHAR *
+e_fs_priv_utf8_to_wchar (const char *s)
+{
+	WCHAR *ret;
+	size_t slen;
+	int len;
+
+	slen = strlen (s);
+	len = MultiByteToWideChar (CP_UTF8, 0, s, (int) slen, NULL, 0);
+	if (len < 0) return NULL;
+	ret = malloc (sizeof (WCHAR) * (len + 1));
+	if (!ret) return NULL;
+	MultiByteToWideChar (CP_UTF8, 0, s, (int) slen, ret, len);
+	ret[len] = 0;
+
+	return ret;
 }
 
 # else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
