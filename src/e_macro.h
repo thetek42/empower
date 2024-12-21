@@ -26,6 +26,12 @@
 #define E_CONTAINER_OF(ptr, type, member) ((type *) ((char *) (ptr) - offsetof (type, member)))
 
 /**
+ * Obtain the number of items in an array. Does not work with pointers, only
+ * arrays.
+ */
+#define E_ARRAY_SIZE(arr) (sizeof (arr) / sizeof ((arr)[0]))
+
+/**
  * Expands __FILE__ and __LINE__ to a string like "main.c:42"
  */
 #define E_MACRO_FILE_LINE __FILE__ ":" E_MACRO_STRINGIFY (__LINE__)
