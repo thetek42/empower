@@ -27,6 +27,7 @@ bool e_mem_is_aligned_to (const void *ptr, size_t align);
 bool e_mem_eq_size (const void *a, const void *b, size_t n);
 bool e_mem_is_zero_size (const void *ptr, size_t n);
 void e_mem_swap_size (void *a, void *b, size_t n);
+void e_mem_reverse_bytes (void *ptr, size_t len);
 char *e_mem_strdup (const char *s);
 void *e_mem_clone_size (const void *ptr, size_t n);
 
@@ -146,6 +147,23 @@ e_mem_clone_size (const void *ptr, size_t n)
 	}
 	memcpy (ret, ptr, n);
 	return ret;
+}
+
+/**
+ * Reverse the bytes at the memory location \ptr. \len bytes will be reversed.
+ */
+void
+e_mem_reverse_bytes (void *ptr, size_t len)
+{
+	uint8_t *start, *end, tmp;
+
+	start = ptr;
+	end = start + len - 1;
+	while (start < end) {
+		tmp = *start;
+		*start++ = *end;
+		*end-- = tmp;
+	}
 }
 
 #endif /* E_MEM_IMPL */
