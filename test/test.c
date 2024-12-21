@@ -38,6 +38,7 @@ static void test_base64 (void);
 static void test_cstr (void);
 static void test_fs (void);
 static void test_ini (void);
+static void test_mem (void);
 static void test_parse (void);
 static void test_str (void);
 static void test_vec (void);
@@ -52,6 +53,7 @@ main (int argc, char *argv[])
 	test_cstr ();
 	test_fs ();
 	test_ini ();
+	test_mem ();
 	test_parse ();
 	test_str ();
 	test_vec ();
@@ -259,6 +261,20 @@ test_ini (void)
 	e_test_assert_null ("e_ini_get_entry invalid section", e_ini_get_entry (&ini, "kjfadsf", "foo"));
 	e_test_assert_null ("e_ini_get_entry invalid key", e_ini_get_entry (&ini, "foo", "kjfadsf"));
 	e_ini_deinit (&ini);
+}
+
+static void
+test_mem (void)
+{
+	uint8_t mem1[] = {42, 69, 13, 37};
+	uint8_t mem2[] = {37, 13, 69, 42};
+	uint8_t mem3[] = {69, 42, 37, 31, 137};
+	uint8_t mem4[] = {137, 31, 37, 42, 69};
+
+	e_mem_reverse_bytes (mem1, 4);
+	e_test_assert ("e_mem_reverse_bytes even", e_mem_eq (mem1, mem2, uint8_t, 4));
+	e_mem_reverse_bytes (mem3, 5);
+	e_test_assert ("e_mem_reverse_bytes odd", e_mem_eq (mem3, mem4, uint8_t, 5));
 }
 
 static void
