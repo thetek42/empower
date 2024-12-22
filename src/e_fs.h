@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 #include <e_result.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -73,6 +74,9 @@ bool e_fs_is_link (const char *path);
 E_Result e_fs_dir_create (const char *path, E_Fs_Permissions perm);
 E_Result e_fs_file_read_all (E_File *file, char **out, size_t *len_out);
 E_Result e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out);
+E_Result e_fs_move (const char *from, const char *to);
+E_Result e_fs_copy (const char *from, const char *to);
+E_Result e_fs_remove (const char *path);
 
 #if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
 E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...);
@@ -103,6 +107,7 @@ E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ..
 # define E_FAIL 1000 /* make sure to check that this is the same as in e_result.h */
 #else /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <unistd.h>
 #endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
@@ -486,6 +491,84 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 		return err;
 	}
 
+	return E_OK;
+}
+
+/**
+ * Move (rename) the file at the path \from to \to.
+ */
+E_Result
+e_fs_move (const char *from, const char *to)
+{
+	int ret;
+	if (!from || !to) return E_ERR_INVALID_ARGUMENT;
+	// TODO: check platform compatibility
+	ret = rename (from, to);
+	if (ret != 0) return E_RESULT_FROM_ERRNO ();
+	return E_OK;
+}
+
+/**
+ * Copy the contents of the file at the path \from to a file \to. If \to exists,
+ * it is overwritten.
+ */
+E_Result
+e_fs_copy (const char *from, const char *to)
+{
+	FILE *ffrom, *fto;
+	char buf[1024];
+	size_t n, ret;
+	E_Result res;
+
+	if (!from || !to) return E_ERR_INVALID_ARGUMENT;
+
+	ffrom = fopen (from, "rb");
+	if (!ffrom) return E_RESULT_FROM_ERRNO ();
+	fto = fopen (to, "wb");
+	if (!fto) {
+		res = E_RESULT_FROM_ERRNO ();
+		fclose (ffrom);
+		return res;
+	}
+
+	for (;;) {
+		n = fread (buf, sizeof (char), 1024, ffrom);
+		if (n > 0) {
+			ret = fwrite (buf, sizeof (char), n, fto);
+			if (ret != n) {
+				res = E_ERR_FAIL;
+				fclose (fto);
+				fclose (ffrom);
+				return res;
+			}
+			continue;
+		}
+		if (feof (ffrom)) break;
+		if (ferror (ffrom) != 0) {
+			res = E_ERR_FAIL;
+			fclose (fto);
+			fclose (ffrom);
+			return res;
+		}
+	}
+
+	fclose (ffrom);
+	fclose (fto);
+	return E_OK;
+}
+
+/**
+ * Remove the file at the path \path. This function does not delete non-empty
+ * directories and does not perform recursive deletion.
+ */
+E_Result
+e_fs_remove (const char *path)
+{
+	int ret;
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	// TODO: check platform compatibility
+	ret = remove (path);
+	if (ret != 0) return E_RESULT_FROM_ERRNO ();
 	return E_OK;
 }
 
