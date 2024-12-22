@@ -104,6 +104,7 @@ void (e_debug_free) (void *ptr, const char *location);
 
 #ifdef E_DEBUG_IMPL
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -109,7 +109,7 @@ void
 e_ini_deinit (E_Ini *ini)
 {
 	if (!ini) return;
-	e_free (ini->str_buf);
+	free (ini->str_buf);
 	e_vec_ini_entry_deinit (&ini->entries);
 	e_vec_ini_section_deinit (&ini->sections);
 }
@@ -274,7 +274,7 @@ e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len)
 unexpected_eof:
 	fprintf (stderr, "[e_ini] parsing failed (line %zu): unexpected eof\n", line);
 err:
-	e_free (str_buf);
+	free (str_buf);
 	e_vec_ini_entry_deinit (&entries);
 	e_vec_ini_section_deinit (&sections);
 	return E_ERR_FORMAT_ERROR;

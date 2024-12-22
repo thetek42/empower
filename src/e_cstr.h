@@ -79,7 +79,6 @@ int e_char_is_ascii (int c);
 
 /* implementation *************************************************************/
 
-#define E_CSTR_IMPL
 #ifdef E_CSTR_IMPL
 
 #include <ctype.h>

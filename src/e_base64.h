@@ -35,6 +35,8 @@ char *e_base64_dec_alloc (const char *encoded);
 
 #include <ctype.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static bool base64_is_valid_char (char c);

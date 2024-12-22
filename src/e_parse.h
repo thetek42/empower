@@ -124,12 +124,12 @@ e_parse_char_not_pat (const char **s, const char *reject)
 
 /**
  * Parse a single character \c in a nul-terminated string \s. If \c is matched
- * by the E_Char_Predicate \func, a pointer to the character (i.e. \s) is
+ * by the E_Parse_Char_Predicate \func, a pointer to the character (i.e. \s) is
  * returned and \s is advanced. If \c is not matched or either \s or \func are
  * `nullptr`, `nullptr` is returned and \s is not advanced.
  */
 const char *
-e_parse_char_func (const char **s, E_Char_Predicate func)
+e_parse_char_func (const char **s, E_Parse_Char_Predicate func)
 {
 	if (!s || !*s || **s == 0 || !func) return NULL;
 	if (func (**s)) return e_parse_priv_advance (s, 1);
@@ -138,12 +138,12 @@ e_parse_char_func (const char **s, E_Char_Predicate func)
 
 /**
  * Parse a single character \c in a nul-terminated string \s. If \c is not
- * matched by the E_Char_Predicate \func, a pointer to the character (i.e. \s)
- * is returned and \s is advanced. If \c is matched or either \s or \func are
- * `nullptr`, `nullptr` is returned and \s is not advanced.
+ * matched by the E_Parse_Char_Predicate \func, a pointer to the character (i.e.
+ * \s) is returned and \s is advanced. If \c is matched or either \s or \func
+ * are `nullptr`, `nullptr` is returned and \s is not advanced.
  */
 const char *
-e_parse_char_not_func (const char **s, E_Char_Predicate func)
+e_parse_char_not_func (const char **s, E_Parse_Char_Predicate func)
 {
 	if (!s || !*s || **s == 0 || !func) return NULL;
 	if (!func (**s)) return e_parse_priv_advance (s, 1);
@@ -198,11 +198,11 @@ e_parse_consume_while_pat (const char **s, const char *accept)
 
 /**
  * Consume a nul-terminated string \s while a character is matched by the
- * E_Char_Predicate \func and advance \s to the first character which is not
- * matched. Returns \s.
+ * E_Parse_Char_Predicate \func and advance \s to the first character which is
+ * not matched. Returns \s.
  */
 const char *
-e_parse_consume_while_func (const char **s, E_Char_Predicate func)
+e_parse_consume_while_func (const char **s, E_Parse_Char_Predicate func)
 {
 	const char *r;
 	if (!s || !*s) return NULL;
@@ -244,11 +244,11 @@ e_parse_consume_until_pat (const char **s, const char *accept)
 
 /**
  * Consume a nul-terminated string \s until a character is matched by the
- * E_Char_Predicate \func and advance \s to the first character which is
+ * E_Parse_Char_Predicate \func and advance \s to the first character which is
  * matched. Returns \s.
  */
 const char *
-e_parse_consume_until_func (const char **s, E_Char_Predicate func)
+e_parse_consume_until_func (const char **s, E_Parse_Char_Predicate func)
 {
 	const char *r;
 	if (!s || !*s) return NULL;
