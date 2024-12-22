@@ -157,6 +157,7 @@ e_mem_reverse_bytes (void *ptr, size_t len)
 {
 	uint8_t *start, *end, tmp;
 
+	if (len == 0) return;
 	start = ptr;
 	end = start + len - 1;
 	while (start < end) {

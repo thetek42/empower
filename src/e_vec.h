@@ -729,8 +729,9 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 		T *start, *end, tmp;                                           \
                                                                                \
 		if (!vec) return;                                              \
-		start = vec->ptr;                                              \
-		end = &vec->ptr[vec->len];                                     \
+		if (vec->len == 0) return;                                     \
+		start = &vec->ptr[0];                                          \
+		end = &vec->ptr[vec->len - 1];                                 \
 		while (start < end) {                                          \
 			tmp = *start;                                          \
 			*start++ = *end;                                       \

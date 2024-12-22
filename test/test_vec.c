@@ -153,9 +153,17 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_remove middle len", usize, vec.len, 5);
 	e_test_assert_eq ("e_vec_remove middle cap", usize, vec.cap, 16);
 
+	/* [3,5,3,2,1] */
+	e_vec_int_reverse (&vec);
+	e_test_assert_eq ("e_vec_reverse ptr[0]", int, vec.ptr[0], 3);
+	e_test_assert_eq ("e_vec_reverse ptr[1]", int, vec.ptr[1], 5);
+	e_test_assert_eq ("e_vec_reverse ptr[2]", int, vec.ptr[2], 3);
+	e_test_assert_eq ("e_vec_reverse ptr[3]", int, vec.ptr[3], 2);
+	e_test_assert_eq ("e_vec_reverse ptr[4]", int, vec.ptr[4], 1);
+
 	/* [] */
 	len = e_vec_int_pop_slice (&vec, &popped, 8);
-	e_test_assert_eq ("e_vec_pop_slice 2 item", int, *popped, 1);
+	e_test_assert_eq ("e_vec_pop_slice 2 item", int, *popped, 3);
 	e_test_assert_eq ("e_vec_pop_slice 2 len", usize, vec.len, 0);
 	e_test_assert_eq ("e_vec_pop_slice 2 cap", usize, vec.cap, 16);
 	e_test_assert_eq ("e_vec_pop_slice 2 returned len", usize, len, 5);
