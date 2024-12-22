@@ -557,21 +557,6 @@ e_fs_copy (const char *from, const char *to)
 	return E_OK;
 }
 
-/**
- * Remove the file at the path \path. This function does not delete non-empty
- * directories and does not perform recursive deletion.
- */
-E_Result
-e_fs_remove (const char *path)
-{
-	int ret;
-	if (!path) return E_ERR_INVALID_ARGUMENT;
-	// TODO: check platform compatibility
-	ret = remove (path);
-	if (ret != 0) return E_RESULT_FROM_ERRNO ();
-	return E_OK;
-}
-
 # if defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
 
 static E_Result e_fs_priv_win_err_to_result (DWORD err);
@@ -658,6 +643,35 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 	free (wpath);
 	if (win_ret == 0) {
 		return e_fs_priv_win_err_to_result (GetLastError ());
+	}
+
+	return E_OK;
+}
+
+/**
+ * Remove the file at the path \path. This function does not delete non-empty
+ * directories and does not perform recursive deletion.
+ */
+E_Result
+e_fs_remove (const char *path)
+{
+	WCHAR *wpath;
+	BOOL win_ret;
+	int ret;
+
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+
+	if (e_fs_is_dir (path)) {
+		wpath = e_fs_priv_utf8_to_wchar (path);
+		if (!wpath) return E_ERR_INVALID_ARGUMENT;
+		win_ret = RemoveDirectoryW (wpath);
+		free (wpath);
+		if (win_ret == 0) {
+			return e_fs_priv_win_err_to_result (GetLastError ());
+		}
+	} else {
+		ret = remove (path);
+		if (ret != 0) return E_RESULT_FROM_ERRNO ();
 	}
 
 	return E_OK;
@@ -768,6 +782,20 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 	if (!path) return E_ERR_INVALID_ARGUMENT;
 	ret = mkdir (path, (mode_t) perm);
 	if (ret < 0) return E_RESULT_FROM_ERRNO ();
+	return E_OK;
+}
+
+/**
+ * Remove the file at the path \path. This function does not delete non-empty
+ * directories and does not perform recursive deletion.
+ */
+E_Result
+e_fs_remove (const char *path)
+{
+	int ret;
+	if (!path) return E_ERR_INVALID_ARGUMENT;
+	ret = remove (path);
+	if (ret != 0) return E_RESULT_FROM_ERRNO ();
 	return E_OK;
 }
 

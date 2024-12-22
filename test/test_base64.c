@@ -7,15 +7,17 @@
 void
 test_base64 (void)
 {
-	char *plain = "Many hands make light work.";
+	char *plain = "Many hands make light work";
+	char *invalid = "3bf7Dj2u4%73b";
 	char *encoded, *plain_out;
 
 	encoded = e_base64_enc_alloc (plain);
 	plain_out = e_base64_dec_alloc (encoded);
 
-	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu");
+	e_test_assert_str_eq ("e_base64_enc", encoded, "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcms=");
 	e_test_assert_str_eq ("e_base64_dec", plain_out, plain);
+	e_test_assert_null ("e_base64_dec fail", e_base64_dec_alloc (invalid));
 
-	free (encoded);
 	free (plain_out);
+	free (encoded);
 }

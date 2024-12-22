@@ -154,7 +154,7 @@ e_base64_dec (const char *encoded, char *plain_out)
 	len = strlen (encoded);
 	if (len % 4 != 0) return false;
 
-	for (i = 0, j = 0; i < len; i += 4, j += 3) {
+	for (i = 0, j = 0; i < len; i += 4) {
 		if (!base64_is_valid_char(encoded[i])) return false;
 
 		n = (uint32_t) base64_dec_lut[(uint8_t) encoded[i]];
@@ -162,9 +162,9 @@ e_base64_dec (const char *encoded, char *plain_out)
 		n = encoded[i + 2] == '=' ? n << 6 : (n << 6) | (uint32_t) base64_dec_lut[(uint8_t) encoded[i + 2]];
 		n = encoded[i + 3] == '=' ? n << 6 : (n << 6) | (uint32_t) base64_dec_lut[(uint8_t) encoded[i + 3]];
 
-		plain_out[j] = (char) (n >> 16);
-		if (encoded[i + 2] != '=') plain_out[j + 1] = (char) (n >> 8);
-		if (encoded[i + 3] != '=') plain_out[j + 2] = (char) n;
+		plain_out[j++] = (char) (n >> 16);
+		if (encoded[i + 2] != '=') plain_out[j++] = (char) (n >> 8);
+		if (encoded[i + 3] != '=') plain_out[j++] = (char) n;
 	}
 	plain_out[j] = 0;
 
