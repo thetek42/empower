@@ -88,6 +88,7 @@ typedef SSIZE_T ssize_t;
 	size_t prefix##_count (const type_name *vec, T item);                  \
 	size_t prefix##_count_slice (const type_name *vec, const T *slice, size_t len); \
 	size_t prefix##_count_slice_overlap (const type_name *vec, const T *slice, size_t len); \
+	void prefix##_reverse (type_name *vec);                                \
                                                                                \
 	__e_vec_ensure_user_has_to_use_semicolon ()
 
@@ -718,6 +719,23 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 		}                                                              \
                                                                                \
 		return count;                                                  \
+	}                                                                      \
+                                                                               \
+	/**                                                                    \
+	 * Reverse the contents of the vector \vec.                            \
+	 */                                                                    \
+	void                                                                   \
+	prefix##_reverse (type_name *vec) {                                    \
+		T *start, *end, tmp;                                           \
+                                                                               \
+		if (!vec) return;                                              \
+		start = vec->ptr;                                              \
+		end = &vec->ptr[vec->len];                                     \
+		while (start < end) {                                          \
+			tmp = *start;                                          \
+			*start++ = *end;                                       \
+			*end-- = tmp;                                          \
+		}                                                              \
 	}                                                                      \
                                                                                \
 	__e_vec_ensure_user_has_to_use_semicolon ()
