@@ -7,10 +7,21 @@
  *
  ******************************************************************************/
 
-#include <stdalign.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+/* compatibility annoyances ***************************************************/
+
+#if __STDC_VERSION__ >= 201112L
+# include <stdalign.h>
+#elif defined (__GNUC__) || defined (__clang__)
+# define alignof(expr) __alignof__ (expr)
+#elif defined (_MSC_VER) /* defined (__GNUC__) || defined (__clang__) */
+# define alignof(expr) __alignof (expr)
+#else /* defined (_MSC_VER) */
+# define E_MEM_ALIGNOF_NOT_SUPPORTED
+#endif /* defined (_MSC_VER) */
 
 /* public interface ***********************************************************/
 
@@ -22,7 +33,10 @@
 #define e_mem_swap(a, b, T, n) e_mem_swap_size ((a), (b), sizeof (T) * (n))
 #define e_mem_is_zero(ptr, T, n) e_mem_is_zero_size ((ptr), sizeof (T) * (n))
 #define e_mem_clone(ptr, T, n) e_mem_clone_size ((ptr), sizeof (T) * (n))
-#define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), alignof (T))
+
+#ifndef E_MEM_ALIGNOF_NOT_SUPPORTED
+# define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), alignof (T))
+#endif /* E_MEM_ALIGNOF_NOT_SUPPORTED */
 
 bool e_mem_is_aligned_to (const void *ptr, size_t align);
 bool e_mem_eq_size (const void *a, const void *b, size_t n);
