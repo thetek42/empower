@@ -10,6 +10,7 @@
 #include <stdalign.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 /* public interface ***********************************************************/
 
@@ -30,12 +31,23 @@ void e_mem_swap_size (void *a, void *b, size_t n);
 void e_mem_reverse_bytes (void *ptr, size_t len);
 char *e_mem_strdup (const char *s);
 void *e_mem_clone_size (const void *ptr, size_t n);
+uint16_t e_mem_read_u16_be (const uint8_t *mem);
+uint16_t e_mem_read_u16_le (const uint8_t *mem);
+uint32_t e_mem_read_u32_be (const uint8_t *mem);
+uint32_t e_mem_read_u32_le (const uint8_t *mem);
+uint64_t e_mem_read_u64_be (const uint8_t *mem);
+uint64_t e_mem_read_u64_le (const uint8_t *mem);
+void e_mem_write_u16_be (uint8_t *mem, uint16_t value);
+void e_mem_write_u16_le (uint8_t *mem, uint16_t value);
+void e_mem_write_u32_be (uint8_t *mem, uint32_t value);
+void e_mem_write_u32_le (uint8_t *mem, uint32_t value);
+void e_mem_write_u64_be (uint8_t *mem, uint64_t value);
+void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 
 /* implementation *************************************************************/
 
 #ifdef E_MEM_IMPL
 
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -165,6 +177,168 @@ e_mem_reverse_bytes (void *ptr, size_t len)
 		*start++ = *end;
 		*end-- = tmp;
 	}
+}
+
+/**
+ * Read a big-endian `uint16_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34 } => 0x1234
+ */
+uint16_t
+e_mem_read_u16_be (const uint8_t *mem)
+{
+	return (uint16_t) ((((uint16_t) mem[0]) << 8) | (((uint16_t) mem[1]) << 0));
+}
+
+/**
+ * Read a little-endian `uint16_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34 } => 0x3412
+ */
+uint16_t
+e_mem_read_u16_le (const uint8_t *mem)
+{
+	return (uint16_t) ((((uint16_t) mem[1]) << 8) | (((uint16_t) mem[0]) << 0));
+}
+
+/**
+ * Read a big-endian `uint32_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34, 0x56, 0x78 } => 0x12345678
+ */
+uint32_t
+e_mem_read_u32_be (const uint8_t *mem)
+{
+	return (((uint32_t) mem[0]) << 24) | (((uint32_t) mem[1]) << 16) |
+	       (((uint32_t) mem[2]) <<  8) | (((uint32_t) mem[3]) <<  0);
+}
+
+/**
+ * Read a little-endian `uint32_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34, 0x56, 0x78 } => 0x78563412
+ */
+uint32_t
+e_mem_read_u32_le (const uint8_t *mem)
+{
+	return (((uint32_t) mem[3]) << 24) | (((uint32_t) mem[2]) << 16) |
+	       (((uint32_t) mem[1]) <<  8) | (((uint32_t) mem[0]) <<  0);
+}
+
+/**
+ * Read a big-endian `uint64_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34, 0x56, ..., 0x34, 0x56 } => 0x1234567890123456
+ */
+uint64_t
+e_mem_read_u64_be (const uint8_t *mem)
+{
+	return (((uint64_t) mem[0]) << 56) | (((uint64_t) mem[1]) << 48) |
+	       (((uint64_t) mem[2]) << 40) | (((uint64_t) mem[3]) << 32) |
+	       (((uint64_t) mem[4]) << 24) | (((uint64_t) mem[5]) << 16) |
+	       (((uint64_t) mem[6]) <<  8) | (((uint64_t) mem[7]) <<  0);
+}
+
+/**
+ * Read a little-endian `uint64_t` from the memory \mem.
+ *
+ * Example: { 0x12, 0x34, 0x56, ..., 0x34, 0x56 } => 0x5634129078563412
+ */
+uint64_t
+e_mem_read_u64_le (const uint8_t *mem)
+{
+	return (((uint64_t) mem[7]) << 56) | (((uint64_t) mem[6]) << 48) |
+	       (((uint64_t) mem[5]) << 40) | (((uint64_t) mem[4]) << 32) |
+	       (((uint64_t) mem[3]) << 24) | (((uint64_t) mem[2]) << 16) |
+	       (((uint64_t) mem[1]) <<  8) | (((uint64_t) mem[0]) <<  0);
+}
+
+/**
+ * Write a big-endian `uint16_t` \value to the memory \mem.
+ *
+ * Example: 0x1234 => { 0x12, 0x34 }
+ */
+void
+e_mem_write_u16_be (uint8_t *mem, uint16_t value)
+{
+	mem[0] = (uint8_t) (value >> 8);
+	mem[1] = (uint8_t) (value >> 0);
+}
+
+/**
+ * Write a little-endian `uint16_t` \value to the memory \mem.
+ *
+ * Example: 0x3412 => { 0x12, 0x34 }
+ */
+void
+e_mem_write_u16_le (uint8_t *mem, uint16_t value)
+{
+	mem[1] = (uint8_t) (value >> 8);
+	mem[0] = (uint8_t) (value >> 0);
+}
+
+/**
+ * Write a big-endian `uint32_t` \value to the memory \mem.
+ *
+ * Example: 0x12345678 => { 0x12, 0x34, 0x56, 0x78 }
+ */
+void
+e_mem_write_u32_be (uint8_t *mem, uint32_t value)
+{
+	mem[0] = (uint8_t) (value >> 24);
+	mem[1] = (uint8_t) (value >> 16);
+	mem[2] = (uint8_t) (value >>  8);
+	mem[3] = (uint8_t) (value >>  0);
+}
+
+/**
+ * Write a little-endian `uint32_t` \value to the memory \mem.
+ *
+ * Example: 0x78563412 => { 0x12, 0x34, 0x56, 0x78 }
+ */
+void
+e_mem_write_u32_le (uint8_t *mem, uint32_t value)
+{
+	mem[3] = (uint8_t) (value >> 24);
+	mem[2] = (uint8_t) (value >> 16);
+	mem[1] = (uint8_t) (value >>  8);
+	mem[0] = (uint8_t) (value >>  0);
+}
+
+/**
+ * Write a big-endian `uint64_t` \value to the memory \mem.
+ *
+ * Example: 0x1234567890123456 => { 0x12, 0x34, 0x56, ..., 0x34, 0x56 }
+ */
+void
+e_mem_write_u64_be (uint8_t *mem, uint64_t value)
+{
+	mem[0] = (uint8_t) (value >> 56);
+	mem[1] = (uint8_t) (value >> 48);
+	mem[2] = (uint8_t) (value >> 40);
+	mem[3] = (uint8_t) (value >> 32);
+	mem[4] = (uint8_t) (value >> 24);
+	mem[5] = (uint8_t) (value >> 16);
+	mem[6] = (uint8_t) (value >>  8);
+	mem[7] = (uint8_t) (value >>  0);
+}
+
+/**
+ * Write a little-endian `uint64_t` \value to the memory \mem.
+ *
+ * Example: 0x5634129078563412 => { 0x12, 0x34, 0x56, ..., 0x34, 0x56 }
+ */
+void
+e_mem_write_u64_le (uint8_t *mem, uint64_t value)
+{
+	mem[7] = (uint8_t) (value >> 56);
+	mem[6] = (uint8_t) (value >> 48);
+	mem[5] = (uint8_t) (value >> 40);
+	mem[4] = (uint8_t) (value >> 32);
+	mem[3] = (uint8_t) (value >> 24);
+	mem[2] = (uint8_t) (value >> 16);
+	mem[1] = (uint8_t) (value >>  8);
+	mem[0] = (uint8_t) (value >>  0);
 }
 
 #endif /* E_MEM_IMPL */

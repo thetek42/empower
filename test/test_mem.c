@@ -12,6 +12,7 @@ test_mem (void)
 	u8 mem3[] = {42, 69, 13, 37, 137};
 	u8 mem4[] = {137, 37, 13, 69, 42};
 	u8 mem5[] = {0, 0, 0, 0};
+	u8 endian[] = {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0};
 	char *orig = "Hello, World!";
 	char *copy;
 
@@ -33,4 +34,30 @@ test_mem (void)
 	copy = e_mem_strdup (orig);
 	e_test_assert_str_eq ("e_mem_strdup", orig, copy);
 	free (copy);
+
+	e_test_assert_eq ("e_mem_read_u16_be", u16, e_mem_read_u16_be (endian), 0x1234);
+	e_test_assert_eq ("e_mem_read_u16_le", u16, e_mem_read_u16_le (endian), 0x3412);
+	e_test_assert_eq ("e_mem_read_u32_be", u32, e_mem_read_u32_be (endian), 0x12345678);
+	e_test_assert_eq ("e_mem_read_u32_le", u32, e_mem_read_u32_le (endian), 0x78563412);
+	e_test_assert_eq ("e_mem_read_u64_be", u64, e_mem_read_u64_be (endian), 0x123456789ABCDEF0);
+	e_test_assert_eq ("e_mem_read_u64_le", u64, e_mem_read_u64_le (endian), 0xF0DEBC9A78563412);
+
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u16_be (endian, 0x1234);
+	e_test_assert_eq ("e_mem_write_u16_be", u16, e_mem_read_u16_be (endian), 0x1234);
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u16_le (endian, 0x1234);
+	e_test_assert_eq ("e_mem_write_u16_le", u16, e_mem_read_u16_le (endian), 0x1234);
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u32_be (endian, 0x12345678);
+	e_test_assert_eq ("e_mem_write_u32_be", u32, e_mem_read_u32_be (endian), 0x12345678);
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u32_le (endian, 0x12345678);
+	e_test_assert_eq ("e_mem_write_u32_le", u32, e_mem_read_u32_le (endian), 0x12345678);
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u64_be (endian, 0x123456789ABCDEF0);
+	e_test_assert_eq ("e_mem_write_u64_be", u64, e_mem_read_u64_be (endian), 0x123456789ABCDEF0);
+	memset (endian, 0, sizeof (endian));
+	e_mem_write_u64_le (endian, 0x123456789ABCDEF0);
+	e_test_assert_eq ("e_mem_write_u64_le", u64, e_mem_read_u64_le (endian), 0x123456789ABCDEF0);
 }
