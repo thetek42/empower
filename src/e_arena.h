@@ -69,6 +69,12 @@ void e_arena_deinit (E_Arena *arena);
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * Initialize an arena allocator with a capacity of \cap bytes. This will
+ * allocate enough memory to store \cap bytes. If the memory allocation fails,
+ * an error message is printed and the programme is terminated. The user must
+ * call `e_arena_deinit()` in order to free the memory.
+ */
 E_Arena
 e_arena_init (size_t cap)
 {
@@ -90,6 +96,13 @@ e_arena_init (size_t cap)
 	};
 }
 
+/**
+ * Initialize an arena allocator from a pre-existing buffer \buf with a capacity
+ * \cap. This does not allocate memory. Can be used with something like a
+ * `static uint8_t my_impromptu_heap[1024]`. `e_arena_deinit()` does not need to
+ * be called since no memory has to be freed. If it is called anyways, no action
+ * is performed.
+ */
 E_Arena
 e_arena_init_static (void *buf, size_t cap)
 {
@@ -104,6 +117,10 @@ e_arena_init_static (void *buf, size_t cap)
 	};
 }
 
+/**
+ * Allocate \size bytes of alignment \align in the arena allocator \arena. If
+ * the allocation fails, an error message is printed and `nullptr` is returned.
+ */
 void *
 e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
 {
@@ -126,6 +143,11 @@ e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
 	return ptr;
 }
 
+/**
+ * Allocate \size bytes of alignment \align in the arena allocator \arena and
+ * zero out the allocated memory. If the allocation fails, an error message is
+ * printed and `nullptr` is returned.
+ */
 void *
 e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align)
 {
@@ -134,6 +156,9 @@ e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align)
 	return ptr;
 }
 
+/**
+ * Free up the memory occupied by the arena allocator \arena.
+ */
 void
 e_arena_deinit (E_Arena *arena)
 {
