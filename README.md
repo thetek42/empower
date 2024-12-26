@@ -10,9 +10,10 @@ Empower contains the following modules:
 | Module         | Description              |
 | -------------- | ------------------------ |
 | **e_alloc**    | Memory allocation        |
+| **e_arena**    | Arena allocator          |
+| **e_base64**   | Base64 encoding/decoding |
 | **e_cstr**     | String utility functions |
 | **e_debug**    | Debugging utilities      |
-| **e_enc**      | Encoding and Encrypting  |
 | **e_fs**       | File handling functions  |
 | **e_ini**      | INI file parsing         |
 | **e_log**      | Logging                  |
