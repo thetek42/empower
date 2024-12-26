@@ -5,7 +5,12 @@
  * 
  * Arena allocation.
  *
- * TODO: example here
+ * Example:
+ *  | E_Arena arena = e_arena_init (64);
+ *  | char *zeroed = e_arena_alloc (&arena, char, 8);
+ *  | int *one_int = e_arena_alloc (&arena, int, 1);
+ *  | u64 *correctly_aligned_u64 = e_arena_alloc (&arena, u64, 1);
+ *  | e_arena_deinit (&arena);
  *
  ******************************************************************************/
 
