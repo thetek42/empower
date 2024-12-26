@@ -35,6 +35,14 @@ test_mem (void)
 	e_test_assert_str_eq ("e_mem_strdup", orig, copy);
 	free (copy);
 
+	copy = e_mem_strdup_n ("Hello, World!", 99);
+	e_test_assert_str_eq ("e_mem_strdup_n excess", orig, copy);
+	free (copy);
+
+	copy = e_mem_strdup_n ("Hello, World!foobarbaz", 13);
+	e_test_assert_str_eq ("e_mem_strdup_n cutoff", orig, copy);
+	free (copy);
+
 	e_test_assert_eq ("e_mem_read_u16_be", u16, e_mem_read_u16_be (endian), 0x1234);
 	e_test_assert_eq ("e_mem_read_u16_le", u16, e_mem_read_u16_le (endian), 0x3412);
 	e_test_assert_eq ("e_mem_read_u32_be", u32, e_mem_read_u32_be (endian), 0x12345678);

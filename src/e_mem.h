@@ -30,6 +30,7 @@ bool e_mem_is_zero_size (const void *ptr, size_t n);
 void e_mem_swap_size (void *a, void *b, size_t n);
 void e_mem_reverse_bytes (void *ptr, size_t len);
 char *e_mem_strdup (const char *s);
+char *e_mem_strdup_n (const char *s, size_t n);
 void *e_mem_clone_size (const void *ptr, size_t n);
 uint16_t e_mem_read_u16_be (const uint8_t *mem);
 uint16_t e_mem_read_u16_le (const uint8_t *mem);
@@ -133,10 +134,37 @@ e_mem_strdup (const char *s)
 	len = strlen (s);
 	res = malloc (sizeof (char) * (len + 1));
 	if (res == NULL) {
-		fprintf (stderr, "[e_mem] failed to strdup\n");
+		fprintf (stderr, "[e_mem] failed to strdup %zu bytes\n", len);
 		exit (EXIT_FAILURE);
 	}
 	strcpy (res, s);
+
+	return res;
+}
+
+/**
+ * Duplicate at most \n bytes of a string. This is equivalent to `strndup`,
+ * except that it terminates the programme in case the memory allocation fails.
+ * This function only returns `nullptr` if \s is `nullptr`. The allocated memory
+ * must be freed by the user using `e_free`. This function only allocates as
+ * many bytes as are required, i.e. `min(strlen(s), n) + 1`.
+ */
+char *
+e_mem_strdup_n (const char *s, size_t n)
+{
+	size_t len;
+	char *res;
+
+	if (!s) return NULL;
+	len = strlen (s);
+	len = len < n ? len : n;
+	res = malloc (sizeof (char) * (len + 1));
+	if (res == NULL) {
+		fprintf (stderr, "[e_mem] failed to strndup %zu bytes\n", len);
+		exit (EXIT_FAILURE);
+	}
+	strncpy (res, s, len);
+	res[len] = 0;
 
 	return res;
 }
