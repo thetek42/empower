@@ -30,17 +30,17 @@ typedef SSIZE_T ssize_t;
  * Declare the struct and functions required for a vector of type \T. The type
  * of the vector will be equal to \type_name. All functions will start with
  * \prefix. This belongs into a header file and requires the functions to be
- * implemented somewhere with `E_VEC_IMPLEMENT`. For instance, to create a
- * vector with items of type `Node *`, use something like the following snippet:
+ * implemented somewhere with `E_VEC_IMPL`. For instance, to create a vector
+ * with items of type `Node *`, use something like the following snippet:
  *
- * | #include <e_vec.h>
- * |
- * | E_VEC_DECL (Node *, E_Vec_Node_Ptr, e_vec_node_ptr);
- * | E_VEC_IMPL (Node *, E_Vec_Node_Ptr, e_vec_node_ptr);
- * |
- * | E_Vec_Node_Ptr nodes;
- * | nodes = e_vec_node_ptr_init ();
- * | e_vec_node_ptr_deinit (&nodes);
+ *  | #include <e_vec.h>
+ *  |
+ *  | E_VEC_DECL (Node *, E_Vec_Node_Ptr, e_vec_node_ptr);
+ *  | E_VEC_IMPL (Node *, E_Vec_Node_Ptr, e_vec_node_ptr);
+ *  |
+ *  | E_Vec_Node_Ptr nodes;
+ *  | nodes = e_vec_node_ptr_init ();
+ *  | e_vec_node_ptr_deinit (&nodes);
  */
 #define E_VEC_DECL(T, type_name, prefix)                                       \
                                                                                \

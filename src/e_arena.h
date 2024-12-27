@@ -12,7 +12,7 @@
  *  | int *one_int = e_arena_alloc (&arena, int, 1);
  *  | u64 *correctly_aligned_u64 = e_arena_alloc (&arena, u64, 1);
  *  | do_stuff ();
- *  | free (buf);
+ *  | e_free (buf);
  *
  ******************************************************************************/
 
