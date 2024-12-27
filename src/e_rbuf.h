@@ -149,8 +149,8 @@
 	}                                                                      \
                                                                                \
 	/**                                                                    \
-	 * Add \item to the end of the ringbuffer \rbuf. If the ringbuffer is  \
-	 * full, the first item in the ringbuffer will be overwritten.         \
+	 * Add \item to the front of the ringbuffer \rbuf. If the ringbuffer   \
+	 * is full, the tail of the ringbuffer will be overwritten.            \
 	 */                                                                    \
 	void                                                                   \
 	prefix##_push (type_name *rbuf, T item)                                \
@@ -168,8 +168,8 @@
 	}                                                                      \
                                                                                \
 	/**                                                                    \
-	 * Add \item to the front of the ringbuffer \rbuf. If the ringbuffer   \
-	 * is full, the last item in the ringbuffer will be overwritten.       \
+	 * Add \item to the back of the ringbuffer \rbuf. If the ringbuffer    \
+	 * is full, the head of the ringbuffer will be overwritten.            \
 	 */                                                                    \
 	void                                                                   \
 	prefix##_push_back (type_name *rbuf, T item)                           \
@@ -187,7 +187,7 @@
 	}                                                                      \
                                                                                \
 	/**                                                                    \
-	 * Try to add \item to the end of the ringbuffer \rbuf. If the         \
+	 * Try to add \item to the front of the ringbuffer \rbuf. If the       \
 	 * ringbuffer is full, no action will be performed and `false` will be \
 	 * returned. Otherwise, the item will be added and `true` is returned. \
 	 */                                                                    \
@@ -204,7 +204,7 @@
 	}                                                                      \
                                                                                \
 	/**                                                                    \
-	 * Try to add \item to the front of the ringbuffer \rbuf. If the       \
+	 * Try to add \item to the back of the ringbuffer \rbuf. If the        \
 	 * ringbuffer is full, no action will be performed and `false` will be \
 	 * returned. Otherwise, the item will be added and `true` is returned. \
 	 */                                                                    \
@@ -220,6 +220,15 @@
 		return true;                                                   \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Try to pop an item from the back of the ringbuffer \rbuf. If the    \
+	 * ringbuffer is not empty, the item will be removed and written to    \
+	 * \item_out, and `true` will be returned. If the ringbuffer is empty, \
+	 * no action will be performed, and `false` will be returned. If the   \
+	 * \item_out parameter is `nullptr`, nothing will be written to it,    \
+	 * but the item will still be popped and `true` or `false` will be     \
+	 * returned.                                                           \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_pop (type_name *rbuf, T *item_out)                            \
 	{                                                                      \
@@ -232,6 +241,15 @@
 		return true;                                                   \
 	}                                                                      \
                                                                                \
+	/**                                                                    \
+	 * Try to pop an item from the front of the ringbuffer \rbuf. If the   \
+	 * ringbuffer is not empty, the item will be removed and written to    \
+	 * \item_out, and `true` will be returned. If the ringbuffer is empty, \
+	 * no action will be performed, and `false` will be returned. If the   \
+	 * \item_out parameter is `nullptr`, nothing will be written to it,    \
+	 * but the item will still be popped and `true` or `false` will be     \
+	 * returned.                                                           \
+	 */                                                                    \
 	bool                                                                   \
 	prefix##_pop_front (type_name *rbuf, T *item_out)                      \
 	{                                                                      \
