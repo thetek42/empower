@@ -76,8 +76,7 @@ void *e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align);
 E_Arena
 e_arena_init (void *buf, size_t cap)
 {
-	assert (buf != NULL && "buffer for e_arena_init_static cannot be null");
-	assert (cap != 0 && "capacity for e_arena_init_static cannot be 0");
+	assert (buf != NULL && "buffer for e_arena_init cannot be null");
 
 	return (E_Arena) {
 		.buf = buf,
