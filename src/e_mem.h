@@ -63,6 +63,7 @@ void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 
 #ifdef E_MEM_IMPL
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -229,6 +230,7 @@ e_mem_reverse_bytes (void *ptr, size_t len)
 uint16_t
 e_mem_read_u16_be (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u16_be cannot be null");
 	return (uint16_t) ((((uint16_t) mem[0]) << 8) | (((uint16_t) mem[1]) << 0));
 }
 
@@ -240,6 +242,7 @@ e_mem_read_u16_be (const uint8_t *mem)
 uint16_t
 e_mem_read_u16_le (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u16_le cannot be null");
 	return (uint16_t) ((((uint16_t) mem[1]) << 8) | (((uint16_t) mem[0]) << 0));
 }
 
@@ -251,6 +254,7 @@ e_mem_read_u16_le (const uint8_t *mem)
 uint32_t
 e_mem_read_u32_be (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u32_be cannot be null");
 	return (((uint32_t) mem[0]) << 24) | (((uint32_t) mem[1]) << 16) |
 	       (((uint32_t) mem[2]) <<  8) | (((uint32_t) mem[3]) <<  0);
 }
@@ -263,6 +267,7 @@ e_mem_read_u32_be (const uint8_t *mem)
 uint32_t
 e_mem_read_u32_le (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u32_le cannot be null");
 	return (((uint32_t) mem[3]) << 24) | (((uint32_t) mem[2]) << 16) |
 	       (((uint32_t) mem[1]) <<  8) | (((uint32_t) mem[0]) <<  0);
 }
@@ -275,6 +280,7 @@ e_mem_read_u32_le (const uint8_t *mem)
 uint64_t
 e_mem_read_u64_be (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u64_be cannot be null");
 	return (((uint64_t) mem[0]) << 56) | (((uint64_t) mem[1]) << 48) |
 	       (((uint64_t) mem[2]) << 40) | (((uint64_t) mem[3]) << 32) |
 	       (((uint64_t) mem[4]) << 24) | (((uint64_t) mem[5]) << 16) |
@@ -289,6 +295,7 @@ e_mem_read_u64_be (const uint8_t *mem)
 uint64_t
 e_mem_read_u64_le (const uint8_t *mem)
 {
+	assert (mem != NULL && "mem of e_mem_read_u64_le cannot be null");
 	return (((uint64_t) mem[7]) << 56) | (((uint64_t) mem[6]) << 48) |
 	       (((uint64_t) mem[5]) << 40) | (((uint64_t) mem[4]) << 32) |
 	       (((uint64_t) mem[3]) << 24) | (((uint64_t) mem[2]) << 16) |
@@ -303,6 +310,7 @@ e_mem_read_u64_le (const uint8_t *mem)
 void
 e_mem_write_u16_be (uint8_t *mem, uint16_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u16_be cannot be null");
 	mem[0] = (uint8_t) (value >> 8);
 	mem[1] = (uint8_t) (value >> 0);
 }
@@ -315,6 +323,7 @@ e_mem_write_u16_be (uint8_t *mem, uint16_t value)
 void
 e_mem_write_u16_le (uint8_t *mem, uint16_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u16_le cannot be null");
 	mem[1] = (uint8_t) (value >> 8);
 	mem[0] = (uint8_t) (value >> 0);
 }
@@ -327,6 +336,7 @@ e_mem_write_u16_le (uint8_t *mem, uint16_t value)
 void
 e_mem_write_u32_be (uint8_t *mem, uint32_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u32_be cannot be null");
 	mem[0] = (uint8_t) (value >> 24);
 	mem[1] = (uint8_t) (value >> 16);
 	mem[2] = (uint8_t) (value >>  8);
@@ -341,6 +351,7 @@ e_mem_write_u32_be (uint8_t *mem, uint32_t value)
 void
 e_mem_write_u32_le (uint8_t *mem, uint32_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u32_le cannot be null");
 	mem[3] = (uint8_t) (value >> 24);
 	mem[2] = (uint8_t) (value >> 16);
 	mem[1] = (uint8_t) (value >>  8);
@@ -355,6 +366,7 @@ e_mem_write_u32_le (uint8_t *mem, uint32_t value)
 void
 e_mem_write_u64_be (uint8_t *mem, uint64_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u64_be cannot be null");
 	mem[0] = (uint8_t) (value >> 56);
 	mem[1] = (uint8_t) (value >> 48);
 	mem[2] = (uint8_t) (value >> 40);
@@ -373,6 +385,7 @@ e_mem_write_u64_be (uint8_t *mem, uint64_t value)
 void
 e_mem_write_u64_le (uint8_t *mem, uint64_t value)
 {
+	assert (mem != NULL && "mem of e_mem_write_u64_le cannot be null");
 	mem[7] = (uint8_t) (value >> 56);
 	mem[6] = (uint8_t) (value >> 48);
 	mem[5] = (uint8_t) (value >> 40);
