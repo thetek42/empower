@@ -7,6 +7,11 @@
  * provided by this module allocate their data using `e_alloc`, i.e. `malloc`.
  * Like in `e_alloc`, when an allocation fails, the programme is terminated.
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_REALLOC_FUNC` (default `realloc`): The function to use for reallocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <assert.h>
@@ -23,6 +28,16 @@ typedef SSIZE_T ssize_t;
 #endif /* !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /* public interface ***********************************************************/
+
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_REALLOC_FUNC
+# define E_CONFIG_REALLOC_FUNC realloc
+#endif /* E_CONFIG_REALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
 
 #define __e_vec_ensure_user_has_to_use_semicolon() size_t strlen (const char *s)
 
@@ -151,7 +166,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 	{                                                                      \
 		T *ptr;                                                        \
 		                                                               \
-		ptr = malloc (sizeof (T) * cap);                               \
+		ptr = E_CONFIG_MALLOC_FUNC (sizeof (T) * cap);                 \
 		if (!ptr) {                                                    \
 			fprintf (stderr, "[e_vec] failed to alloc %zu bytes\n",\
 			         sizeof (T) * cap);                            \
@@ -205,7 +220,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
                                                                                \
 		if (n == 0) return prefix##_init ();                           \
                                                                                \
-		ptr = malloc (sizeof (T) * n);                                 \
+		ptr = E_CONFIG_MALLOC_FUNC (sizeof (T) * n);                   \
 		if (!ptr) {                                                    \
 			fprintf (stderr, "[e_vec] failed to alloc %zu bytes\n",\
 			         sizeof (T) * n);                              \
@@ -231,7 +246,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
                                                                                \
 		if (!slice || len == 0 || rep == 0) return prefix##_init ();   \
                                                                                \
-		ptr = malloc (sizeof (T) * len * rep);                         \
+		ptr = E_CONFIG_MALLOC_FUNC (sizeof (T) * len * rep);           \
 		if (!ptr) {                                                    \
 			fprintf (stderr, "[e_vec] failed to alloc %zu bytes\n",\
 			         sizeof (T) * len * rep);                      \
@@ -253,7 +268,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 	prefix##_deinit (type_name *vec)                                       \
 	{                                                                      \
 		if (vec) {                                                     \
-			free (vec->ptr);                                       \
+			E_CONFIG_FREE_FUNC (vec->ptr);                         \
 		}                                                              \
 	}                                                                      \
                                                                                \
@@ -269,7 +284,8 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 		if (!vec) return;                                              \
 		if (cap <= vec->cap) return;                                   \
 		vec->cap = e_priv_stdc_bit_ceil (cap);                         \
-		vec->ptr = realloc (vec->ptr, sizeof (T) * vec->cap);          \
+		vec->ptr = E_CONFIG_REALLOC_FUNC (vec->ptr,                    \
+		                                  sizeof (T) * vec->cap);      \
 	}                                                                      \
                                                                                \
 	/**                                                                    \
@@ -296,7 +312,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 		if (vec->len >= n) return;                                     \
 		vec->len = n;                                                  \
 		vec->cap = e_priv_stdc_bit_ceil (n);                           \
-		vec->ptr = realloc (vec->ptr, sizeof (T) * n);                 \
+		vec->ptr = E_CONFIG_REALLOC_FUNC (vec->ptr, sizeof (T) * n);   \
 	}                                                                      \
                                                                                \
 	/**                                                                    \
@@ -311,7 +327,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
                                                                                \
 		if (!vec) return prefix##_init ();                             \
                                                                                \
-		ptr = malloc (sizeof (T) * vec->cap);                          \
+		ptr = E_CONFIG_MALLOC_FUNC (sizeof (T) * vec->cap);            \
 		if (!ptr) {                                                    \
 			fprintf (stderr, "[e_vec] failed to alloc %zu bytes\n",\
 			         sizeof (T) * vec->cap);                       \

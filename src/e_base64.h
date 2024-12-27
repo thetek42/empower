@@ -15,6 +15,9 @@
  *  | e_log_debug ("Encoded: %s", encoded);
  *  | e_free (encoded);
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *
  ******************************************************************************/
 
 #include <stdbool.h>
@@ -38,6 +41,10 @@ char *e_base64_dec_alloc (const char *encoded);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
 
 static bool base64_is_valid_char (char c);
 
@@ -175,7 +182,7 @@ e_base64_dec (const char *encoded, char *plain_out)
  * Encode a nul-terminated plain text \plain using Base64, allocates enough
  * memory for storing the result and stores the encoded text including a nul
  * terminator in there. A pointer to the allocated memory is returned. The
- * memory must be freed by the user using `e_free`.
+ * memory must be freed by the user.
  */
 char *
 e_base64_enc_alloc (const char *plain)
@@ -184,7 +191,7 @@ e_base64_enc_alloc (const char *plain)
 	char *buf;
 
 	buf_len = e_base64_get_enc_len (plain) + 1;
-	buf = malloc (sizeof (char) * buf_len);
+	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * buf_len);
 	if (!buf) {
 		fprintf (stderr, "[e_enc] failed to alloc %zu bytes\n", buf_len);
 		exit (EXIT_FAILURE);
@@ -199,7 +206,7 @@ e_base64_enc_alloc (const char *plain)
  * for storing the result and stores the decoded text including a nul terminator
  * in there. A pointer to the allocated memory is returned. If the decoding
  * fails, `nullptr` is returned. A pointer to the allocated memory is returned.
- * The memory must be freed by the user using `e_free`.
+ * The memory must be freed by the user.
  */
 char *
 e_base64_dec_alloc (const char *encoded)
@@ -209,7 +216,7 @@ e_base64_dec_alloc (const char *encoded)
 	char *buf;
 
 	buf_len = e_base64_get_enc_len (encoded) + 1;
-	buf = malloc (sizeof (char) * buf_len);
+	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * buf_len);
 	if (!buf) {
 		fprintf (stderr, "[e_enc] failed to alloc %zu bytes\n", buf_len);
 		exit (EXIT_FAILURE);

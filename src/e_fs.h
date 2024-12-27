@@ -8,6 +8,10 @@
  * Module dependencies:
  *  - e_result
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <e_result.h>
@@ -110,6 +114,13 @@ E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ..
 # include <sys/types.h>
 # include <unistd.h>
 #endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
 
 static const char *const mode_str_table[] = {
 	"r", /* E_FS_OPEN_MODE_READ_ONLY */
@@ -456,8 +467,9 @@ e_fs_file_read_all (E_File *file, char **out, size_t *len_out)
 /**
  * Reads the remaining content (i.e. from the current file position indicator
  * to the end of the file) of the file handle \file into an allocated buffer.
- * The behaviour of this function is the same as `e_fs_file_read_all`, except
- * that it only reads the remaining content and not the entire file.
+ * The user must free the allocated memory. The behaviour of this function is
+ * the same as `e_fs_file_read_all`, except that it only reads the remaining
+ * content and not the entire file.
  */
 E_Result
 e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
@@ -478,7 +490,7 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 		return err;
 	}
 
-	*out = malloc (sizeof (char) * (len + 1));
+	*out = E_CONFIG_MALLOC_FUNC (sizeof (char) * (len + 1));
 	if (!*out) {
 		fprintf (stderr, "[e_fs] failed to alloc %zu bytes\n", len + 1);
 		exit (EXIT_FAILURE);
@@ -486,7 +498,7 @@ e_fs_file_read_remaining (E_File *file, char **out, size_t *len_out)
 
 	err = e_fs_file_read (file, *out, len + 1, len_out);
 	if (err != E_OK) {
-		free (*out);
+		E_CONFIG_FREE_FUNC (*out);
 		*out = NULL;
 		return err;
 	}
@@ -574,7 +586,7 @@ e_fs_path_exists (const char *path)
 	wpath = e_fs_priv_utf8_to_wchar (path);
 	if (!wpath) return false;
 	attrs = GetFileAttributesW (wpath);
-	free (wpath);
+	E_CONFIG_FREE_FUNC (wpath);
 
 	return attrs != INVALID_FILE_ATTRIBUTES;
 }
@@ -591,7 +603,7 @@ e_fs_is_file (const char *path)
 	wpath = e_fs_priv_utf8_to_wchar (path);
 	if (!wpath) return false;
 	attrs = GetFileAttributesW (wpath);
-	free (wpath);
+	E_CONFIG_FREE_FUNC (wpath);
 
 	return attrs != INVALID_FILE_ATTRIBUTES /* TODO idk about this */
 	       && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
@@ -609,7 +621,7 @@ e_fs_is_dir (const char *path)
 	wpath = e_fs_priv_utf8_to_wchar (path);
 	if (!wpath) return false;
 	attrs = GetFileAttributesW (wpath);
-	free (wpath);
+	E_CONFIG_FREE_FUNC (wpath);
 
 	return attrs != INVALID_FILE_ATTRIBUTES
 	       && attrs & FILE_ATTRIBUTE_DIRECTORY;
@@ -640,7 +652,7 @@ e_fs_dir_create (const char *path, E_Fs_Permissions perm)
 	wpath = e_fs_priv_utf8_to_wchar (path);
 	if (!wpath) return E_ERR_INVALID_ARGUMENT;
 	win_ret = CreateDirectoryW (wpath, NULL);
-	free (wpath);
+	E_CONFIG_FREE_FUNC (wpath);
 	if (win_ret == 0) {
 		return e_fs_priv_win_err_to_result (GetLastError ());
 	}
@@ -665,7 +677,7 @@ e_fs_remove (const char *path)
 		wpath = e_fs_priv_utf8_to_wchar (path);
 		if (!wpath) return E_ERR_INVALID_ARGUMENT;
 		win_ret = RemoveDirectoryW (wpath);
-		free (wpath);
+		E_CONFIG_FREE_FUNC (wpath);
 		if (win_ret == 0) {
 			return e_fs_priv_win_err_to_result (GetLastError ());
 		}
@@ -720,7 +732,7 @@ e_fs_priv_utf8_to_wchar (const char *s)
 	slen = strlen (s);
 	len = MultiByteToWideChar (CP_UTF8, 0, s, (int) slen, NULL, 0);
 	if (len < 0) return NULL;
-	ret = malloc (sizeof (WCHAR) * (len + 1));
+	ret = E_CONFIG_MALLOC_FUNC (sizeof (WCHAR) * (len + 1));
 	if (!ret) return NULL;
 	MultiByteToWideChar (CP_UTF8, 0, s, (int) slen, ret, len);
 	ret[len] = 0;

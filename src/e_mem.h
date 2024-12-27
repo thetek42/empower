@@ -5,6 +5,9 @@
  * 
  * This module provides miscellaneous functions for operating on memory.
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *
  ******************************************************************************/
 
 #include <stdbool.h>
@@ -67,6 +70,10 @@ void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
 
 /**
  * Check if the memory region pointed to by \ptr with size of \n bytes is
@@ -147,7 +154,7 @@ e_mem_strdup (const char *s)
 
 	if (!s) return NULL;
 	len = strlen (s);
-	res = malloc (sizeof (char) * (len + 1));
+	res = E_CONFIG_MALLOC_FUNC (sizeof (char) * (len + 1));
 	if (res == NULL) {
 		fprintf (stderr, "[e_mem] failed to strdup %zu bytes\n", len);
 		exit (EXIT_FAILURE);
@@ -173,7 +180,7 @@ e_mem_strdup_n (const char *s, size_t n)
 	if (!s) return NULL;
 	len = strlen (s);
 	len = len < n ? len : n;
-	res = malloc (sizeof (char) * (len + 1));
+	res = E_CONFIG_MALLOC_FUNC (sizeof (char) * (len + 1));
 	if (res == NULL) {
 		fprintf (stderr, "[e_mem] failed to strndup %zu bytes\n", len);
 		exit (EXIT_FAILURE);
@@ -195,7 +202,7 @@ e_mem_clone_size (const void *ptr, size_t n)
 	void *ret;
 
 	if (!ptr || n == 0) return NULL;
-	ret = malloc (n);
+	ret = E_CONFIG_MALLOC_FUNC (n);
 	if (ret == NULL) {
 		fprintf (stderr, "[e_mem] failed to alloc %zu bytes\n", n);
 		exit (EXIT_FAILURE);

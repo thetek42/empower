@@ -6,6 +6,10 @@
  * This module provides various utility functions for dealing with C strings and
  * serves as an extension to the `string.h` header from the standard library.
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <stdbool.h>
@@ -85,6 +89,13 @@ int e_char_is_ascii (int c);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
 
 /**
  * Count the number of occurances of a character \c in the nul-terminated string
@@ -860,7 +871,7 @@ e_cstr_distance (const char *a, const char *b)
 	a_len = strlen (a);
 	b_len = strlen (b);
 	alloc_size = sizeof (size_t) * (a_len + 1);
-	col = malloc (alloc_size);
+	col = E_CONFIG_MALLOC_FUNC (alloc_size);
 	if (!col) {
 		fprintf (stderr, "[e_cstr] failed to alloc %zu bytes\n", alloc_size);
 		exit (EXIT_FAILURE);
@@ -879,7 +890,7 @@ e_cstr_distance (const char *a, const char *b)
 	}
 
 	i = col[a_len];
-	free (col);
+	E_CONFIG_FREE_FUNC (col);
 	return i;
 }
 
@@ -905,7 +916,7 @@ e_cstr_split_char (const char *s, char c)
 
 	count = 1;
 	len = strlen (s);
-	buf = malloc (sizeof (char) * (len + 1));
+	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * (len + 1));
 	if (!buf) {
 		fprintf (stderr, "[e_cstr] failed to alloc %zu bytes\n", len + 1);
 		exit (EXIT_FAILURE);
@@ -941,7 +952,7 @@ e_cstr_split_str (const char *s, const char *delim)
 	if (!s) return (E_Str_Split) {0};
 
 	if (!delim || strlen (delim) == 0) {
-		buf = malloc (sizeof (char));
+		buf = E_CONFIG_MALLOC_FUNC (sizeof (char));
 		if (!buf) {
 			fprintf (stderr, "[e_cstr] failed to alloc 1 byte\n");
 			exit (EXIT_FAILURE);
@@ -958,7 +969,7 @@ e_cstr_split_str (const char *s, const char *delim)
 	delim_len = strlen (delim);
 	count = e_cstr_count_str (s, delim);
 	size = strlen (s) - count * delim_len + count + 1;
-	buf = malloc (sizeof (char) * size);
+	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * size);
 	if (!buf) {
 		fprintf (stderr, "[e_cstr] failed to alloc %zu bytes\n", size);
 		exit (EXIT_FAILURE);
@@ -1023,7 +1034,7 @@ e_cstr_split_next (E_Str_Split *split)
 void
 e_cstr_split_deinit (E_Str_Split *split)
 {
-	if (split) free (split->buf);
+	if (split) E_CONFIG_FREE_FUNC (split->buf);
 }
 
 /**

@@ -174,21 +174,15 @@ e_str_from_cstr (const char *s)
 E_Str
 e_str_from_slice (const char *s, size_t len)
 {
-	char *out;
+	E_Str ret;
 
 	if (!s || len == 0) return e_str_init ();
-	out = malloc (sizeof (char) * len);
-	if (!out) {
-		fprintf (stderr, "[e_str] failed to alloc %zu bytes\n", len);
-		exit (EXIT_FAILURE);
-	}
-	memcpy (out, s, sizeof (char) * len);
 
-	return (E_Str) {
-		.ptr = out,
-		.len = len,
-		.cap = len,
-	};
+	ret = e_vec_priv_char_from (s, len + 1);
+	ret.ptr[len] = 0;
+	ret.len = len;
+
+	return ret;
 }
 
 /**

@@ -26,6 +26,11 @@
  *  | if (entry) e_log_debug ("Entry value: ", entry->value);
  *  | e_ini_deinit (&ini);
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_REALLOC_FUNC` (default `realloc`): The function to use for reallocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <stddef.h>
@@ -86,6 +91,16 @@ void e_ini_debug (E_Ini *ini);
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_REALLOC_FUNC
+# define E_CONFIG_REALLOC_FUNC realloc
+#endif /* E_CONFIG_REALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
+
 E_VEC_IMPL (E_Ini_Entry, E_Vec_Ini_Entry, e_vec_ini_entry);
 E_VEC_IMPL (E_Ini_Section, E_Vec_Ini_Section, e_vec_ini_section);
 
@@ -109,7 +124,7 @@ void
 e_ini_deinit (E_Ini *ini)
 {
 	if (!ini) return;
-	free (ini->str_buf);
+	E_CONFIG_FREE_FUNC (ini->str_buf);
 	e_vec_ini_entry_deinit (&ini->entries);
 	e_vec_ini_section_deinit (&ini->sections);
 }
@@ -162,7 +177,7 @@ e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len)
 
 	sections = e_vec_ini_section_init ();
 	entries = e_vec_ini_entry_init ();
-	str_buf = malloc (sizeof (char) * (len + 1));
+	str_buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * (len + 1));
         if (!str_buf) {
 		fprintf (stderr, "[e_ini] failed to alloc %zu bytes\n", len + 1);
 		exit (EXIT_FAILURE);
@@ -274,7 +289,7 @@ e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len)
 unexpected_eof:
 	fprintf (stderr, "[e_ini] parsing failed (line %zu): unexpected eof\n", line);
 err:
-	free (str_buf);
+	E_CONFIG_FREE_FUNC (str_buf);
 	e_vec_ini_entry_deinit (&entries);
 	e_vec_ini_section_deinit (&sections);
 	return E_ERR_FORMAT_ERROR;

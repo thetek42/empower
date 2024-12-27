@@ -8,6 +8,12 @@
  * Module dependencies:
  *  - e_log (optional)
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_CALLOC_FUNC` (default `calloc`): The function to use for allocating zeroed memory.
+ *  - `E_CONFIG_REALLOC_FUNC` (default `realloc`): The function to use for reallocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <inttypes.h>
@@ -109,6 +115,19 @@ void (e_debug_free) (void *ptr, const char *location);
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_CALLOC_FUNC
+# define E_CONFIG_CALLOC_FUNC calloc
+#endif /* E_CONFIG_CALLOC_FUNC */
+#ifndef E_CONFIG_REALLOC_FUNC
+# define E_CONFIG_REALLOC_FUNC realloc
+#endif /* E_CONFIG_REALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
+
 /**
  * Print a hexdump of a region of memory.
  */
@@ -157,7 +176,7 @@ void *
 
 	assert (size != 0 && "size for e_alloc cannot be 0");
 
-	ptr = malloc (size);
+	ptr = E_CONFIG_MALLOC_FUNC (size);
 	if (ptr == NULL) {
 		fprintf (stderr, "[e_debug] \x1b[34malloc\x1b[0m %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, location);
 		exit (EXIT_FAILURE);
@@ -174,7 +193,7 @@ void *
 
 	assert (size != 0 && "size for e_alloc cannot be 0");
 
-	ptr = calloc (nmemb, size);
+	ptr = E_CONFIG_CALLOC_FUNC (nmemb, size);
 	if (ptr == NULL) {
 		fprintf (stderr, "[e_debug] \x1b[34malloc_zero\x1b[0m %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, location);
 		exit (EXIT_FAILURE);
@@ -193,12 +212,12 @@ void *
 
 	if (size == 0) {
 		fprintf (stderr, "[e_debug] \x1b[35mrealloc\x1b[0m free \x1b[33m%p\x1b[0m (size == 0) \x1b[90m(%s)\x1b[0m\n", ptr, location);
-		free (ptr);
+		E_CONFIG_FREE_FUNC (ptr);
 		return NULL;
 	}
 
 	old_ptr = (uintptr_t) ptr;
-	ptr = realloc (ptr, size);
+	ptr = E_CONFIG_REALLOC_FUNC (ptr, size);
 	if (ptr == NULL) {
 		fprintf (stderr, "[e_debug] \x1b[36mrealloc\x1b[0m %p to %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", (void *) old_ptr, size, location);
 		exit (EXIT_FAILURE);
@@ -212,7 +231,7 @@ void
 (e_debug_free) (void *ptr, const char *location)
 {
 	fprintf (stderr, "[e_debug] \x1b[35mfree\x1b[0m \x1b[33m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", ptr, location);
-	free (ptr);
+	E_CONFIG_FREE_FUNC (ptr);
 }
 
 #endif /* E_DEBUG_IMPL */
