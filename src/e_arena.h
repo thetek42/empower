@@ -6,11 +6,13 @@
  * Arena allocation.
  *
  * Example:
- *  | E_Arena arena = e_arena_init (64);
+ *  | void *buf = e_alloc_size (64);
+ *  | E_Arena arena = e_arena_init (buf, 64);
  *  | char *zeroed = e_arena_alloc (&arena, char, 8);
  *  | int *one_int = e_arena_alloc (&arena, int, 1);
  *  | u64 *correctly_aligned_u64 = e_arena_alloc (&arena, u64, 1);
- *  | e_arena_deinit (&arena);
+ *  | do_stuff ();
+ *  | free (buf);
  *
  ******************************************************************************/
 
@@ -51,14 +53,11 @@ typedef struct {
 	char *buf;
 	size_t offset;
 	size_t cap;
-	bool is_static;
 } E_Arena;
 
-E_Arena e_arena_init (size_t cap);
-E_Arena e_arena_init_static (void *buf, size_t cap);
+E_Arena e_arena_init (void *buf, size_t cap);
 void *e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align);
 void *e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align);
-void e_arena_deinit (E_Arena *arena);
 
 /* implementation *************************************************************/
 
@@ -70,41 +69,12 @@ void e_arena_deinit (E_Arena *arena);
 #include <string.h>
 
 /**
- * Initialize an arena allocator with a capacity of \cap bytes. This will
- * allocate enough memory to store \cap bytes. If the memory allocation fails,
- * an error message is printed and the programme is terminated. The user must
- * call `e_arena_deinit()` in order to free the memory.
+ * Initialize an arena allocator from a pre-existing buffer \buf with capacity
+ * \cap. The user is responsible for allocating and freeing the memory that the
+ * arena uses (if necessary).
  */
 E_Arena
-e_arena_init (size_t cap)
-{
-	char *buf;
-
-	assert (cap != 0 && "capacity for e_arena_init cannot be 0");
-
-	buf = malloc (cap);
-	if (!buf) {
-		fprintf (stderr, "[e_arena] failed to alloc %zu bytes\n", cap);
-		exit (EXIT_FAILURE);
-	}
-
-	return (E_Arena) {
-		.buf = buf,
-		.offset = 0,
-		.cap = cap,
-		.is_static = false,
-	};
-}
-
-/**
- * Initialize an arena allocator from a pre-existing buffer \buf with a capacity
- * \cap. This does not allocate memory. Can be used with something like a
- * `static uint8_t my_impromptu_heap[1024]`. `e_arena_deinit()` does not need to
- * be called since no memory has to be freed. If it is called anyways, no action
- * is performed.
- */
-E_Arena
-e_arena_init_static (void *buf, size_t cap)
+e_arena_init (void *buf, size_t cap)
 {
 	assert (buf != NULL && "buffer for e_arena_init_static cannot be null");
 	assert (cap != 0 && "capacity for e_arena_init_static cannot be 0");
@@ -113,7 +83,6 @@ e_arena_init_static (void *buf, size_t cap)
 		.buf = buf,
 		.offset = 0,
 		.cap = cap,
-		.is_static = true,
 	};
 }
 
@@ -154,16 +123,6 @@ e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align)
 	void *ptr = e_arena_alloc_size_align (arena, size, align);
 	if (ptr) memset (ptr, 0, size);
 	return ptr;
-}
-
-/**
- * Free up the memory occupied by the arena allocator \arena.
- */
-void
-e_arena_deinit (E_Arena *arena)
-{
-	if (!arena) return;
-	if (!arena->is_static) free (arena->buf);
 }
 
 #endif /* E_ARENA_IMPL */

@@ -9,9 +9,10 @@ void
 test_arena (void)
 {
 	E_Arena arena;
+	char buf[32];
 	void *ptr;
 
-	arena = e_arena_init (32);
+	arena = e_arena_init (buf, sizeof (buf));
 
 	ptr = e_arena_alloc (&arena, u32, 1);
 	e_test_assert_ptr_eq ("e_arena_alloc ptr", ptr, arena.buf);
@@ -28,6 +29,4 @@ test_arena (void)
 	e_test_assert_ptr_eq ("e_arena_alloc_aligned ptr", ptr, arena.buf + 8);
 	e_test_assert_ptr_aligned ("e_arena_alloc_aligned align", ptr, 8);
 	e_test_assert_eq ("e_arena_alloc_aligned len", usize, arena.offset, 16);
-
-	e_arena_deinit (&arena);
 }
