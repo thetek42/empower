@@ -34,7 +34,7 @@ test_fs (void)
 	e_test_assert_eq ("e_fs_file_write_fmt len", usize, len, 2);
 	e_fs_file_close (&file);
 
-	e_test_assert_ok ("e_fs_file_open read", e_fs_file_open (&file, "tmp/test.txt", E_FS_OPEN_MODE_READ_ONLY));
+	e_test_assert_ok ("e_fs_file_open read", e_fs_file_open (&file, "tmp/test.txt", E_FS_OPEN_MODE_READ));
 
 	e_test_assert_ok ("e_fs_file_get_size", e_fs_file_get_size (&file, &len));
 	e_test_assert_eq ("e_fs_file_get_size len", usize, len, strlen ("Hello, World!\t42"));
@@ -81,8 +81,8 @@ test_fs (void)
 	e_test_assert ("e_fs_move success 1", e_fs_is_file ("tmp/moved.txt"));
 	e_test_assert ("e_fs_move success 2", !e_fs_is_file ("tmp/test.txt"));
 	e_test_assert_ok ("e_fs_copy", e_fs_copy ("tmp/moved.txt", "tmp/test.txt"));
-	e_test_assert_ok ("e_fs_copy read 1", e_fs_read_file ("tmp/moved.txt", &buf1, nullptr));
-	e_test_assert_ok ("e_fs_copy read 2", e_fs_read_file ("tmp/test.txt", &buf2, nullptr));
+	e_test_assert_ok ("e_fs_copy read 1", e_fs_read_file ("tmp/moved.txt", &buf1, nullptr, false));
+	e_test_assert_ok ("e_fs_copy read 2", e_fs_read_file ("tmp/test.txt", &buf2, nullptr, false));
 	e_test_assert_str_eq ("e_fs_copy eq", buf1, buf2);
 	free (buf1);
 	free (buf2);

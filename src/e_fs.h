@@ -25,12 +25,11 @@
  * Specifies which mode to use for opening files.
  */
 typedef enum {
-	E_FS_OPEN_MODE_READ_ONLY, /* r */
-	E_FS_OPEN_MODE_WRITE_TRUNC, /* w */
-	E_FS_OPEN_MODE_WRITE_APPEND, /* a */
-	E_FS_OPEN_MODE_READ_WRITE, /* r+ */
-	E_FS_OPEN_MODE_READ_WRITE_TRUNC, /* w+ */
-	E_FS_OPEN_MODE_READ_WRITE_APPEND, /* a+ */
+	E_FS_OPEN_MODE_READ = 0x01,
+	E_FS_OPEN_MODE_WRITE_TRUNC = 0x02,
+	E_FS_OPEN_MODE_WRITE_APPEND = 0x04,
+	E_FS_OPEN_MODE_BINARY = 0x08,
+	/* TODO: create flag */
 } E_Fs_Open_Mode;
 
 /**
@@ -60,7 +59,7 @@ typedef struct {
 	FILE *handle;
 } E_File;
 
-E_Result e_fs_read_file (const char *path, char **out, size_t *len_out);
+E_Result e_fs_read_file (const char *path, char **out, size_t *len_out, bool is_binary);
 E_Result e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode);
 void e_fs_file_close (E_File *file);
 E_Result e_fs_file_get_size (E_File *file, size_t *size_out);
@@ -123,12 +122,22 @@ E_Result e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ..
 #endif /* E_CONFIG_FREE_FUNC */
 
 static const char *const mode_str_table[] = {
-	"r", /* E_FS_OPEN_MODE_READ_ONLY */
-	"w", /* E_FS_OPEN_MODE_WRITE_TRUNC */
-	"a", /* E_FS_OPEN_MODE_WRITE_APPEND */
-	"r+", /* E_FS_OPEN_MODE_READ_WRITE */
-	"w+", /* E_FS_OPEN_MODE_READ_WRITE_TRUNC */
-	"a+", /* E_FS_OPEN_MODE_READ_WRITE_APPEND */
+	[0                   | 0                          | 0                           | 0                    ] = NULL,
+	[0                   | 0                          | 0                           | E_FS_OPEN_MODE_BINARY] = NULL,
+	[0                   | 0                          | E_FS_OPEN_MODE_WRITE_APPEND | 0                    ] = "a",
+	[0                   | 0                          | E_FS_OPEN_MODE_WRITE_APPEND | E_FS_OPEN_MODE_BINARY] = "ab",
+	[0                   | E_FS_OPEN_MODE_WRITE_TRUNC | 0                           | 0                    ] = "w",
+	[0                   | E_FS_OPEN_MODE_WRITE_TRUNC | 0                           | E_FS_OPEN_MODE_BINARY] = "wb",
+	[0                   | E_FS_OPEN_MODE_WRITE_TRUNC | E_FS_OPEN_MODE_WRITE_APPEND | 0                    ] = NULL,
+	[0                   | E_FS_OPEN_MODE_WRITE_TRUNC | E_FS_OPEN_MODE_WRITE_APPEND | E_FS_OPEN_MODE_BINARY] = NULL,
+	[E_FS_OPEN_MODE_READ | 0                          | 0                           | 0                    ] = "r",
+	[E_FS_OPEN_MODE_READ | 0                          | 0                           | E_FS_OPEN_MODE_BINARY] = "rb",
+	[E_FS_OPEN_MODE_READ | 0                          | E_FS_OPEN_MODE_WRITE_APPEND | 0                    ] = "a+",
+	[E_FS_OPEN_MODE_READ | 0                          | E_FS_OPEN_MODE_WRITE_APPEND | E_FS_OPEN_MODE_BINARY] = "a+b",
+	[E_FS_OPEN_MODE_READ | E_FS_OPEN_MODE_WRITE_TRUNC | 0                           | 0                    ] = "w+",
+	[E_FS_OPEN_MODE_READ | E_FS_OPEN_MODE_WRITE_TRUNC | 0                           | E_FS_OPEN_MODE_BINARY] = "w+b",
+	[E_FS_OPEN_MODE_READ | E_FS_OPEN_MODE_WRITE_TRUNC | E_FS_OPEN_MODE_WRITE_APPEND | 0                    ] = NULL,
+	[E_FS_OPEN_MODE_READ | E_FS_OPEN_MODE_WRITE_TRUNC | E_FS_OPEN_MODE_WRITE_APPEND | E_FS_OPEN_MODE_BINARY] = NULL,
 };
 
 /**
@@ -136,16 +145,36 @@ static const char *const mode_str_table[] = {
  * This function is essentially a wrapper around `fopen`. The file handle will
  * be put into \file. The function returns an `E_Result` with E_OK in case of
  * success and an error in case `fopen` failed.
+ *
+ * \mode specifies whether the file should be opened for reading and/or writing,
+ * whether the file should be truncated or appended to, and whether the file
+ * should be treated as a binary file. The behaviour here is the same as regular
+ * `fopen`, except that the file position for `"a+"` is not undefined behaviour.
+ * In the case of `E_FS_OPEN_MODE_WRITE_APPEND | E_FS_OPEN_MODE_READ` (which
+ * translates to "a+"), the file reading position is set to the *start* of the
+ * file. File creation behaviour is the same as with regular `fopen`, i.e.
+ * writing or appending to a file creates it if necessary, but reading does not.
  */
 E_Result
 e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode)
 {
+	const char *mode_str;
+	E_Result res;
 	FILE *handle;
+	int ret;
 
 	if (!file_out || !path) return E_ERR_INVALID_ARGUMENT;
 
-	handle = fopen (path, mode_str_table[mode]);
+	mode_str = mode_str_table[mode];
+	if (!mode_str) return E_ERR_INVALID_ARGUMENT;
+	handle = fopen (path, mode_str);
 	if (handle == NULL) return E_RESULT_FROM_ERRNO ();
+	ret = fseek (handle, 0, SEEK_SET);
+	if (ret < 0) {
+		res = E_RESULT_FROM_ERRNO ();
+		fclose (handle);
+		return res;
+	}
 
 	file_out->handle = handle;
 	return E_OK;
@@ -406,16 +435,20 @@ e_fs_file_write_fmt (E_File *file, size_t *written, const char *fmt, ...)
  * Reads the entire content of the file with path \path into a buffer pointed to
  * by \out. The file will be opened and closed automatically. The behaviour and
  * arguments of this function are essentially the same as `e_fs_file_read_all`.
+ * If \is_binary is true, the file is treated as a binary file.
  */
 E_Result
-e_fs_read_file (const char *path, char **out, size_t *len_out)
+e_fs_read_file (const char *path, char **out, size_t *len_out, bool is_binary)
 {
+	E_Fs_Open_Mode mode;
 	E_Result res;
 	E_File file;
 
 	if (!path || !out) return E_ERR_INVALID_ARGUMENT;
 
-	E_TRY (e_fs_file_open (&file, path, E_FS_OPEN_MODE_READ_ONLY));
+	mode = E_FS_OPEN_MODE_READ;
+	if (is_binary) mode |= E_FS_OPEN_MODE_BINARY;
+	E_TRY (e_fs_file_open (&file, path, mode));
 
 	res = e_fs_file_read_all (&file, out, len_out);
 	if (res != E_OK) {
