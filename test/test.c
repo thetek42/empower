@@ -13,6 +13,7 @@ void test_macro (void);
 void test_mem (void);
 void test_parse (void);
 void test_rand (void);
+void test_rbuf (void);
 void test_result (void);
 void test_str (void);
 void test_types (void);
@@ -36,6 +37,7 @@ main (int argc, char *argv[])
 	test_mem ();
 	test_parse ();
 	test_rand ();
+	test_rbuf ();
 	test_result ();
 	test_str ();
 	test_types ();

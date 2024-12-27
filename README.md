@@ -21,6 +21,7 @@ Empower contains the following modules:
 | **e_mem**      | Memory manipulation      |
 | **e_parse**    | String parser utilities  |
 | **e_rand**     | Randomization            |
+| **e_rbuf**     | Ring Buffer              |
 | **e_result**   | Result type              |
 | **e_str**      | Dynamically sized string |
 | **e_test**     | Testing                  |
