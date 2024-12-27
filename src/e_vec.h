@@ -122,7 +122,7 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 /**
  * Implement the functions required for a vector of type \T with type \type_name
  * and function prefix \prefix. This goes into a `.c` file and requires there to
- * be a declaration somewhere in a header file with `E_VEC_DECLARE`.
+ * be a declaration somewhere in a header file with `E_VEC_DECL`.
  */
 #define E_VEC_IMPL(T, type_name, prefix)                                       \
                                                                                \
