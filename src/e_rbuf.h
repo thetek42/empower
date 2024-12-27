@@ -46,7 +46,10 @@
 #define E_RBUF_DECL(T, type_name, prefix)                                      \
                                                                                \
 	/**                                                                    \
-	 * The type of the ringbuffer.
+	 * The type of the ringbuffer. \ptr points to the raw data, \len is    \
+	 * the number of items currently stored, and \cap is the capacity of   \
+	 * the buffer. \head and \tail are indices of \ptr as described in the \
+	 * module description.                                                 \
 	 */                                                                    \
 	typedef struct {                                                       \
 		T *ptr;                                                        \
