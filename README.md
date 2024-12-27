@@ -30,11 +30,18 @@ Empower contains the following modules:
 
 ## Requirements
 
-- **Supported C standards:** C99 and newer are supported, C23 is recommended.
+- **Supported C standards:**
+  - C99 or newer is required (C89 is not supported).
+  - However, it is recommended to always use the most recent C version (e.g. C23).
+- **Supported compilers:**
+  - GCC, Clang, MinGW GCC and MSVC are officially supported.
+  - Others likely work as well.
 - **Supported platforms:**
-  - POSIX: Support for GCC and Clang. Tested on Linux with glibc.
-  - Windows: Support for MinGW and MSVC. Tested with Wine, but _not_ on an actual Windows machine or
-    VM. Thus, support may be a bit flaky.
+  - Many modules are platform independent. Thus, they are also suitable for embedded systems.
+  - For platform dependent modules (e.g. e\_fs):
+    - POSIX: Fully supported. Tested on Linux with glibc.
+    - Windows: Support for MinGW and "native" Windows builds. Tested with Wine, but _not_ on an
+      actual Windows machine or VM. Thus, support may be a bit flaky. Pull requests welcome.
 
 ## Usage
 
