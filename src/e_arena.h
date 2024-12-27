@@ -88,7 +88,7 @@ e_arena_init (void *buf, size_t cap)
 
 /**
  * Allocate \size bytes of alignment \align in the arena allocator \arena. If
- * the allocation fails, an error message is printed and `nullptr` is returned.
+ * the allocation fails, `nullptr` is returned.
  */
 void *
 e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
@@ -101,9 +101,6 @@ e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
 		arena->offset += align - arena->offset % align;
 	}
 	if (arena->offset + size > arena->cap) {
-		fprintf (stderr, "failed to alloc %zu bytes with in arena of "
-		         "capacity %zu and %zu used bytes", size, arena->cap,
-		         arena->offset);
 		return NULL;
 	}
 	ptr = &arena->buf[arena->offset];

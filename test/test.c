@@ -2,6 +2,7 @@
 #include <e_test.h>
 
 void test_alloc (void);
+void test_arena (void);
 void test_base64 (void);
 void test_cstr (void);
 void test_debug (void);
@@ -24,6 +25,7 @@ main (int argc, char *argv[])
 	(void) argv;
 
 	test_alloc ();
+	test_arena ();
 	test_base64 ();
 	test_cstr ();
 	test_debug ();

@@ -29,4 +29,7 @@ test_arena (void)
 	e_test_assert_ptr_eq ("e_arena_alloc_aligned ptr", ptr, arena.buf + 8);
 	e_test_assert_ptr_aligned ("e_arena_alloc_aligned align", ptr, 8);
 	e_test_assert_eq ("e_arena_alloc_aligned len", usize, arena.offset, 16);
+
+	ptr = e_arena_alloc_size (&arena, 64);
+	e_test_assert_null ("e_arena_alloc too large", ptr);
 }
