@@ -6,16 +6,19 @@
 E_VEC_DECL (int, E_Vec_Int, e_vec_int);
 E_VEC_IMPL (int, E_Vec_Int, e_vec_int);
 
+static int int_comp_func (const int *a, const int *b);
+
 void
 test_vec (void)
 {
-	E_Vec_Int vec;
+	E_Vec_Int vec, vec_clone;
 	int slice[] = { 4, 5, 6, 7, 8 };
 	int slice2[] = { 3, 4 };
 	int slice3[] = { 4, 3 };
 	int slice4[] = { 2, 3 };
 	int slice5[] = { 4, 4 };
-	int *popped;
+	int key, *popped;
+	const int *res;
 	usize len;
 
 	/* [] */
@@ -124,6 +127,8 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_insert_slice append len", usize, vec.len, 13);
 	e_test_assert_eq ("e_vec_insert_slice append cap", usize, vec.cap, 16);
 
+	vec_clone = e_vec_int_clone (&vec);
+
 	e_vec_int_append (&vec, 4);
 	e_vec_int_append (&vec, 4);
 	e_test_assert_eq ("e_vec_count", usize, e_vec_int_count (&vec, 3), 3);
@@ -184,4 +189,38 @@ test_vec (void)
 	e_test_assert_eq ("e_vec_repeat ptr[3]", int, vec.ptr[3], 4);
 	e_test_assert_eq ("e_vec_repeat len", usize, vec.len, 4);
 	e_vec_int_deinit (&vec);
+
+	/* [4,3,12,9,6,4,3,5,4,11,3,2,1] */
+	e_vec_int_reverse (&vec_clone);
+
+	/* [1,2,3,3,3,4,4,4,5,6,9,11,12] */
+	e_vec_int_sort (&vec_clone, int_comp_func);
+	e_test_assert_eq ("e_vec_sort ptr[0]", int, vec_clone.ptr[0], 1);
+	e_test_assert_eq ("e_vec_sort ptr[1]", int, vec_clone.ptr[1], 2);
+	e_test_assert_eq ("e_vec_sort ptr[2]", int, vec_clone.ptr[2], 3);
+	e_test_assert_eq ("e_vec_sort ptr[3]", int, vec_clone.ptr[3], 3);
+	e_test_assert_eq ("e_vec_sort ptr[4]", int, vec_clone.ptr[4], 3);
+	e_test_assert_eq ("e_vec_sort ptr[5]", int, vec_clone.ptr[5], 4);
+	e_test_assert_eq ("e_vec_sort ptr[6]", int, vec_clone.ptr[6], 4);
+	e_test_assert_eq ("e_vec_sort ptr[7]", int, vec_clone.ptr[7], 4);
+	e_test_assert_eq ("e_vec_sort ptr[8]", int, vec_clone.ptr[8], 5);
+	e_test_assert_eq ("e_vec_sort ptr[9]", int, vec_clone.ptr[9], 6);
+	e_test_assert_eq ("e_vec_sort ptr[10]", int, vec_clone.ptr[10], 9);
+	e_test_assert_eq ("e_vec_sort ptr[11]", int, vec_clone.ptr[11], 11);
+	e_test_assert_eq ("e_vec_sort ptr[12]", int, vec_clone.ptr[12], 12);
+
+	key = 6;
+	res = e_vec_int_bsearch (&vec_clone, &key, int_comp_func);
+	e_test_assert_ptr_eq ("e_vec_bsearch found", res, &vec_clone.ptr[9]);
+	key = 42;
+	res = e_vec_int_bsearch (&vec_clone, &key, int_comp_func);
+	e_test_assert_null ("e_vec_bsearch not found", res);
+
+	e_vec_int_deinit (&vec_clone);
+}
+
+static int
+int_comp_func (const int *a, const int *b)
+{
+	return *a - *b;
 }

@@ -2,7 +2,7 @@
 #define _EMPOWER_VEC_H_
 
 /*! e_vec *********************************************************************
- * 
+ *
  * This module provides "type-generic" vectors / dynamic arrays. The vectors
  * provided by this module allocate their data using `e_alloc`, i.e. `malloc`.
  * Like in `e_alloc`, when an allocation fails, the programme is terminated.
@@ -104,6 +104,8 @@ typedef SSIZE_T ssize_t;
 	size_t prefix##_count_slice (const type_name *vec, const T *slice, size_t len); \
 	size_t prefix##_count_slice_overlap (const type_name *vec, const T *slice, size_t len); \
 	void prefix##_reverse (type_name *vec);                                \
+	void prefix##_sort (type_name *vec, int (* comp) (const T *, const T *)); \
+	const T *prefix##_bsearch (const type_name *vec, const T *key, int (* comp) (const T *, const T *)); \
                                                                                \
 	__e_vec_ensure_user_has_to_use_semicolon ()
 
@@ -753,6 +755,43 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 			*start++ = *end;                                       \
 			*end-- = tmp;                                          \
 		}                                                              \
+	}                                                                      \
+	                                                                       \
+	/**                                                                    \
+	 * Sort the vector \vec using the comparison function \comp in         \
+	 * ascending order. \comp should return a negative integer when the    \
+	 * value of the first argument is less than the value of the second    \
+	 * argument, and a positive integer when the first argument is greater \
+	 * than the second. If both arguments are equal, it should return 0.   \
+	 * Internally, the `qsort` function of the standard library is used.   \
+	 */                                                                    \
+	void                                                                   \
+	prefix##_sort (type_name *vec, int (* comp) (const T *, const T *))    \
+	{                                                                      \
+		if (!vec || !comp) return;                                     \
+		qsort (vec->ptr, vec->len, sizeof (T),                         \
+		       (int (*) (const void *, const void *)) comp);           \
+	}                                                                      \
+	                                                                       \
+	/**                                                                    \
+	 * Perform a binary search on the vector \vec for the key \key using   \
+	 * the comparison function \comp. \vec MUST be sorted in ascending     \
+	 * order as specified by \comp in order for this algorithm to work.    \
+	 * \comp should return a negative integer when the value of the first  \
+	 * argument is less than the value of the second argument, and a       \
+	 * positive integer when the first argument is greater than the        \
+	 * second. If both arguments are equal, it should return 0. Returns a  \
+	 * pointer to the element if it was found, or `nullptr` if it was not  \
+	 * found. Internally, the `bsearch` function of the standard library   \
+	 * is used.                                                            \
+	 */                                                                    \
+	const T *                                                              \
+	prefix##_bsearch (const type_name *vec, const T *key,                  \
+	                  int (* comp) (const T *, const T *))                 \
+	{                                                                      \
+		if (!vec || !key || !comp) return NULL;                        \
+		return bsearch (key, vec->ptr, vec->len, sizeof (T),           \
+		                (int (*) (const void *, const void *)) comp);  \
 	}                                                                      \
                                                                                \
 	__e_vec_ensure_user_has_to_use_semicolon ()
