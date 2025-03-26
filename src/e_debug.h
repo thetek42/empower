@@ -100,6 +100,18 @@
 # error "unsupported compilier"
 #endif /* defined (_MSC_VER) */
 
+#define e_todo(msg)                                                            \
+	do {                                                                   \
+		fprintf (stderr, "//TODO: " msg " (" __E_DEBUG_FILE_LINE ")\n");\
+		exit (EXIT_FAILURE);                                           \
+	} while (0)
+
+#define e_unimplemented(msg)                                                   \
+	do {                                                                   \
+		fprintf (stderr, "not implemented: " msg " (" __E_DEBUG_FILE_LINE ")\n");\
+		exit (EXIT_FAILURE);                                           \
+	} while (0)
+
 void e_debug_hexdump (const void *ptr, size_t len);
 void *(e_debug_alloc_size) (size_t size, const char *location);
 void *(e_debug_alloc_zero_size) (size_t nmemb, size_t size, const char *location);
