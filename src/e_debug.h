@@ -2,7 +2,7 @@
 #define _EMPOWER_DEBUG_H_
 
 /*! e_debug *******************************************************************
- * 
+ *
  * This module provides utilities for quick debugging.
  *
  * Module dependencies:
@@ -95,7 +95,7 @@
 #elif defined (__GNUC__) || defined (__clang__) /* __STDC_VERSION__ >= 202000L && !defined (_MSC_VER) */
 # define e_unreachable() __builtin_unreachable ()
 #elif defined (_MSC_VER) /* defined (__GNUC__) || defined (__clang__) */
-# define e_unreachable() __assume (0) /* NOTE: this does not actually cause a panic lmao */
+# define e_unreachable() __assume (0)
 #else /* defined (_MSC_VER) */
 # error "unsupported compilier"
 #endif /* defined (_MSC_VER) */
@@ -181,6 +181,7 @@ void *
 		fprintf (stderr, "[e_debug] \x1b[34malloc\x1b[0m %zu bytes: \x1b[31mFAILED\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, location);
 		exit (EXIT_FAILURE);
 	}
+	memset (ptr, 0xCD, size);
 	fprintf (stderr, "[e_debug] \x1b[34malloc\x1b[0m %zu bytes: \x1b[32m%p\x1b[0m \x1b[90m(%s)\x1b[0m\n", size, ptr, location);
 
 	return ptr;
