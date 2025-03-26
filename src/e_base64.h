@@ -2,7 +2,7 @@
 #define _EMPOWER_BASE64_H_
 
 /*! e_base64 ******************************************************************
- * 
+ *
  * This module provides functions for encoding and decoding base64.
  *
  * Example:
@@ -10,7 +10,7 @@
  *  | #include <e_base64.h>
  *  |
  *  | char *plain = "Hello, World!\n";
- *  | char *encoded = e_base64_enc_alloc (plain);
+ *  | char *encoded = e_base64_enc_alloc (plain, strlen (plain));
  *  | if (!encoded) return E_FAIL;
  *  | e_log_debug ("Encoded: %s", encoded);
  *  | e_free (encoded);
@@ -25,11 +25,11 @@
 
 /* public interface ***********************************************************/
 
-size_t e_base64_get_enc_len (const char *plain);
+size_t e_base64_get_enc_len (size_t plain_len);
 size_t e_base64_get_dec_len (const char *encoded);
-void e_base64_enc (const char *plain, char *encoded_out);
+void e_base64_enc (const char *plain, size_t plain_len, char *encoded_out);
 bool e_base64_dec (const char *encoded, char *plain_out);
-char *e_base64_enc_alloc (const char *plain);
+char *e_base64_enc_alloc (const char *plain, size_t plain_len);
 char *e_base64_dec_alloc (const char *encoded);
 
 /* implementation *************************************************************/
@@ -61,17 +61,17 @@ static const char base64_dec_lut[] = {
 };
 
 /**
- * Get the length required to store the result of Base64-encoding a
- * nul-terminated plain text \plain. The returned length does not include the
- * terminating nul byte.
+ * Get the length required to store the result of Base64-encoding a plain text
+ * of length \plain_len. The returned length does not include the terminating
+ * nul byte of the encoded string.
  */
 size_t
-e_base64_get_enc_len (const char *plain)
+e_base64_get_enc_len (size_t plain_len)
 {
-	size_t ret, len;
+	size_t ret;
 
-	ret = len = strlen (plain);
-	ret += len % 3 ? 3 - len % 3 : 0;
+	ret = plain_len;
+	ret += plain_len % 3 ? 3 - plain_len % 3 : 0;
 	ret = ret / 3 * 4;
 
 	return ret;
@@ -102,36 +102,35 @@ e_base64_get_dec_len (const char *encoded)
 }
 
 /**
- * Encode a nul-terminated plain text \plain using Base64 and store the result
- * in \encoded_out. \encoded_out must be capable of holding at least
- * `e_base64_get_enc_len (encoded) + 1` bytes (including the nul terminator).
+ * Encode a plain text \plain of length \plain_len using Base64 and store the
+ * result in \encoded_out. \encoded_out must be capable of holding at least
+ * `e_base64_get_enc_len (plain_len) + 1` bytes (including the nul terminator).
  */
 void
-e_base64_enc (const char *plain, char *encoded_out)
+e_base64_enc (const char *plain, size_t plain_len, char *encoded_out)
 {
-	size_t i, j, len;
+	size_t i, j;
 	uint32_t n;
 
 	if (!encoded_out) return;
-	if (!plain) {
+	if (!plain || plain_len == 0) {
 		encoded_out[0] = 0;
 		return;
 	}
 
-	len = strlen (plain);
-	for (i = 0, j = 0; i < len; i += 3, j += 4) {
+	for (i = 0, j = 0; i < plain_len; i += 3, j += 4) {
 		n = (uint32_t) plain[i];
-		n = i + 1 < len ? n << 8 | (uint32_t) plain[i + 1] : n << 8;
-		n = i + 2 < len ? n << 8 | (uint32_t) plain[i + 2] : n << 8;
+		n = i + 1 < plain_len ? n << 8 | (uint32_t) plain[i + 1] : n << 8;
+		n = i + 2 < plain_len ? n << 8 | (uint32_t) plain[i + 2] : n << 8;
 
 		encoded_out[j] = base64_enc_lut[(n >> 18) & 0x3F];
 		encoded_out[j + 1] = base64_enc_lut[(n >> 12) & 0x3F];
-		if (i + 1 < len) {
+		if (i + 1 < plain_len) {
 			encoded_out[j + 2] = base64_enc_lut[(n >> 6) & 0x3F];
 		} else {
 			encoded_out[j + 2] = '=';
 		}
-		if (i + 2 < len) {
+		if (i + 2 < plain_len) {
 			encoded_out[j + 3] = base64_enc_lut[n & 0x3F];
 		} else {
 			encoded_out[j + 3] = '=';
@@ -179,24 +178,24 @@ e_base64_dec (const char *encoded, char *plain_out)
 }
 
 /**
- * Encode a nul-terminated plain text \plain using Base64, allocates enough
- * memory for storing the result and stores the encoded text including a nul
+ * Encode a plain text \plain of length \plain_len using Base64, allocate enough
+ * memory for storing the result and store the encoded text including a nul
  * terminator in there. A pointer to the allocated memory is returned. The
  * memory must be freed by the user.
  */
 char *
-e_base64_enc_alloc (const char *plain)
+e_base64_enc_alloc (const char *plain, size_t plain_len)
 {
 	size_t buf_len;
 	char *buf;
 
-	buf_len = e_base64_get_enc_len (plain) + 1;
+	buf_len = e_base64_get_enc_len (plain_len) + 1;
 	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * buf_len);
 	if (!buf) {
 		fprintf (stderr, "[e_enc] failed to alloc %zu bytes\n", buf_len);
 		exit (EXIT_FAILURE);
 	}
-	e_base64_enc (plain, buf);
+	e_base64_enc (plain, plain_len, buf);
 
 	return buf;
 }
@@ -215,7 +214,7 @@ e_base64_dec_alloc (const char *encoded)
 	bool success;
 	char *buf;
 
-	buf_len = e_base64_get_enc_len (encoded) + 1;
+	buf_len = e_base64_get_dec_len (encoded) + 1;
 	buf = E_CONFIG_MALLOC_FUNC (sizeof (char) * buf_len);
 	if (!buf) {
 		fprintf (stderr, "[e_enc] failed to alloc %zu bytes\n", buf_len);
