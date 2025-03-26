@@ -65,6 +65,9 @@ const char *e_parse_i8 (const char **s, int8_t *out, int base);
 const char *e_parse_i16 (const char **s, int16_t *out, int base);
 const char *e_parse_i32 (const char **s, int32_t *out, int base);
 const char *e_parse_i64 (const char **s, int64_t *out, int base);
+const char *e_parse_f32 (const char **s, float *out);
+const char *e_parse_f64 (const char **s, double *out);
+const char *e_parse_f128 (const char **s, long double *out);
 
 /* implementation *************************************************************/
 
@@ -493,6 +496,67 @@ e_parse_i64 (const char **s, int64_t *out, int base)
 	if (*s == num_end) return NULL; /* no valid number found */
 	if (ret < INT64_MIN || ret > INT64_MAX) return errno = ERANGE, NULL;
 	if (out) *out = (int64_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a single-precision floating point number from a nul-terminated string
+ * \s. This function works analogously to `e_parse_u8`, but for `float`s. The
+ * parsing of the float literal works like `strtof`.
+ */
+const char *
+e_parse_f32 (const char **s, float *out)
+{
+	const char *orig_s;
+	char *num_end;
+	float ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	ret = strtof (*s, &num_end);
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (out) *out = ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a double-precision floating point number from a nul-terminated string
+ * \s. See `e_parse_f32` for details.
+ */
+const char *
+e_parse_f64 (const char **s, double *out)
+{
+	const char *orig_s;
+	char *num_end;
+	double ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	ret = strtod (*s, &num_end);
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (out) *out = ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a long double-precision floating point number from a nul-terminated
+ * string \s. See `e_parse_f32` for details.
+ */
+const char *
+e_parse_f128 (const char **s, long double *out)
+{
+	const char *orig_s;
+	char *num_end;
+	long double ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	ret = strtold (*s, &num_end);
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (out) *out = ret;
 	orig_s = *s;
 	*s = num_end;
 	return orig_s;

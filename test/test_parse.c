@@ -8,6 +8,7 @@ void
 test_parse (void)
 {
 	const char *orig = "int foo (void) {\n    return 42; \n}";
+	const char *num0 = "?";
 	const char *num1 = "42?";
 	const char *num2 = " \t 42?";
 	const char *num3 = "+42?";
@@ -20,7 +21,9 @@ test_parse (void)
 	const char *num10 = "-129?";
 	const char *num11 = "999999999999999999999999999999?";
 	const char *num12 = "-999999999999999999999999999999?";
+	const char *num13 = "1.23?";
 	const char *s;
+	f64 dout;
 	u8 uout;
 	i8 iout;
 
@@ -95,6 +98,10 @@ test_parse (void)
 	e_test_assert_ptr_eq ("e_parse_char \\n ret", e_parse_char (&s, '\n'), orig + 32);
 	e_test_assert_ptr_eq ("e_parse_char \\n ptr", s, orig + 33);
 
+	s = num0;
+	e_test_assert_ptr_eq ("e_parse_u8 nonum ret", e_parse_u8 (&s, &uout, 0), nullptr);
+	e_test_assert_ptr_eq ("e_parse_u8 nonum ptr", s, num0);
+
 	s = num1;
 	uout = 0;
 	e_test_assert_ptr_eq ("e_parse_u8 42 ret", e_parse_u8 (&s, &uout, 0), num1);
@@ -164,4 +171,20 @@ test_parse (void)
 	s = num12;
 	e_test_assert_ptr_eq ("e_parse_i8 -999999 ret", e_parse_i8 (&s, &iout, 0), nullptr);
 	e_test_assert_ptr_eq ("e_parse_i8 -999999 ptr", s, num12);
+
+	s = num0;
+	e_test_assert_ptr_eq ("e_parse_f64 nonum ret", e_parse_f64 (&s, &dout), nullptr);
+	e_test_assert_ptr_eq ("e_parse_f64 nonum ptr", s, num0);
+
+	s = num1;
+	dout = 0.0;
+	e_test_assert_ptr_eq ("e_parse_f64 42 ret", e_parse_f64 (&s, &dout), num1);
+	e_test_assert_ptr_eq ("e_parse_f64 42 ptr", s, &num1[2]);
+	e_test_assert_eq ("e_parse_f64 42 out", f64, dout, 42.0);
+
+	s = num13;
+	dout = 0.0;
+	e_test_assert_ptr_eq ("e_parse_f64 42 ret", e_parse_f64 (&s, &dout), num13);
+	e_test_assert_ptr_eq ("e_parse_f64 42 ptr", s, &num13[4]);
+	e_test_assert_eq ("e_parse_f64 42 out", f64, dout, 1.23);
 }
