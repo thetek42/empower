@@ -30,6 +30,8 @@
  *
  ******************************************************************************/
 
+#include <stdint.h>
+
 /* public interface ***********************************************************/
 
 /**
@@ -55,13 +57,23 @@ const char *e_parse_consume_until_func (const char **s, E_Parse_Char_Predicate f
 const char *e_parse_consume_line (const char **s);
 const char *e_parse_consume_whitespace (const char **s);
 const char *e_parse_consume_whitespace_until_newline (const char **s);
+const char *e_parse_u8 (const char **s, uint8_t *out, int base);
+const char *e_parse_u16 (const char **s, uint16_t *out, int base);
+const char *e_parse_u32 (const char **s, uint32_t *out, int base);
+const char *e_parse_u64 (const char **s, uint64_t *out, int base);
+const char *e_parse_i8 (const char **s, int8_t *out, int base);
+const char *e_parse_i16 (const char **s, int16_t *out, int base);
+const char *e_parse_i32 (const char **s, int32_t *out, int base);
+const char *e_parse_i64 (const char **s, int64_t *out, int base);
 
 /* implementation *************************************************************/
 
 #ifdef E_PARSE_IMPL
 
 #include <ctype.h>
+#include <errno.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 static const char *e_parse_priv_advance (const char **s, size_t n);
@@ -292,6 +304,198 @@ const char *
 e_parse_consume_whitespace_until_newline (const char **s)
 {
 	return e_parse_consume_while_pat (s, " \f\t\v\r");
+}
+
+/**
+ * Parse an unsigned 8-bit integer from a nul-terminated string \s. The base of
+ * the integer given in \base accepts the values 0 (auto-determine base based on
+ * prefix of integer) or 2..36, just like the `strtol` family of functions.
+ * Whitespace (as per `isspace`) at the beginning of the string is ignored. The
+ * string will be "consumed" until the next non-digit character. If a valid
+ * integer is found and it fits within the bounds of the desired integer type,
+ * \s is advanced, the parsed integer is stored in \out and \s is returned. If
+ * no integer is found or the integer is out of range, `nullptr` will be
+ * returned, \s is not advanced, and \out will not be set to a value. If the
+ * value is out of range, `errno` will be set to `ERANGE`.
+ */
+const char *
+e_parse_u8 (const char **s, uint8_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	unsigned long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtoul (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret > UINT8_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (uint8_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse an unsigned 16-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_u16 (const char **s, uint16_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	unsigned long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtoul (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret > UINT16_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (uint16_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse an unsigned 32-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_u32 (const char **s, uint32_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	unsigned long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtoul (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret > UINT32_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (uint32_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse an unsigned 64-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_u64 (const char **s, uint64_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	unsigned long long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtoull (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret > UINT64_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (uint64_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a signed 8-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_i8 (const char **s, int8_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	signed long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtol (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret < INT8_MIN || ret > INT8_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (int8_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a signed 16-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_i16 (const char **s, int16_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	signed long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtol (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret < INT16_MIN || ret > INT16_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (int16_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a signed 32-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_i32 (const char **s, int32_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	signed long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtol (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret < INT32_MIN || ret > INT32_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (int32_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
+}
+
+/*
+ * Parse a signed 64-bit integer from a nul-terminated string \s. See
+ * `e_parse_u8` for details.
+ */
+const char *
+e_parse_i64 (const char **s, int64_t *out, int base)
+{
+	const char *orig_s;
+	char *num_end;
+	signed long long ret;
+
+	if (!s || !*s || **s == 0) return NULL;
+	errno = 0;
+	ret = strtoll (*s, &num_end, base);
+	if (errno != 0) return NULL; /* value out of range for strtoul */
+	if (*s == num_end) return NULL; /* no valid number found */
+	if (ret < INT64_MIN || ret > INT64_MAX) return errno = ERANGE, NULL;
+	if (out) *out = (int64_t) ret;
+	orig_s = *s;
+	*s = num_end;
+	return orig_s;
 }
 
 static const char *
