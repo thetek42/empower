@@ -30,6 +30,7 @@
  *
  ******************************************************************************/
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /* public interface ***********************************************************/
@@ -68,6 +69,7 @@ const char *e_parse_i64 (const char **s, int64_t *out, int base);
 const char *e_parse_f32 (const char **s, float *out);
 const char *e_parse_f64 (const char **s, double *out);
 const char *e_parse_f128 (const char **s, long double *out);
+const char *e_parse_bool (const char **s, bool *out);
 
 /* implementation *************************************************************/
 
@@ -560,6 +562,29 @@ e_parse_f128 (const char **s, long double *out)
 	orig_s = *s;
 	*s = num_end;
 	return orig_s;
+}
+
+// Parse a boolean value ("true" or "false") within the nul-terminated string
+// \s. If a boolean value is found, \s will be returned, \s will be advanced to
+// the character after the match and \out will be set to the value. If no
+// boolean value is found, `nullptr` will be returned, \s will not be advanced
+// and \out will not be filled.
+const char *
+e_parse_bool (const char **s, bool *out)
+{
+	if (!s || !*s || **s == 0) return NULL;
+
+	if (strncmp (*s, "true", 4) == 0) {
+		if (out) *out = true;
+		return e_parse_priv_advance (s, 4);
+	}
+
+	if (strncmp (*s, "false", 5) == 0) {
+		if (out) *out = false;
+		return e_parse_priv_advance (s, 5);
+	}
+
+	return NULL;
 }
 
 static const char *

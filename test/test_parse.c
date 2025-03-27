@@ -22,7 +22,10 @@ test_parse (void)
 	const char *num11 = "999999999999999999999999999999?";
 	const char *num12 = "-999999999999999999999999999999?";
 	const char *num13 = "1.23?";
+	const char *bool0 = "true?";
+	const char *bool1 = "false?";
 	const char *s;
+	bool bout;
 	f64 dout;
 	u8 uout;
 	i8 iout;
@@ -99,7 +102,7 @@ test_parse (void)
 	e_test_assert_ptr_eq ("e_parse_char \\n ptr", s, orig + 33);
 
 	s = num0;
-	e_test_assert_ptr_eq ("e_parse_u8 nonum ret", e_parse_u8 (&s, &uout, 0), nullptr);
+	e_test_assert_null ("e_parse_u8 nonum ret", e_parse_u8 (&s, &uout, 0));
 	e_test_assert_ptr_eq ("e_parse_u8 nonum ptr", s, num0);
 
 	s = num1;
@@ -151,7 +154,7 @@ test_parse (void)
 	e_test_assert_eq ("e_parse_i8 127 out", i8, iout, 127);
 
 	s = num8;
-	e_test_assert_ptr_eq ("e_parse_i8 128 ret", e_parse_i8 (&s, &iout, 0), nullptr);
+	e_test_assert_null ("e_parse_i8 128 ret", e_parse_i8 (&s, &iout, 0));
 	e_test_assert_ptr_eq ("e_parse_i8 128 ptr", s, num8);
 
 	s = num9;
@@ -161,19 +164,19 @@ test_parse (void)
 	e_test_assert_eq ("e_parse_i8 -128 out", i8, iout, -128);
 
 	s = num10;
-	e_test_assert_ptr_eq ("e_parse_i8 -129 ret", e_parse_i8 (&s, &iout, 0), nullptr);
+	e_test_assert_null ("e_parse_i8 -129 ret", e_parse_i8 (&s, &iout, 0));
 	e_test_assert_ptr_eq ("e_parse_i8 -129 ptr", s, num10);
 
 	s = num11;
-	e_test_assert_ptr_eq ("e_parse_i8 999999 ret", e_parse_i8 (&s, &iout, 0), nullptr);
+	e_test_assert_null ("e_parse_i8 999999 ret", e_parse_i8 (&s, &iout, 0));
 	e_test_assert_ptr_eq ("e_parse_i8 999999 ptr", s, num11);
 
 	s = num12;
-	e_test_assert_ptr_eq ("e_parse_i8 -999999 ret", e_parse_i8 (&s, &iout, 0), nullptr);
+	e_test_assert_null ("e_parse_i8 -999999 ret", e_parse_i8 (&s, &iout, 0));
 	e_test_assert_ptr_eq ("e_parse_i8 -999999 ptr", s, num12);
 
 	s = num0;
-	e_test_assert_ptr_eq ("e_parse_f64 nonum ret", e_parse_f64 (&s, &dout), nullptr);
+	e_test_assert_null ("e_parse_f64 nonum ret", e_parse_f64 (&s, &dout));
 	e_test_assert_ptr_eq ("e_parse_f64 nonum ptr", s, num0);
 
 	s = num1;
@@ -187,4 +190,20 @@ test_parse (void)
 	e_test_assert_ptr_eq ("e_parse_f64 42 ret", e_parse_f64 (&s, &dout), num13);
 	e_test_assert_ptr_eq ("e_parse_f64 42 ptr", s, &num13[4]);
 	e_test_assert_eq ("e_parse_f64 42 out", f64, dout, 1.23);
+
+	s = bool0;
+	bout = false;
+	e_test_assert_ptr_eq ("e_parse_bool true ret", e_parse_bool (&s, &bout), bool0);
+	e_test_assert_ptr_eq ("e_parse_bool true ptr", s, &bool0[4]);
+	e_test_assert ("e_parse_bool true out", bout);
+
+	s = bool1;
+	bout = true;
+	e_test_assert_ptr_eq ("e_parse_bool false ret", e_parse_bool (&s, &bout), bool1);
+	e_test_assert_ptr_eq ("e_parse_bool false ptr", s, &bool1[5]);
+	e_test_assert ("e_parse_bool false out", !bout);
+
+	s = num0;
+	e_test_assert_null ("e_parse_bool false ret", e_parse_bool (&s, &bout));
+	e_test_assert_ptr_eq ("e_parse_bool false ptr", s, num0);
 }
