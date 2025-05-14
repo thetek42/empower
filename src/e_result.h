@@ -2,7 +2,7 @@
 #define _EMPOWER_RESULT_H_
 
 /*! e_result ******************************************************************
- * 
+ *
  * This module provides error handling functionality as well as various
  * pre-defined error codes based on `<errno.h>`.
  *
@@ -110,7 +110,7 @@
 		E_Result __e_try_res = (expr);                                 \
 		if (__e_try_res != E_OK) {                                     \
 			fprintf (stderr, "`%s` returned error: %s\n", #expr,   \
-			         e_result_to_str (res));                       \
+			         e_result_to_str (__e_try_res));               \
 			exit (EXIT_FAILURE);                                   \
 		}                                                              \
 	} while (0)
