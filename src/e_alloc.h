@@ -2,7 +2,7 @@
 #define _EMPOWER_ALLOC_H_
 
 /*! e_alloc *******************************************************************
- * 
+ *
  * This module provides various allocation-related functions. It also provides
  * various macros and wrappers around the default C allocators. The allocation
  * of these wrappers never fails: if their call to malloc fails, they will
@@ -29,17 +29,20 @@
 
 /* public interface ***********************************************************/
 
-#define e_alloc(type, nmemb) e_alloc_size (sizeof (type) * (nmemb))
-#define e_alloc_zero(type, nmemb) (e_alloc_zero_size) ((nmemb), sizeof (type))
+#define e_alloc(type, nmemb) (type *) (e_alloc_size) (sizeof (type) * (nmemb))
+#define e_alloc_size(size) (e_alloc_size) (size)
+#define e_alloc_zero(type, nmemb) (type *) (e_alloc_zero_size) ((nmemb), sizeof (type))
 #define e_alloc_zero_size(size) (e_alloc_zero_size) ((size), sizeof (char))
-#define e_realloc(ptr, type, nmemb) e_realloc_size ((ptr), sizeof (type) * (nmemb))
+#define e_realloc(ptr, type, nmemb) (type *) (e_realloc_size) ((ptr), sizeof (type) * (nmemb))
+#define e_realloc_size(ptr, size) (e_realloc_size) ((ptr), (size))
 #define e_new(type) e_alloc (type, 1)
 #define e_new_zero(type) e_alloc_zero (type, 1)
+#define e_free(ptr) (e_free) (ptr)
 
-void *e_alloc_size (size_t size);
+void *(e_alloc_size) (size_t size);
 void *(e_alloc_zero_size) (size_t nmemb, size_t size);
-void *e_realloc_size (void *ptr, size_t size);
-void e_free (void *ptr);
+void *(e_realloc_size) (void *ptr, size_t size);
+void (e_free) (void *ptr);
 
 /* implementation *************************************************************/
 
@@ -63,7 +66,7 @@ void e_free (void *ptr);
 #include <stdlib.h>
 
 void *
-e_alloc_size (size_t size)
+(e_alloc_size) (size_t size)
 {
 	void *ptr;
 
@@ -95,7 +98,7 @@ void *
 }
 
 void *
-e_realloc_size (void *ptr, size_t size)
+(e_realloc_size) (void *ptr, size_t size)
 {
 	if (size == 0) {
 		E_CONFIG_FREE_FUNC (ptr);
@@ -112,7 +115,7 @@ e_realloc_size (void *ptr, size_t size)
 }
 
 void
-e_free (void *ptr)
+(e_free) (void *ptr)
 {
 	E_CONFIG_FREE_FUNC (ptr);
 }
