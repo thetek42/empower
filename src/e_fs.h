@@ -2,7 +2,7 @@
 #define _EMPOWER_FS_H_
 
 /*! e_fs **********************************************************************
- * 
+ *
  * This module provides wrappers for file system APIs.
  *
  * Module dependencies:
@@ -60,6 +60,7 @@ typedef struct {
 } E_File;
 
 E_Result e_fs_read_file (const char *path, char **out, size_t *len_out, bool is_binary);
+E_Result e_fs_write_file (const char *path, const char *data, size_t len, bool is_binary);
 E_Result e_fs_file_open (E_File *file_out, const char *path, E_Fs_Open_Mode mode);
 void e_fs_file_close (E_File *file);
 E_Result e_fs_file_get_size (E_File *file, size_t *size_out);
@@ -451,6 +452,35 @@ e_fs_read_file (const char *path, char **out, size_t *len_out, bool is_binary)
 	E_TRY (e_fs_file_open (&file, path, mode));
 
 	res = e_fs_file_read_all (&file, out, len_out);
+	if (res != E_OK) {
+		e_fs_file_close (&file);
+		return res;
+	}
+
+	e_fs_file_close (&file);
+
+	return E_OK;
+}
+
+/**
+ * Opens the file at \path, truncates it, writes \len bytes of memory pointed to
+ * by \data to it and closes the file when done. If \is_binary is true, the file
+ * is treated as a binary file.
+ */
+E_Result
+e_fs_write_file (const char *path, const char *data, size_t len, bool is_binary)
+{
+	E_Fs_Open_Mode mode;
+	E_Result res;
+	E_File file;
+
+	if (!path || !data) return E_ERR_INVALID_ARGUMENT;
+
+	mode = E_FS_OPEN_MODE_WRITE_TRUNC;
+	if (is_binary) mode |= E_FS_OPEN_MODE_BINARY;
+	E_TRY (e_fs_file_open (&file, path, mode));
+
+	res = e_fs_file_write (&file, data, len);
 	if (res != E_OK) {
 		e_fs_file_close (&file);
 		return res;
