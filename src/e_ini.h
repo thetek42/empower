@@ -2,7 +2,7 @@
 #define _EMPOWER_INI_H_
 
 /*! e_ini *********************************************************************
- * 
+ *
  * This module provides a simple INI parser.
  *
  * Module dependencies:
@@ -36,7 +36,6 @@
 #include <stddef.h>
 #include <e_parse.h>
 #include <e_result.h>
-#include <e_vec.h>
 
 /* public interface ***********************************************************/
 
@@ -66,8 +65,17 @@ typedef struct {
 	size_t entries_len;
 } E_Ini_Section;
 
-E_VEC_DECL (E_Ini_Entry, E_Vec_Ini_Entry, e_vec_ini_entry);
-E_VEC_DECL (E_Ini_Section, E_Vec_Ini_Section, e_vec_ini_section);
+#ifdef E_INI_IMPL
+# define E_VEC_IMPL
+#endif /* E_INI_IMPL */
+#define E_VEC_TYPE E_Ini_Entry
+#define E_VEC_NAME E_Vec_Ini_Entry
+#define E_VEC_PREFIX e_vec_ini_entry
+#include <e_vec.h>
+#define E_VEC_TYPE E_Ini_Section
+#define E_VEC_NAME E_Vec_Ini_Section
+#define E_VEC_PREFIX e_vec_ini_section
+#include <e_vec.h>
 
 /**
  * A parsed INI file.
@@ -100,9 +108,6 @@ void e_ini_debug (E_Ini *ini);
 #ifndef E_CONFIG_FREE_FUNC
 # define E_CONFIG_FREE_FUNC free
 #endif /* E_CONFIG_FREE_FUNC */
-
-E_VEC_IMPL (E_Ini_Entry, E_Vec_Ini_Entry, e_vec_ini_entry);
-E_VEC_IMPL (E_Ini_Section, E_Vec_Ini_Section, e_vec_ini_section);
 
 static E_Result e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len);
 
@@ -194,7 +199,7 @@ e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len)
 	s = str;
 	line = 0;
 	str_buf_end = str_buf;
-	
+
 	while (*s != 0) {
 		e_parse_consume_whitespace_until_newline (&s);
 
@@ -268,7 +273,7 @@ e_ini_priv_parse_str (E_Ini *ini, const char *str, size_t len)
 		token_start = e_parse_consume_line (&s);
 		token_len = s - token_start;
 		while (token_len > 0 && isspace (token_start[token_len - 1])) token_len -= 1;
-		
+
 		entry.key = str_buf_end;
 		strncpy (str_buf_end, key, key_len);
 		str_buf_end[key_len] = 0;

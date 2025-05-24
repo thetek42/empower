@@ -23,13 +23,18 @@
  ******************************************************************************/
 
 #include <e_cstr.h>
-#include <e_vec.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-/* public interface ***********************************************************/
+#ifdef E_STR_IMPL
+# define E_VEC_IMPL
+#endif /* E_STR_IMPL */
+#define E_VEC_TYPE char
+#define E_VEC_NAME E_Vec_Priv_Char
+#define E_VEC_PREFIX e_vec_priv_char
+#include <e_vec.h>
 
-E_VEC_DECL (char, E_Vec_Priv_Char, e_vec_priv_char);
+/* public interface ***********************************************************/
 
 /**
  * A dynamically sized string type, internally represented as a `E_Vec` of type
@@ -116,8 +121,6 @@ size_t e_str_distance (const E_Str *a, const char *b);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-E_VEC_IMPL (char, E_Vec_Priv_Char, e_vec_priv_char);
 
 /* --- dynamic string functions --- */
 

@@ -1,10 +1,11 @@
+#define E_VEC_TYPE int
+#define E_VEC_NAME E_Vec_Int
+#define E_VEC_PREFIX e_vec_int
+#define E_VEC_IMPL
 #include <e_vec.h>
 
 #include <e_test.h>
 #include <e_types.h>
-
-E_VEC_DECL (int, E_Vec_Int, e_vec_int);
-E_VEC_IMPL (int, E_Vec_Int, e_vec_int);
 
 static int int_comp_func (const int *a, const int *b);
 
