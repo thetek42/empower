@@ -2,7 +2,7 @@
 #define _EMPOWER_CSTR_H_
 
 /*! e_cstr ********************************************************************
- * 
+ *
  * This module provides various utility functions for dealing with C strings and
  * serves as an extension to the `string.h` header from the standard library.
  *
@@ -219,6 +219,7 @@ e_cstr_count_str (const char *haystack, const char *needle)
 
 	haystack_len = strlen (haystack);
 	needle_len = strlen (needle);
+	if (needle_len == 0) return haystack_len;
 	count = 0;
 
 	while (needle_len <= haystack_len) {
@@ -250,6 +251,7 @@ e_cstr_count_str_overlap (const char *haystack, const char *needle)
 
 	haystack_len = strlen (haystack);
 	needle_len = strlen (needle);
+	if (needle_len == 0) return haystack_len;
 	count = 0;
 
 	while (needle_len <= haystack_len) {
