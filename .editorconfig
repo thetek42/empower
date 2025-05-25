@@ -1,7 +1,13 @@
 root = true
 
 [*]
-indent_style = tab
-indent_size = 8
 end_of_line = lf
 charset = utf-8
+
+[*.{c,h}]
+indent_style = tab
+indent_size = 8
+
+[*.py]
+indent_style = space
+indent_size = 4

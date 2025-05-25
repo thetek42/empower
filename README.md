@@ -63,12 +63,11 @@ make --file test/build/posix-gcc.mk
 make --file test/build/posix-clang.mk STDC=c99
 ```
 
-For generating a `compile_commands.json` that will allow for LSP support with clangd, download
-[Bear](https://github.com/rizsotto/Bear) and run the following commands:
+For generating a `compile_commands.json` that will allow for LSP support with clangd, run the
+`gen_compile_commands.py` script as follows:
 
 ```sh
-make --file test/build/posix-clang.mk clean
-bear -- make --file test/build/posix-clang.mk
+python gen_compile_commands.py > compile_commands.json
 ```
 
 This will not work for MinGW and MSVC stuff. I might get around to implementing some kind of
