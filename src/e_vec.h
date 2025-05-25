@@ -5,11 +5,12 @@
  * Like in `e_alloc`, when an allocation fails, the programme is terminated.
  *
  * To use this module, define the `E_VEC_TYPE`, `E_VEC_NAME` and `E_VEC_PREFIX`
- * macros and include the `e_vec.h` file for every type you want a vector. This
- * will create the type definition and function declarations for a vector of
- * items of type `E_VEC_TYPE`. The vector struct will be named `E_VEC_NAME` and
- * the vector functions will be prefixed with `E_VEC_PREFIX`. When `E_VEC_IMPL`
- * is defined, the implementations of the vector functions are generated.
+ * macros and include the `e_vec.h` file for every type you want a vector for.
+ * This will create the type definition and function declarations for a vector
+ * of items of type `E_VEC_TYPE`. The vector struct will be named `E_VEC_NAME`
+ * and the vector functions will be prefixed with `E_VEC_PREFIX`. When
+ * `E_VEC_IMPL` is defined, the implementations of the vector functions are
+ * generated.
  *  | #define E_VEC_TYPE int
  *  | #define E_VEC_NAME Vec_Int
  *  | #define E_VEC_PREFIX vec_int

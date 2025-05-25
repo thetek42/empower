@@ -1,10 +1,11 @@
+#define E_RBUF_TYPE int
+#define E_RBUF_NAME E_Rbuf_Int
+#define E_RBUF_PREFIX e_rbuf_int
+#define E_RBUF_IMPL
 #include <e_rbuf.h>
 
 #include <e_test.h>
 #include <e_types.h>
-
-E_RBUF_DECL (int, E_Rbuf_Int, e_rbuf_int);
-E_RBUF_IMPL (int, E_Rbuf_Int, e_rbuf_int);
 
 void
 test_rbuf (void)
