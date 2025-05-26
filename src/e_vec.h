@@ -31,11 +31,11 @@
 
 /* compatibility annoyances ***************************************************/
 
-#if !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+#if !defined (__E_SSIZE_T_DEFINED) && (defined (__MINGW32__) || defined (_WIN32) || defined (WIN32))
 # define __E_SSIZE_T_DEFINED
 # include <basetsd.h>
 typedef SSIZE_T ssize_t;
-#endif /* !defined (__E_SSIZE_T_DEFINED) && defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+#endif /* !defined (__E_SSIZE_T_DEFINED) && (defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)) */
 
 /* public interface ***********************************************************/
 
