@@ -118,7 +118,7 @@ test_cobs (void)
 	char msg[64];
 
 	for (i = 0; i < sizeof (cases) / sizeof (*cases); i += 1) {
-		out = e_cobs_dec_alloc (cases[i].enc, cases[i].enc_len, &len);
+		out = (char *) e_cobs_dec_alloc ((u8 *) cases[i].enc, cases[i].enc_len, &len);
 		snprintf (msg, 64, "e_cobs_dec %zu len", i);
 		e_test_assert_eq (msg, usize, len, cases[i].plain_len);
 		snprintf (msg, 64, "e_cobs_dec %zu ptr", i);
@@ -127,7 +127,7 @@ test_cobs (void)
 	}
 
 	for (i = 0; i < sizeof (cases) / sizeof (*cases); i += 1) {
-		out = e_cobs_enc_alloc (cases[i].plain, cases[i].plain_len, &len);
+		out = (char *) e_cobs_enc_alloc ((u8 *) cases[i].plain, cases[i].plain_len, &len);
 		snprintf (msg, 64, "e_cobs_enc %zu len", i);
 		e_test_assert_eq (msg, usize, len, cases[i].enc_len);
 		snprintf (msg, 64, "e_cobs_enc %zu ptr", i);
