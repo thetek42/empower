@@ -39,6 +39,7 @@ void e_test_finish (void);
 void (e_test_assert) (const char *name, const char *location, const char *expr, bool value);
 void (e_test_assert_ptr_eq) (const char *name, const char *location, const char *expr, const void *got, const void *want);
 void (e_test_assert_str_eq) (const char *name, const char *location, const char *expr, const char *got, const char *want);
+void (e_test_assert_mem_eq) (const char *name, const char *location, const char *expr, const char *got, const char *want, size_t len);
 void (e_test_assert_ptr_aligned) (const char *name, const char *location, const char *expr, const void *ptr, uintptr_t alignment);
 #ifndef E_CONFIG_TEST_NO_E_RESULT
 void (e_test_assert_ok) (const char *name, const char *location, const char *expr, E_Result result);
@@ -56,6 +57,7 @@ void e_test_priv_print_assert_fn (const char *fn_name);
 #define e_test_assert_ptr_eq(name, expr, check) (e_test_assert_ptr_eq) (name, __E_TEST_FILE_LINE, #expr, expr, check)
 #define e_test_assert_null(name, expr) e_test_assert_ptr_eq (name, expr, NULL)
 #define e_test_assert_str_eq(name, expr, check) (e_test_assert_str_eq) (name, __E_TEST_FILE_LINE, #expr, expr, check)
+#define e_test_assert_mem_eq(name, expr, check, len) (e_test_assert_mem_eq) (name, __E_TEST_FILE_LINE, #expr, expr, check, len)
 #define e_test_assert_ptr_aligned(name, expr, alignment) (e_test_assert_ptr_aligned) (name, __E_TEST_FILE_LINE, #expr, expr, alignment)
 #ifndef E_CONFIG_TEST_NO_E_RESULT
 # define e_test_assert_ok(name, expr) (e_test_assert_ok) (name, __E_TEST_FILE_LINE, #expr, expr)
@@ -199,6 +201,22 @@ void
 		e_test_priv_print_assert_fn ("assert_str_eq");
 		fprintf (stderr, "%s \x1b[36mgot\x1b[0m %s "
 		         "\x1b[36mwant\x1b[0m %s\n", expr, got, want);
+	}
+}
+
+void
+(e_test_assert_mem_eq) (const char *name, const char *location,
+                        const char *expr, const char *got, const char *want,
+                        size_t len)
+{
+	(void) expr;
+	if (got == want || (got && want && !memcmp (got, want, len))) {
+		e_global_test.success += 1;
+	} else {
+		e_global_test.failure += 1;
+		e_test_priv_print_name (name, location);
+		e_test_priv_print_assert_fn ("assert_mem_eq");
+		fprintf (stderr, "\n");
 	}
 }
 

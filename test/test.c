@@ -4,6 +4,7 @@
 void test_alloc (void);
 void test_arena (void);
 void test_base64 (void);
+void test_cobs (void);
 void test_cstr (void);
 void test_debug (void);
 void test_fs (void);
@@ -28,6 +29,7 @@ main (int argc, char *argv[])
 	test_alloc ();
 	test_arena ();
 	test_base64 ();
+	test_cobs ();
 	test_cstr ();
 	test_debug ();
 	test_fs ();
