@@ -120,10 +120,11 @@ const E_VEC_TYPE *__E_VEC_FUNC (bsearch) (const E_VEC_NAME *vec, const E_VEC_TYP
 #include <stdlib.h>
 #include <string.h>
 
-#if __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
-# define e_priv_stdc_bit_ceil(x) (size_t) e_priv_stdc_bit_ceil_u64 ((uint64_t) x)
-static uint64_t
-e_priv_stdc_bit_ceil_u64 (uint64_t x)
+#if !defined (e_priv_vec_stdc_bit_ceil)
+# if __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+#  define e_priv_vec_stdc_bit_ceil(x) (size_t) e_priv_vec_stdc_bit_ceil_u64 ((uint64_t) x)
+static inline uint64_t
+e_priv_vec_stdc_bit_ceil_u64 (uint64_t x)
 {
 	x--;
 	x |= x >> 1;
@@ -135,10 +136,11 @@ e_priv_stdc_bit_ceil_u64 (uint64_t x)
 	x++;
 	return x;
 }
-#else /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-# include <stdbit.h>
-# define e_priv_stdc_bit_ceil(x) stdc_bit_ceil (x)
-#endif /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+# else /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+#  include <stdbit.h>
+#  define e_priv_vec_stdc_bit_ceil(x) stdc_bit_ceil (x)
+# endif /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+#endif /* !defined (e_priv_vec_stdc_bit_ceil) */
 
 /**
  * Initialise a vector with capacity 0. This function does not perform an
@@ -264,9 +266,11 @@ __E_VEC_FUNC (repeat_slice) (const E_VEC_TYPE *slice, size_t len, size_t rep)
 void
 __E_VEC_FUNC (deinit) (E_VEC_NAME *vec)
 {
-	if (vec) {
-		E_CONFIG_FREE_FUNC (vec->ptr);
-	}
+	if (!vec) return;
+	E_CONFIG_FREE_FUNC (vec->ptr);
+	vec->ptr = NULL;
+	vec->len = 0;
+	vec->cap = 0;
 }
 
 /**
@@ -284,7 +288,7 @@ __E_VEC_FUNC (grow) (E_VEC_NAME *vec, size_t cap)
 	if (!vec) return;
 	if (cap <= vec->cap) return;
 
-	vec->cap = e_priv_stdc_bit_ceil (cap);
+	vec->cap = e_priv_vec_stdc_bit_ceil (cap);
 	alloc = sizeof (E_VEC_TYPE) * vec->cap;
 	ptr = E_CONFIG_REALLOC_FUNC (vec->ptr, alloc);
 	if (!ptr) {
@@ -321,7 +325,7 @@ __E_VEC_FUNC (trunc) (E_VEC_NAME *vec, size_t n)
 	if (vec->len >= n) return;
 
 	vec->len = n;
-	vec->cap = e_priv_stdc_bit_ceil (n);
+	vec->cap = e_priv_vec_stdc_bit_ceil (n);
 	alloc = sizeof (E_VEC_TYPE) * n;
 	ptr = E_CONFIG_REALLOC_FUNC (vec->ptr, alloc);
 	if (!ptr) {

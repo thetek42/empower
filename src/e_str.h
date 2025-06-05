@@ -8,7 +8,6 @@
  *
  * Module dependencies:
  *  - e_cstr
- *  - e_vec
  *
  * Example:
  * | #define E_CSTR_IMPL
@@ -20,29 +19,31 @@
  * | e_str_insert_cstr (&s, 0, "Hello, ");
  * | e_str_deinit (&s);
  *
+ * Configuration options:
+ *  - `E_CONFIG_MALLOC_FUNC` (default `malloc`): The function to use for allocating memory.
+ *  - `E_CONFIG_REALLOC_FUNC` (default `realloc`): The function to use for reallocating memory.
+ *  - `E_CONFIG_FREE_FUNC` (default `free`): The function to use for freeing memory.
+ *
  ******************************************************************************/
 
 #include <e_cstr.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-#ifdef E_STR_IMPL
-# define E_VEC_IMPL
-#endif /* E_STR_IMPL */
-#define E_VEC_TYPE char
-#define E_VEC_NAME E_Vec_Priv_Char
-#define E_VEC_PREFIX e_vec_priv_char
-#include <e_vec.h>
-
 /* public interface ***********************************************************/
 
 /**
- * A dynamically sized string type, internally represented as a `E_Vec` of type
- * `char`. The string data can be accessed through the field \ptr, and is
- * always terminated with a nul character. Length and capacity are stored in the
- * fields \len and \cap, respectively.
+ * A dynamically sized string type. The string data can be accessed through the
+ * field \ptr, and is always terminated with a nul character. The length and the
+ * capacity of the string are stored in the fields \len and \cap, respectively.
+ * While \len does not include the terminating nul character, \cap does. The
+ * field \ptr is never `nullptr`.
  */
-typedef E_Vec_Priv_Char E_Str;
+typedef struct {
+	char *ptr;
+	size_t len;
+	size_t cap;
+} E_Str;
 
 /* --- dynamic string functions --- */
 
@@ -122,6 +123,38 @@ size_t e_str_distance (const E_Str *a, const char *b);
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef E_CONFIG_MALLOC_FUNC
+# define E_CONFIG_MALLOC_FUNC malloc
+#endif /* E_CONFIG_MALLOC_FUNC */
+#ifndef E_CONFIG_REALLOC_FUNC
+# define E_CONFIG_REALLOC_FUNC realloc
+#endif /* E_CONFIG_REALLOC_FUNC */
+#ifndef E_CONFIG_FREE_FUNC
+# define E_CONFIG_FREE_FUNC free
+#endif /* E_CONFIG_FREE_FUNC */
+
+#if !defined (e_priv_str_stdc_bit_ceil)
+# if __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32)
+#  define e_priv_str_stdc_bit_ceil(x) (size_t) e_priv_str_stdc_bit_ceil_u64 ((uint64_t) x)
+static inline uint64_t
+e_priv_str_stdc_bit_ceil_u64 (uint64_t x)
+{
+	x--;
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+	x |= x >> 32;
+	x++;
+	return x;
+}
+# else /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+#  include <stdbit.h>
+#  define e_priv_str_stdc_bit_ceil(x) stdc_bit_ceil (x)
+# endif /* __STDC_VERSION__ < 202000L || defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
+#endif /* !defined (e_priv_str_stdc_bit_ceil) */
+
 /* --- dynamic string functions --- */
 
 /**
@@ -133,12 +166,7 @@ size_t e_str_distance (const E_Str *a, const char *b);
 E_Str
 e_str_init (void)
 {
-	E_Str str;
-
-	str = e_vec_priv_char_init_with_cap (1);
-	str.ptr[0] = 0;
-
-	return str;
+	return e_str_init_with_cap (1);
 }
 
 /**
@@ -151,12 +179,21 @@ e_str_init (void)
 E_Str
 e_str_init_with_cap (size_t cap)
 {
-	E_Str str;
+	char *ptr;
 
-	str = e_vec_priv_char_init_with_cap (cap > 0 ? cap : 1);
-	str.ptr[0] = 0;
+	cap = (cap > 0) ? cap : 1;
+	ptr = E_CONFIG_MALLOC_FUNC (cap * sizeof (char));
+	if (!ptr) {
+		fprintf (stderr, "[e_str] failed to alloc %zu bytes\n", cap);
+		exit (EXIT_FAILURE);
+	}
+	ptr[0] = 0;
 
-	return str;
+	return (E_Str) {
+		.ptr = ptr,
+		.len = 0,
+		.cap = cap,
+	};
 }
 
 /**
@@ -181,7 +218,8 @@ e_str_from_slice (const char *s, size_t len)
 
 	if (!s || len == 0) return e_str_init ();
 
-	ret = e_vec_priv_char_from (s, len + 1);
+	ret = e_str_init_with_cap (len + 1);
+	memcpy (ret.ptr, s, sizeof (char) * len);
 	ret.ptr[len] = 0;
 	ret.len = len;
 
@@ -209,7 +247,11 @@ e_str_from_allocated (char *ptr, size_t len, size_t cap)
 void
 e_str_deinit (E_Str *str)
 {
-	e_vec_priv_char_deinit (str);
+	if (!str) return;
+	E_CONFIG_FREE_FUNC (str->ptr);
+	str->ptr = NULL;
+	str->len = 0;
+	str->cap = 0;
 }
 
 /**
@@ -222,7 +264,20 @@ e_str_deinit (E_Str *str)
 void
 e_str_grow (E_Str *str, size_t cap)
 {
-	e_vec_priv_char_grow (str, cap);
+	char *ptr;
+	size_t alloc;
+
+	if (!str) return;
+	if (cap <= str->cap) return;
+
+	str->cap = e_priv_str_stdc_bit_ceil (cap);
+	alloc = sizeof (char) * str->cap;
+	ptr = E_CONFIG_REALLOC_FUNC (str->ptr, alloc);
+	if (!ptr) {
+		fprintf (stderr, "[e_str] failed to alloc %zu bytes\n", alloc);
+		exit (EXIT_FAILURE);
+	}
+	str->ptr = ptr;
 }
 
 /**
@@ -232,7 +287,8 @@ e_str_grow (E_Str *str, size_t cap)
 E_Str
 e_str_clone (E_Str *str)
 {
-	return e_vec_priv_char_clone (str);
+	if (!str) return e_str_init ();
+	return e_str_from_slice (str->ptr, str->len);
 }
 
 /**
