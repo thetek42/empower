@@ -72,6 +72,10 @@ typedef struct {
 #define E_VEC_NAME E_Vec_Ini_Entry
 #define E_VEC_PREFIX e_vec_ini_entry
 #include <e_vec.h>
+
+#ifdef E_INI_IMPL
+# define E_VEC_IMPL
+#endif /* E_INI_IMPL */
 #define E_VEC_TYPE E_Ini_Section
 #define E_VEC_NAME E_Vec_Ini_Section
 #define E_VEC_PREFIX e_vec_ini_section

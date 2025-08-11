@@ -819,3 +819,4 @@ __E_VEC_FUNC (bsearch) (const E_VEC_NAME *vec, const E_VEC_TYPE *key,
 #undef E_VEC_TYPE
 #undef E_VEC_NAME
 #undef E_VEC_PREFIX
+#undef E_VEC_IMPL

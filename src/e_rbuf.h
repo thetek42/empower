@@ -264,3 +264,4 @@ __E_RBUF_FUNC (pop_front) (E_RBUF_NAME *rbuf, E_RBUF_TYPE *item_out)
 #undef E_RBUF_TYPE
 #undef E_RBUF_NAME
 #undef E_RBUF_PREFIX
+#undef E_RBUF_IMPL
