@@ -4,6 +4,7 @@
 void test_alloc (void);
 void test_arena (void);
 void test_base64 (void);
+void test_bitvec (void);
 void test_cobs (void);
 void test_cobsr (void);
 void test_cstr (void);
@@ -30,6 +31,7 @@ main (int argc, char *argv[])
 	test_alloc ();
 	test_arena ();
 	test_base64 ();
+	test_bitvec ();
 	test_cobs ();
 	test_cobsr ();
 	test_cstr ();
