@@ -82,7 +82,7 @@ void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 bool
 e_mem_is_zero_size (const void *ptr, size_t n)
 {
-	const uint8_t *p;
+	const unsigned char *p;
 	size_t i;
 
 	if (!ptr) return true;
@@ -118,7 +118,7 @@ e_mem_eq_size (const void *a, const void *b, size_t n)
 void
 e_mem_swap_size (void *a, void *b, size_t n)
 {
-	uint8_t *ap, *bp, tmp;
+	unsigned char *ap, *bp, tmp;
 	size_t i;
 
 	if (!a || !b) return;
@@ -217,7 +217,7 @@ e_mem_clone_size (const void *ptr, size_t n)
 void
 e_mem_reverse_bytes (void *ptr, size_t len)
 {
-	uint8_t *start, *end, tmp;
+	unsigned char *start, *end, tmp;
 
 	if (len == 0) return;
 	start = ptr;
