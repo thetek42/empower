@@ -16,7 +16,7 @@ FILES: list[tuple[str, list[str]]] = [
     ("src/e_mem.h", ["E_MEM_IMPL"]),
     ("src/e_parse.h", ["E_PARSE_IMPL"]),
     ("src/e_rand.h", ["E_RAND_IMPL"]),
-    ("src/e_rbuf.h", ["E_RBUF_IMPL", "E_VEC_TYPE=int", "E_VEC_NAME=E_Rbuf_Int", "E_VEC_PREFIX=e_rbuf_int"]),
+    ("src/e_rbuf.h", ["E_RBUF_IMPL", "E_RBUF_TYPE=int", "E_RBUF_NAME=E_Rbuf_Int", "E_RBUF_PREFIX=e_rbuf_int"]),
     ("src/e_result.h", ["E_RESULT_IMPL"]),
     ("src/e_str.h", ["E_STR_IMPL", "E_CSTR_IMPL"]),
     ("src/e_test.h", ["E_TEST_IMPL", "E_RESULT_IMPL"]),
