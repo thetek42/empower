@@ -8,7 +8,7 @@
  * Example:
  *  | void *buf = e_alloc_size (64);
  *  | E_Arena arena = e_arena_init (buf, 64);
- *  | char *zeroed = e_arena_alloc (&arena, char, 8);
+ *  | char *zeroed = e_arena_alloc_zero (&arena, char, 8);
  *  | int *one_int = e_arena_alloc (&arena, int, 1);
  *  | u64 *correctly_aligned_u64 = e_arena_alloc (&arena, u64, 1);
  *  | do_stuff ();
@@ -58,6 +58,8 @@ typedef struct {
 E_Arena e_arena_init (void *buf, size_t cap);
 void *e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align);
 void *e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align);
+size_t e_arena_allocated_byte_count (const E_Arena *arena);
+size_t e_arena_remaining_byte_count (const E_Arena *arena);
 
 /* implementation *************************************************************/
 
@@ -119,6 +121,27 @@ e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align)
 	void *ptr = e_arena_alloc_size_align (arena, size, align);
 	if (ptr) memset (ptr, 0, size);
 	return ptr;
+}
+
+/**
+ * Returns the number of bytes that have been allocated in \arena.
+ */
+size_t
+e_arena_allocated_byte_count (const E_Arena *arena)
+{
+	if (!arena) return 0;
+	return arena->offset;
+}
+
+/**
+ * Returns the number of remaining bytes that can still be allocated in \arena.
+ */
+size_t
+e_arena_remaining_byte_count (const E_Arena *arena)
+{
+	if (!arena) return 0;
+	if (arena->offset >= arena->cap) return 0;
+	return arena->cap - arena->offset;
 }
 
 #endif /* E_ARENA_IMPL */
