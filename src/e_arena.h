@@ -50,7 +50,7 @@
 #define e_arena_alloc_zero_aligned(arena, size, align) e_arena_alloc_zero_size_align ((arena), (size), (align))
 
 typedef struct {
-	char *buf;
+	unsigned char *buf;
 	size_t offset;
 	size_t cap;
 } E_Arena;
