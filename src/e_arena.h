@@ -23,13 +23,14 @@
 
 #if __STDC_VERSION__ >= 201112L
 # include <stdalign.h>
+# define E_ARENA_ALIGNOF(expr) alignof (expr)
 # define E_ARENA_MAX_ALIGN alignof (max_align_t)
 #else /* __STDC_VERSION__ >= 201112L */
 # if defined (__GNUC__) || defined (__clang__)
-#  define alignof(expr) __alignof__ (expr)
+#  define E_ARENA_ALIGNOF(expr) __alignof__ (expr)
 #  define E_ARENA_MAX_ALIGN __BIGGEST_ALIGNMENT__
 # elif defined (_MSC_VER) /* defined (__GNUC__) || defined (__clang__) */
-#  define alignof(expr) __alignof (expr)
+#  define E_ARENA_ALIGNOF(expr) __alignof (expr)
 #  define E_ARENA_MAX_ALIGN __alignof (uint64_t)
 # else /* defined (_MSC_VER) */
 #  define E_ARENA_ALIGNOF_NOT_SUPPORTED
@@ -40,14 +41,12 @@
 /* public interface ***********************************************************/
 
 #ifndef E_ARENA_ALIGNOF_NOT_SUPPORTED
-# define e_arena_alloc(arena, T, nmemb) e_arena_alloc_size_align ((arena), sizeof (T) * (nmemb), alignof (T))
-# define e_arena_alloc_zero(arena, T, nmemb) e_arena_alloc_zero_size_align ((arena), sizeof (T) * (nmemb), alignof (T))
+# define e_arena_alloc(arena, T, nmemb) e_arena_alloc_aligned ((arena), sizeof (T) * (nmemb), E_ARENA_ALIGNOF (T))
+# define e_arena_alloc_zero(arena, T, nmemb) e_arena_alloc_zero_aligned ((arena), sizeof (T) * (nmemb), E_ARENA_ALIGNOF (T))
 #endif /* E_ARENA_ALIGNOF_NOT_SUPPORTED */
 
-#define e_arena_alloc_size(arena, size) e_arena_alloc_size_align ((arena), (size), E_ARENA_MAX_ALIGN)
-#define e_arena_alloc_aligned(arena, size, align) e_arena_alloc_size_align ((arena), (size), (align))
-#define e_arena_alloc_zero_size(arena, size) e_arena_alloc_zero_size_align ((arena), (size), E_ARENA_MAX_ALIGN)
-#define e_arena_alloc_zero_aligned(arena, size, align) e_arena_alloc_zero_size_align ((arena), (size), (align))
+#define e_arena_alloc_size(arena, size) e_arena_alloc_aligned ((arena), (size), E_ARENA_MAX_ALIGN)
+#define e_arena_alloc_zero_size(arena, size) e_arena_alloc_zero_aligned ((arena), (size), E_ARENA_MAX_ALIGN)
 
 typedef struct {
 	unsigned char *buf;
@@ -56,8 +55,8 @@ typedef struct {
 } E_Arena;
 
 E_Arena e_arena_init (void *buf, size_t cap);
-void *e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align);
-void *e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align);
+void *e_arena_alloc_aligned (E_Arena *arena, size_t size, size_t align);
+void *e_arena_alloc_zero_aligned (E_Arena *arena, size_t size, size_t align);
 size_t e_arena_allocated_byte_count (const E_Arena *arena);
 size_t e_arena_remaining_byte_count (const E_Arena *arena);
 
@@ -92,7 +91,7 @@ e_arena_init (void *buf, size_t cap)
  * the allocation fails, `nullptr` is returned.
  */
 void *
-e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
+e_arena_alloc_aligned (E_Arena *arena, size_t size, size_t align)
 {
 	void *ptr;
 
@@ -116,9 +115,9 @@ e_arena_alloc_size_align (E_Arena *arena, size_t size, size_t align)
  * printed and `nullptr` is returned.
  */
 void *
-e_arena_alloc_zero_size_align (E_Arena *arena, size_t size, size_t align)
+e_arena_alloc_zero_aligned (E_Arena *arena, size_t size, size_t align)
 {
-	void *ptr = e_arena_alloc_size_align (arena, size, align);
+	void *ptr = e_arena_alloc_aligned (arena, size, align);
 	if (ptr) memset (ptr, 0, size);
 	return ptr;
 }
