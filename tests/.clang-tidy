@@ -1,0 +1,25 @@
+Checks: 'clang-diagnostic-*,
+         clang-analyzer-*,
+         bugprone-*,
+         performance-*,
+         portability-*,
+         readability-*,
+         -bugprone-easily-swappable-parameters,
+         -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+         -readability-braces-around-statements,
+         -readability-function-cognitive-complexity,
+         -readability-identifier-length,
+         -readability-isolate-declaration,
+         -readability-magic-numbers,
+         -readability-use-concise-preprocessor-directives,
+         '
+
+FormatStyle: none
+
+HeaderFilterRegex: '.*'
+
+ExtraArgs:
+- -Iempower
+- -I../empower
+- -D_XOPEN_SOURCE=600
+- -D_POSIX_C_SOURCE=200809L

@@ -1,7 +1,11 @@
-bin/
-obj/
-tmp/
+build/
 .cache/
-compile_commands.json
-*.pdb
+__pycache__/
+
+*.a
+*.dll
+*.exe
+*.o
 *.obj
+*.pdb
+*.so
