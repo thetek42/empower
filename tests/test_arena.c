@@ -14,13 +14,11 @@ test_arena (void)
 
 	arena = e_arena_init (buf, sizeof (buf));
 
-#ifndef E_ALIGNOF_NOT_SUPPORTED
 	ptr = e_arena_alloc (&arena, uint32_t, 1);
 	e_test_assert_ptr_aligned ("e_arena_alloc align", ptr, 4);
 
 	ptr = e_arena_alloc_zero (&arena, uint16_t, 1);
 	e_test_assert_ptr_aligned ("e_arena_alloc_zero align", ptr, 2);
-#endif /* E_ALIGNOF_NOT_SUPPORTED */
 
 	ptr = e_arena_alloc_aligned (&arena, 8, 8);
 	e_test_assert_ptr_aligned ("e_arena_alloc_aligned align", ptr, 8);

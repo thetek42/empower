@@ -20,7 +20,7 @@
 
 /* compatibility annoyances ***************************************************/
 
-#if !defined (E_ALIGNOF) && !defined (E_ALIGNOF_NOT_SUPPORTED)
+#if !defined (E_ALIGNOF)
 # if __STDC_VERSION__ >= 202311L
 #  define E_ALIGNOF(expr) alignof (expr)
 # elif __STDC_VERSION__ >= 201112L
@@ -30,7 +30,7 @@
 # elif defined (_MSC_VER)
 #  define E_ALIGNOF(expr) __alignof (expr)
 # else
-#  define E_ALIGNOF_NOT_SUPPORTED
+#  define E_ALIGNOF(type) ((char *) (&((struct { char c; type t; } *) 0)->t) - (char *) 0)
 # endif
 #endif
 
@@ -49,13 +49,10 @@
 
 /* public interface ***********************************************************/
 
-#ifndef E_ALIGNOF_NOT_SUPPORTED
-# define e_arena_alloc(arena, T, nmemb) \
+#define e_arena_alloc(arena, T, nmemb) \
         ((T *) e_arena_alloc_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))
-# define e_arena_alloc_zero(arena, T, nmemb) \
+#define e_arena_alloc_zero(arena, T, nmemb) \
         ((T *) e_arena_alloc_zero_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))
-#endif /* E_ALIGNOF_NOT_SUPPORTED */
-
 #define e_arena_alloc_size(arena, size) \
         e_arena_alloc_aligned ((arena), (size), E_ALIGN_MAX)
 #define e_arena_alloc_zero_size(arena, size) \

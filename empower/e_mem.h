@@ -24,7 +24,7 @@
 # include <stdint.h>
 #endif
 
-#if !defined (E_ALIGNOF) && !defined (E_ALIGNOF_NOT_SUPPORTED)
+#if !defined (E_ALIGNOF)
 # if __STDC_VERSION__ >= 202311L
 #  define E_ALIGNOF(expr) alignof (expr)
 # elif __STDC_VERSION__ >= 201112L
@@ -34,7 +34,7 @@
 # elif defined (_MSC_VER)
 #  define E_ALIGNOF(expr) __alignof (expr)
 # else
-#  define E_ALIGNOF_NOT_SUPPORTED
+#  define E_ALIGNOF(type) ((char *) (&((struct { char c; type t; } *) 0)->t) - (char *) 0)
 # endif
 #endif
 
@@ -47,10 +47,7 @@
 #define e_mem_swap(a, b, T, n) e_mem_swap_size ((a), (b), sizeof (T) * (n))
 #define e_mem_is_zero(ptr, T, n) e_mem_is_zero_size ((ptr), sizeof (T) * (n))
 #define e_mem_clone(ptr, T, n) e_mem_clone_size ((ptr), sizeof (T) * (n))
-
-#ifndef E_ALIGNOF_NOT_SUPPORTED
-# define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), E_ALIGNOF (T))
-#endif /* E_ALIGNOF_NOT_SUPPORTED */
+#define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), E_ALIGNOF (T))
 
 int e_mem_eq_size (const void *a, const void *b, size_t n);
 int e_mem_is_zero_size (const void *ptr, size_t n);
