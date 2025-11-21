@@ -17,6 +17,7 @@ Empower contains the following modules:
 | **e_cobsr**    | COBS/R encoding/decoding    |
 | **e_cstr**     | String utility functions    |
 | **e_debug**    | Debugging utilities         |
+| **e_ini**      | INI file parsing            |
 | **e_log**      | Logging                     |
 | **e_macro**    | Macro helpers               |
 | **e_mem**      | Memory manipulation         |

@@ -36,6 +36,7 @@ The following versions are used for testing:
 | e_cobsr  | ✅ | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ✅ | ✅ |
 | e_debug  | 🔶 | 🔶 | ✅ | ✅ |
+| e_ini    | ✅ | ✅ | ✅ | ✅ |
 | e_log    | ❌ | ✅ | ✅ | ✅ |
 | e_macro  | 🔶 | 🔶 | ✅ | ✅ |
 | e_mem    | 🔶 | ✅ | ✅ | ✅ |
@@ -54,6 +55,7 @@ The following versions are used for testing:
 | e_cobsr  | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ❌ |
 | e_debug  | ✅ | ✅ | ❌ |
+| e_ini    | ✅ | ✅ | ✅ |
 | e_log    | ✅ | ✅ | ❌ |
 | e_macro  | ✅ | ✅ | ✅ |
 | e_mem    | ✅ | ✅ | 🔶 |
