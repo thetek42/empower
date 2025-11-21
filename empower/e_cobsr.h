@@ -35,7 +35,7 @@ enum e_cobsr_result e_cobsr_encode (const unsigned char *plain_input,
 
 size_t e_cobsr_encode_output_size (size_t plain_len);
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_COBSR_IMPL
 

@@ -76,7 +76,7 @@ void e_mem_write_u64_be (uint8_t *mem, uint64_t value);
 void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 #endif
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_MEM_IMPL
 

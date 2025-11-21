@@ -26,7 +26,7 @@ int e_base64_decode (const unsigned char *encoded,
                      unsigned char *plain_out,
                      size_t *plain_len);
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_BASE64_IMPL
 

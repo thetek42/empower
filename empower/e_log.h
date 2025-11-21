@@ -73,7 +73,7 @@ __attribute__ ((format (printf, 2, 3)))
 void e_log_impl_ (const char *location, const char *fmt, ...);
 #endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_LOG_IMPL
 

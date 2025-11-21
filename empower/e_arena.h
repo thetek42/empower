@@ -18,8 +18,6 @@
 
 #include <stddef.h>
 
-/* compatibility annoyances ***************************************************/
-
 #if !defined (E_ALIGNOF)
 # if __STDC_VERSION__ >= 202311L
 #  define E_ALIGNOF(expr) alignof (expr)
@@ -47,8 +45,6 @@
 # endif
 #endif
 
-/* public interface ***********************************************************/
-
 #define e_arena_alloc(arena, T, nmemb) \
         ((T *) e_arena_alloc_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))
 #define e_arena_alloc_zero(arena, T, nmemb) \
@@ -70,7 +66,7 @@ void *e_arena_alloc_zero_aligned (struct e_arena *arena, size_t size, size_t ali
 size_t e_arena_allocated_byte_count (const struct e_arena *arena);
 size_t e_arena_remaining_byte_count (const struct e_arena *arena);
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_ARENA_IMPL
 

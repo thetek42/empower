@@ -14,8 +14,6 @@
 
 #include <stddef.h>
 
-/* public interface ***********************************************************/
-
 /**
  * A bit vector, consisting of the \data pointer and \cap, the number of
  * available bits.
@@ -34,7 +32,7 @@ void e_bitvec_unset (struct e_bitvec *bitvec, size_t index);
 void e_bitvec_put (struct e_bitvec *bitvec, size_t index, int value);
 void e_bitvec_negate (struct e_bitvec *bitvec, size_t index);
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_BITVEC_IMPL
 

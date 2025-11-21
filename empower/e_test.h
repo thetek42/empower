@@ -53,8 +53,6 @@
 	fprintf (stderr, "     - Expression `%s` returned unexpected value\n", #expr)
 #endif
 
-/* public interface **********************************************************/
-
 #define e_test_assert(msg, expr) \
         e_test_assert_ ((msg), E_SOURCE_LOCATION, #expr, (expr))
 
@@ -88,7 +86,7 @@
 
 void e_test_finish (void);
 
-/* implementation details *****************************************************/
+/******************************************************************************/
 
 extern unsigned long e_test_success_counter_;
 extern unsigned long e_test_failure_counter_;

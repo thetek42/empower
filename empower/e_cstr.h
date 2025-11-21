@@ -11,8 +11,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* public interface ***********************************************************/
-
 /**
  * A pointer to a function that evaulates whether the ASCII character `c`
  * matches a certain predicate. It returns 0 if `c` is accepted, and non-zero
@@ -65,7 +63,7 @@ int e_cstr_continues_with (const char *s, const char *expect, size_t pos);
 size_t e_cstr_distance (const char *a, const char *b);
 int e_char_is_ascii (int c);
 
-/* implementation *************************************************************/
+/******************************************************************************/
 
 #ifdef E_CSTR_IMPL
 
