@@ -50,7 +50,7 @@
 	} while (0)
 #else
 # define E_TEST_ASSERT_EQ_PRINT_VALUES(expr, result, other) \
-	fprintf (stderr, "     - Expression `%s` returned unexpected value\n", #expr)
+	fprintf (stderr, "      - Expression `%s` returned unexpected value\n", #expr)
 #endif
 
 #define e_test_assert(msg, expr) \

@@ -38,9 +38,10 @@ int e_ini_parse (const char *str,
 # define E_CONFIG_INI_MAX_VALUE_LEN 256
 #endif
 
-static int e_ini_parse_category_ (const char **str, char *category);
-static int e_ini_parse_key_ (const char **str, char *key);
-static int e_ini_parse_value_ (const char **str, char *value);
+static int e_ini_category_ (const char **str, char *category);
+static int e_ini_key_ (const char **str, char *key);
+static int e_ini_value_ (const char **str, char *value);
+static void e_ini_skip_comment_ (const char **str);
 
 /**
  * Parse an INI file.
@@ -79,33 +80,38 @@ e_ini_parse (const char *str,
                 case ' ':
                 case '\t':
                 case '\r':
+                        str++;
                         break;
                 case '\n':
                         lineno += 1;
+                        str++;
                         break;
                 case '[':
                         str++;
-                        ret = e_ini_parse_category_ (&str, category);
+                        ret = e_ini_category_ (&str, category);
                         if (ret != 0) return lineno;
                         category_arg = category;
+                        str++;
+                        break;
+                case ';':
+                        e_ini_skip_comment_ (&str);
                         break;
                 default:
-                        ret = e_ini_parse_key_ (&str, key);
+                        ret = e_ini_key_ (&str, key);
                         if (ret != 0) return lineno;
-                        ret = e_ini_parse_value_ (&str, value);
+                        ret = e_ini_value_ (&str, value);
                         if (ret != 0) return lineno;
                         ret = callback (category_arg, key, value, user);
                         if (ret != 0) return lineno;
                         break;
                 }
-                str++;
         }
 
         return 0;
 }
 
 static int
-e_ini_parse_category_ (const char **str, char *category)
+e_ini_category_ (const char **str, char *category)
 {
         int i;
         char c;
@@ -129,7 +135,7 @@ e_ini_parse_category_ (const char **str, char *category)
 }
 
 static int
-e_ini_parse_key_ (const char **str, char *key)
+e_ini_key_ (const char **str, char *key)
 {
         int i, last_non_space;
         char c;
@@ -160,7 +166,7 @@ e_ini_parse_key_ (const char **str, char *key)
 }
 
 static int
-e_ini_parse_value_ (const char **str, char *value)
+e_ini_value_ (const char **str, char *value)
 {
         int i, last_non_space;
         char c;
@@ -175,6 +181,7 @@ e_ini_parse_value_ (const char **str, char *value)
                 case '\n':
                 case '\r':
                 case '\0':
+                case ';':
                         value[last_non_space + 1] = 0;
                         return 0;
                 case ' ':
@@ -189,6 +196,16 @@ e_ini_parse_value_ (const char **str, char *value)
                 (*str)++;
         }
         return 1;
+}
+
+static void
+e_ini_skip_comment_ (const char **str)
+{
+        char c;
+        while ((c = **str)) {
+                if (c == '\n') return;
+                (*str)++;
+        }
 }
 
 #endif /* E_INI_IMPL */
