@@ -16,6 +16,7 @@
 | Clang     | ✅ |
 | TinyCC    | ✅ |
 | MinGW GCC | ✅ |
+| MSVC      | ✅ |
 
 Others likely work as well, but are not actively tested.
 
@@ -24,6 +25,7 @@ The following versions are used for testing:
 - Clang: 21.1.4
 - TinyCC: 0.9.28rc
 - MinGW GCC: 15.2.0 (x86_64-w64-mingw32-gcc)
+- MSVC: 19.44.35221 (cl.exe)
 
 ## C Standard Versions
 

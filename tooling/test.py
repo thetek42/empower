@@ -24,20 +24,23 @@ if len(targets_to_run) == 0:
 if len(stdc_versions_to_run) == 0:
     stdc_versions_to_run = STDC_VERSIONS.keys()
 
-# create build dir
+# create build dir and set the cwd to it
+# changing the cwd is required because msvc is a stupid piece of shit that
+# gobbles the current working directory with its garbage
 os.makedirs("build", exist_ok=True)
+os.chdir("build")
 
 # collect test files
 files = []
-for file in glob.iglob("*.c", root_dir="tests"):
-    files.append("tests/" + file)
+for file in glob.iglob("*.c", root_dir="../tests"):
+    files.append("../tests/" + file)
 
 # do tests for all targets and c standard versions
 for target_name in targets_to_run:
     for stdc in stdc_versions_to_run:
         target = TARGETS[target_name]
         stdc_name = STDC_VERSIONS[stdc]
-        output = "build/" + target_name + "-" + stdc_name + target["outsuffix"]
+        output = target_name + "-" + stdc_name + target["outsuffix"]
 
         # skip unsupported c standard versions
         stdcflag = target["stdcflags"][stdc]
@@ -51,21 +54,26 @@ for target_name in targets_to_run:
         # compile test binary
         command = []
         command.append(target["compiler"])
-        command.append(stdcflag)
+        if stdcflag != "":
+            command.append(stdcflag)
         command.extend(target["flags"])
         command.extend(files)
-        command.append(target["outflag"])
-        command.append(output)
+        for outflag in target["outflag"]:
+            command.append(outflag.replace("$FILE$", output))
         command.extend(target["linkflags"])
         command_output = subprocess.run(command, capture_output=True)
 
         # check if compilation was successful
-        if command_output.returncode == 0 and len(command_output.stderr) == 0:
+        is_ok = command_output.returncode == 0 and len(command_output.stderr) == 0
+        if is_ok:
             print("\x1b[32mOK\x1b[0m")
         elif command_output.returncode == 0:
             print("\x1b[33mWARN\x1b[0m")
         else:
             print("\x1b[31mERROR\x1b[0m")
+        if not is_ok:
+            for line in command_output.stdout.splitlines():
+                print("   ", line.decode())
         for line in command_output.stderr.splitlines():
             print("   ", line.decode())
         if command_output.returncode != 0:
@@ -74,7 +82,7 @@ for target_name in targets_to_run:
 
         # run test binary
         print("\x1b[2mRunning...\x1b[0m   ", end="", flush=True)
-        command_output = subprocess.run([output], capture_output=True)
+        command_output = subprocess.run(["./" + output], capture_output=True)
 
         # check if test run was successful
         if command_output.returncode == 0:

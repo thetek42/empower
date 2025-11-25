@@ -33,8 +33,8 @@ compilers and platforms are supported.
 TL;DR:
 - **C Standard Version:** Most modules support C89, some require C99, but C11
   and C23 unlock a few extra features.
-- **Compilers:** GCC, Clang, TCC and MinGW GCC are officially supported, others
-  likely work as well.
+- **Compilers:** GCC, Clang, TinyCC, MinGW GCC and MSVC are officially supported,
+  others likely work as well.
 - **Platforms:** Most modules are platform independent and work in freestanding
   environments. Platform-dependent modules work on POSIX (tested on Linux with
   glibc) and Windows (tested with Wine with both MinGW and MSVC).

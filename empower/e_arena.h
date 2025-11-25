@@ -19,7 +19,7 @@
 #include <stddef.h>
 
 #if !defined (E_ALIGNOF)
-# if __STDC_VERSION__ >= 202311L
+# if (__STDC_VERSION__ >= 202311L && !defined (_MSC_VER))
 #  define E_ALIGNOF(expr) alignof (expr)
 # elif __STDC_VERSION__ >= 201112L
 #  define E_ALIGNOF(expr) _Alignof (expr)
@@ -33,15 +33,22 @@
 #endif
 
 #ifndef E_ALIGN_MAX
-# if __STDC_VERSION__ >= 201112L
+# if (__STDC_VERSION__ >= 201112L && !defined (_MSC_VER))
 #  define E_ALIGN_MAX E_ALIGNOF (max_align_t)
 # elif defined (__GNUC__) || defined (__clang__)
 #   define E_ALIGN_MAX __BIGGEST_ALIGNMENT__
-# elif __STDC_VERSION__ >= 199901L
-#  include <stdint.h>
-#  define E_ALIGN_MAX E_ALIGNOF (uint64_t)
 # else
-#  define E_ALIGN_MAX 8
+union e_max_align_union {
+	long dummy1;
+	double dummy2;
+	void *dummy3;
+	void (*dummy4) (void);
+#  if __STDC_VERSION__ >= 199901L
+	long long dummy5;
+	long double dummy6;
+#  endif
+};
+#  define E_ALIGN_MAX E_ALIGNOF (union e_max_align_union)
 # endif
 #endif
 
