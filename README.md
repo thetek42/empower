@@ -7,23 +7,23 @@ applications faster and with more joy.
 
 Empower contains the following modules:
 
-| Module         | Description                 |
-| -------------- | --------------------------- |
-| **e_alloc**    | Memory allocation           |
-| **e_arena**    | Arena allocator             |
-| **e_base64**   | Base64 encoding/decoding    |
-| **e_bitvec**   | Bit array                   |
-| **e_cobs**     | COBS encoding/decoding      |
-| **e_cobsr**    | COBS/R encoding/decoding    |
-| **e_cstr**     | String utility functions    |
-| **e_debug**    | Debugging utilities         |
-| **e_ini**      | INI file parsing            |
-| **e_log**      | Logging                     |
-| **e_macro**    | Macro helpers               |
-| **e_mem**      | Memory manipulation         |
-| **e_rand**     | Randomization               |
-| **e_stdc**     | Uniform feature test macros |
-| **e_test**     | Testing                     |
+| Category        | Module         | Description                 |
+| --------------- | -------------- | --------------------------- |
+| Strings         | **e_cstr**     | String utility functions    |
+| Data structures | **e_bitvec**   | Bit array                   |
+| Algorithms      | **e_base64**   | Base64 encoding/decoding    |
+|                 | **e_cobs**     | COBS encoding/decoding      |
+|                 | **e_cobsr**    | COBS/R encoding/decoding    |
+| File formats    | **e_ini**      | INI file parsing            |
+| Allocation      | **e_alloc**    | Memory allocation           |
+|                 | **e_arena**    | Arena allocator             |
+| Utilities       | **e_debug**    | Debugging utilities         |
+|                 | **e_log**      | Logging                     |
+|                 | **e_macro**    | Macro helpers               |
+|                 | **e_mem**      | Memory manipulation         |
+|                 | **e_rand**     | Randomization               |
+| Compatibility   | **e_stdc**     | Uniform feature test macros |
+| Testing         | **e_test**     | Testing                     |
 
 ## Requirements
 
