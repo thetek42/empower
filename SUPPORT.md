@@ -38,6 +38,7 @@ The following versions are used for testing:
 | e_cobsr  | ✅ | ✅ | ✅ | ✅ |
 | e_compat | ✅ | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ✅ | ✅ |
+| e_da     | 🔶 | ✅ | ✅ | ✅ |
 | e_debug  | 🔶 | 🔶 | ✅ | ✅ |
 | e_ini    | ✅ | ✅ | ✅ | ✅ |
 | e_log    | ❌ | ✅ | ✅ | ✅ |
@@ -60,6 +61,7 @@ The following versions are used for testing:
 | e_cobsr  | ✅ | ✅ | ✅ |
 | e_compat | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ❌ |
+| e_da     | ✅ | ✅ | ❌ |
 | e_debug  | ✅ | ✅ | ❌ |
 | e_ini    | ✅ | ✅ | ✅ |
 | e_log    | ✅ | ✅ | ❌ |

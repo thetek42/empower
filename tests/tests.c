@@ -9,6 +9,7 @@ extern void test_cobs (void);
 extern void test_cobsr (void);
 extern void test_compat (void);
 extern void test_cstr (void);
+extern void test_da (void);
 extern void test_debug (void);
 extern void test_ini (void);
 extern void test_log (void);
@@ -30,6 +31,7 @@ main (void)
     test_cobsr ();
     test_compat ();
     test_cstr ();
+    test_da ();
     test_debug ();
     test_ini ();
     test_log ();

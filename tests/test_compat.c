@@ -7,5 +7,5 @@ test_compat (void)
 {
     int x = 42;
     E_TYPEOF (x) y = 69;
-    x = y;
+    x = y; /* NOLINT */
 }

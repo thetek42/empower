@@ -54,12 +54,20 @@ union e_max_align_union {
 #endif
 /* clang-format on */
 
-#if __STDC_VERSION__ >= 202311L
-# define E_TYPEOF(x)        typeof (x)
-# define E_TYPEOF_UNQUAL(x) typeof_unqual (x)
-#else
-# define E_TYPEOF(x)        __typeof__ (x)
-# define E_TYPEOF_UNQUAL(x) __typeof_unqual__ (x)
-#endif
+#ifndef E_TYPEOF
+# if __STDC_VERSION__ >= 202311L
+#  define E_TYPEOF(x) typeof (x)
+# else
+#  define E_TYPEOF(x) __typeof__ (x)
+# endif
+#endif /* E_TYPEOF */
+
+#ifndef E_TYPEOF_UNQUAL
+# if __STDC_VERSION__ >= 202311L
+#  define E_TYPEOF_UNQUAL(x) typeof_unqual (x)
+# else
+#  define E_TYPEOF_UNQUAL(x) __typeof_unqual__ (x)
+# endif
+#endif /* E_TYPEOF_UNQUAL */
 
 #endif /* EMPOWER_COMPAT_H_ */

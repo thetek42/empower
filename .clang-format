@@ -7,6 +7,7 @@ BinPackParameters: OnePerLine
 BreakAfterReturnType: AllDefinitions
 BreakBeforeBraces: Linux
 ColumnLimit: 100
+ForEachMacros: ["e_da_foreach"]
 IncludeBlocks: Regroup
 IndentCaseLabels: false
 IndentPPDirectives: AfterHash

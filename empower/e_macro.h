@@ -28,7 +28,7 @@
  */
 #ifndef E_STRINGIFY
 # define E_STRINGIFY__HELPER(x) #x
-# define E_STRINGIFY(x)         E_STRINGIFY_HELPER_ (x)
+# define E_STRINGIFY(x)         E_STRINGIFY__HELPER (x)
 #endif
 
 /**
@@ -37,8 +37,8 @@
  * See `E_STRINGIFY`.
  */
 #ifndef E_MACRO_CONCAT
-# define E_MACRO__CONCAT_HELPER(a, b) a##b
-# define E_MACRO_CONCAT(a, b)         E_MACRO_CONCAT_HELPER_ (a, b)
+# define E_CONCAT__HELPER(a, b) a##b
+# define E_CONCAT(a, b)         E_CONCAT__HELPER (a, b)
 #endif
 
 /**

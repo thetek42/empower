@@ -167,12 +167,12 @@ e_sb_append_fmt (E_Sb *sb, const char *fmt, ...)
     size_t n;
 
     va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap);
+    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
     va_end (ap);
 
     e_sb__reserve (sb, sb->len + n + 1);
     va_start (ap, fmt);
-    vsnprintf (&sb->ptr[sb->len], n + 1, fmt, ap);
+    vsnprintf (&sb->ptr[sb->len], n + 1, fmt, ap); /* NOLINT */
     va_end (ap);
     sb->len += n;
     return n;
