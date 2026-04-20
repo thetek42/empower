@@ -7,6 +7,7 @@ extern void test_base64 (void);
 extern void test_bitvec (void);
 extern void test_cobs (void);
 extern void test_cobsr (void);
+extern void test_compat (void);
 extern void test_cstr (void);
 extern void test_debug (void);
 extern void test_ini (void);
@@ -25,6 +26,7 @@ main (void)
     test_bitvec ();
     test_cobs ();
     test_cobsr ();
+    test_compat ();
     test_cstr ();
     test_debug ();
     test_ini ();

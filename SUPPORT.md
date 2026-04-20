@@ -36,6 +36,7 @@ The following versions are used for testing:
 | e_bitvec | ✅ | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ | ✅ |
+| e_compat | ✅ | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ✅ | ✅ |
 | e_debug  | 🔶 | 🔶 | ✅ | ✅ |
 | e_ini    | ✅ | ✅ | ✅ | ✅ |
@@ -55,6 +56,7 @@ The following versions are used for testing:
 | e_bitvec | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ |
+| e_compat | ✅ | ✅ | ✅ |
 | e_cstr   | ✅ | ✅ | ❌ |
 | e_debug  | ✅ | ✅ | ❌ |
 | e_ini    | ✅ | ✅ | ✅ |

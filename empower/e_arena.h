@@ -34,6 +34,7 @@
 #endif
 /* clang-format on */
 
+/* clang-format off */
 #ifndef E_ALIGN_MAX
 # if (__STDC_VERSION__ >= 201112L && !defined(_MSC_VER))
 #  define E_ALIGN_MAX E_ALIGNOF (max_align_t)
@@ -50,10 +51,10 @@ union e_max_align_union {
     long double dummy6;
 #  endif
 };
-
 #  define E_ALIGN_MAX E_ALIGNOF (union e_max_align_union)
 # endif
 #endif
+/* clang-format on */
 
 #define e_arena_alloc(arena, T, nmemb)                                                             \
     ((T *) e_arena_alloc_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))

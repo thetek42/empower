@@ -1,13 +1,13 @@
 #ifndef EMPOWER_MEM_H_
 #define EMPOWER_MEM_H_
 
-/******************************************************************************
+/**************************************************************************************************
  *
  * This module provides miscellaneous functions for operating on memory.
  *
- * It provides various macro wrappers for the functions that require you to
- * provide the type of the arguments. This give extra "type safety" so that you
- * don't accidentally mess up. For exapmle, instead of:
+ * It provides various macro wrappers for the functions that require you to provide the type of the
+ * arguments. This give extra "type safety" so that you don't accidentally mess up. For exapmle,
+ * instead of:
  *   memcpy (dest, src, sizeof (int) * 42);
  *   memset (ptr, 0, sizeof (struct foo) * 64);
  * You can use:
@@ -17,7 +17,7 @@
  * Configuration options:
  *   - E_CONFIG_FREESTANDING: Do not use functions from the standard library.
  *
- ******************************************************************************/
+ **************************************************************************************************/
 
 #include <stddef.h>
 #if __STDC_VERSION__ >= 199901L
@@ -49,8 +49,7 @@
 #define e_mem_swap(a, b, T, n)           e_mem_swap_size ((a), (b), sizeof (T) * (n))
 #define e_mem_is_zero(ptr, T, n)         e_mem_is_zero_size ((ptr), sizeof (T) * (n))
 #define e_mem_clone(ptr, T, n)           e_mem_clone_size ((ptr), sizeof (T) * (n))
-#define e_mem_is_aligned_to_type(ptr, T)                                       \
-    e_mem_is_aligned_to ((ptr), E_ALIGNOF (T))
+#define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), E_ALIGNOF (T))
 
 int e_mem_eq_size (const void *a, const void *b, size_t n);
 int e_mem_is_zero_size (const void *ptr, size_t n);
@@ -273,8 +272,8 @@ e_mem_read_u16_le (const uint8_t *mem)
 uint32_t
 e_mem_read_u32_be (const uint8_t *mem)
 {
-    return (((uint32_t) mem[0]) << 24) | (((uint32_t) mem[1]) << 16) |
-           (((uint32_t) mem[2]) << 8) | (((uint32_t) mem[3]) << 0);
+    return (((uint32_t) mem[0]) << 24) | (((uint32_t) mem[1]) << 16) | (((uint32_t) mem[2]) << 8) |
+           (((uint32_t) mem[3]) << 0);
 }
 
 /**
@@ -285,8 +284,8 @@ e_mem_read_u32_be (const uint8_t *mem)
 uint32_t
 e_mem_read_u32_le (const uint8_t *mem)
 {
-    return (((uint32_t) mem[3]) << 24) | (((uint32_t) mem[2]) << 16) |
-           (((uint32_t) mem[1]) << 8) | (((uint32_t) mem[0]) << 0);
+    return (((uint32_t) mem[3]) << 24) | (((uint32_t) mem[2]) << 16) | (((uint32_t) mem[1]) << 8) |
+           (((uint32_t) mem[0]) << 0);
 }
 
 /**
@@ -297,9 +296,8 @@ e_mem_read_u32_le (const uint8_t *mem)
 uint64_t
 e_mem_read_u64_be (const uint8_t *mem)
 {
-    return (((uint64_t) mem[0]) << 56) | (((uint64_t) mem[1]) << 48) |
-           (((uint64_t) mem[2]) << 40) | (((uint64_t) mem[3]) << 32) |
-           (((uint64_t) mem[4]) << 24) | (((uint64_t) mem[5]) << 16) |
+    return (((uint64_t) mem[0]) << 56) | (((uint64_t) mem[1]) << 48) | (((uint64_t) mem[2]) << 40) |
+           (((uint64_t) mem[3]) << 32) | (((uint64_t) mem[4]) << 24) | (((uint64_t) mem[5]) << 16) |
            (((uint64_t) mem[6]) << 8) | (((uint64_t) mem[7]) << 0);
 }
 
@@ -311,9 +309,8 @@ e_mem_read_u64_be (const uint8_t *mem)
 uint64_t
 e_mem_read_u64_le (const uint8_t *mem)
 {
-    return (((uint64_t) mem[7]) << 56) | (((uint64_t) mem[6]) << 48) |
-           (((uint64_t) mem[5]) << 40) | (((uint64_t) mem[4]) << 32) |
-           (((uint64_t) mem[3]) << 24) | (((uint64_t) mem[2]) << 16) |
+    return (((uint64_t) mem[7]) << 56) | (((uint64_t) mem[6]) << 48) | (((uint64_t) mem[5]) << 40) |
+           (((uint64_t) mem[4]) << 32) | (((uint64_t) mem[3]) << 24) | (((uint64_t) mem[2]) << 16) |
            (((uint64_t) mem[1]) << 8) | (((uint64_t) mem[0]) << 0);
 }
 
