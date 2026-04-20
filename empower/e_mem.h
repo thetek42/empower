@@ -26,7 +26,7 @@
 
 /* clang-format off */
 #if !defined (E_ALIGNOF)
-# if __STDC_VERSION__ >= 202311L
+# if __STDC_VERSION__ >= 202311L && !defined (_MSC_VER)
 #  define E_ALIGNOF(expr) alignof (expr)
 # elif __STDC_VERSION__ >= 201112L
 #  define E_ALIGNOF(expr) _Alignof (expr)
