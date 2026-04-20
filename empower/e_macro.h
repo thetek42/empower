@@ -10,7 +10,21 @@
 #include <stddef.h>
 
 /**
- * Turn any expression into a string.
+ * Stringify the *result* of a macro.
+ *
+ * To understand the difference between `E_STRINGIFY` and a regular preprocessor stringification
+ * (i.e. `#expr`), have a look at the following example:
+ *
+ * ```
+ * #define E_STRINGIFY__HELPER(x) #x
+ * #define E_STRINGIFY(x) E_STRINGIFY__HELPER (x)
+ * #define foo 42
+ *
+ * E_STRINGIFY__HELPER (foo)
+ *   => "foo"
+ * E_STRINGIFY (foo)
+ *   => "42"
+ * ```
  */
 #ifndef E_STRINGIFY
 # define E_STRINGIFY__HELPER(x) #x
@@ -18,18 +32,20 @@
 #endif
 
 /**
- * Source file and line concatenated into a string like "main.c:42"
- */
-#ifndef E_SOURCE_LOCATION
-# define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY (__LINE__)
-#endif
-
-/**
- * Concatenate any two expressions.
+ * Concatenate the *results* of two macros.
+ *
+ * See `E_STRINGIFY`.
  */
 #ifndef E_MACRO_CONCAT
 # define E_MACRO__CONCAT_HELPER(a, b) a##b
 # define E_MACRO_CONCAT(a, b)         E_MACRO_CONCAT_HELPER_ (a, b)
+#endif
+
+/**
+ * Source file and line concatenated into a string like "main.c:42"
+ */
+#ifndef E_SOURCE_LOCATION
+# define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY (__LINE__)
 #endif
 
 /**
