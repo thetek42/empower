@@ -1,5 +1,5 @@
 #define E_TEST_IMPL
-#include <e_test.h>
+#include "e_test.h"
 
 extern void test_alloc (void);
 extern void test_arena (void);
@@ -19,21 +19,21 @@ extern void test_stdc (void);
 int
 main (void)
 {
-        test_alloc ();
-        test_arena ();
-        test_base64 ();
-        test_bitvec ();
-        test_cobs ();
-        test_cobsr ();
-        test_cstr ();
-        test_debug ();
-        test_ini ();
-        test_log ();
-        test_macro ();
-        test_mem ();
-        test_rand ();
-        test_stdc ();
+    test_alloc ();
+    test_arena ();
+    test_base64 ();
+    test_bitvec ();
+    test_cobs ();
+    test_cobsr ();
+    test_cstr ();
+    test_debug ();
+    test_ini ();
+    test_log ();
+    test_macro ();
+    test_mem ();
+    test_rand ();
+    test_stdc ();
 
-        e_test_finish ();
-        return 0;
+    e_test_finish ();
+    return 0;
 }

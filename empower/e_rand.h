@@ -1,32 +1,32 @@
 #ifndef EMPOWER_RAND_H_
 #define EMPOWER_RAND_H_
 
-/******************************************************************************
+/**************************************************************************************************
  *
- * This module provides functions related to randomization. For random number
- * generation, the xoshiro256++ algorithm is used. When C11 or above is used, a
- * thread-local PRNG is provided. Note that all PRNGs in this module must be
- * explicitly seeded by the user, otherwise they will always have the same seed.
+ * This module provides functions related to randomization. For random number generation, the
+ * xoshiro256++ algorithm is used. When C11 or above is used, a thread-local PRNG is provided. Note
+ * that all PRNGs in this module must be explicitly seeded by the user, otherwise they will always
+ * have the same seed.
  *
- ******************************************************************************/
+ **************************************************************************************************/
 
-#if !defined (__STDC_VERSION__) || __STDC_VERSION__ < 199901L
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
 # error e_rand requires C99 or newer
 #endif
 
 #include <stdint.h>
 
-struct e_rand_state {
-	uint64_t s[4];
-};
+typedef struct {
+    uint64_t s[4];
+} E_Rand_State;
 
-struct e_rand_state e_rand_state_init (void);
-void e_rand_state_seed (struct e_rand_state *state, const uint64_t seed[4]);
-uint64_t e_rand_state_next (struct e_rand_state *state);
-float e_rand_state_f32 (struct e_rand_state *state);
-double e_rand_state_f64 (struct e_rand_state *state);
+E_Rand_State e_rand_state_init (void);
+void e_rand_state_seed (E_Rand_State *state, const uint64_t seed[4]);
+uint64_t e_rand_state_next (E_Rand_State *state);
+float e_rand_state_f32 (E_Rand_State *state);
+double e_rand_state_f64 (E_Rand_State *state);
 
-#if __STDC_VERSION__ >= 201112L && !defined (__TINYC__)
+#if __STDC_VERSION__ >= 201112L && !defined(__TINYC__)
 void e_rand_seed (uint64_t seed[4]);
 uint64_t e_rand_next (void);
 float e_rand_f32 (void);
@@ -37,57 +37,56 @@ double e_rand_f64 (void);
 
 #ifdef E_RAND_IMPL
 
-#if __STDC_VERSION__ >= 201112L && !defined (__TINYC__)
-static _Thread_local struct e_rand_state e_rand_thread_local_state_ = {
-        .s = {0, 0, 0, 0},
+# if __STDC_VERSION__ >= 201112L && !defined(__TINYC__)
+static _Thread_local E_Rand_State e_rand__thread_local_state = {
+    .s = {0, 0, 0, 0},
 };
-#endif
+# endif
 
-static inline uint64_t e_rand_rotl_ (uint64_t x, int k);
+static inline uint64_t e_rand__rotl (uint64_t x, int k);
 
 /**
  * Initialise the pseudo-random number generator. It is always initialised to
  * zero, and you will have to seed it yourself.
  */
-struct e_rand_state
+E_Rand_State
 e_rand_state_init (void)
 {
-	return (struct e_rand_state) {
-		.s = {0, 0, 0, 0},
-	};
+    return (E_Rand_State) {
+        .s = {0, 0, 0, 0},
+    };
 }
 
 /**
  * Seed the pseudo-random number generator `state` with `seed`.
  */
 void
-e_rand_state_seed (struct e_rand_state *state,
-                   const uint64_t seed[4])
+e_rand_state_seed (E_Rand_State *state, const uint64_t seed[4])
 {
-	state->s[0] = seed[0];
-	state->s[1] = seed[1];
-	state->s[2] = seed[2];
-	state->s[3] = seed[3];
+    state->s[0] = seed[0];
+    state->s[1] = seed[1];
+    state->s[2] = seed[2];
+    state->s[3] = seed[3];
 }
 
 /**
  * Obtain the next value from the pseudo-random number generator `state`.
  */
 uint64_t
-e_rand_state_next (struct e_rand_state *state)
+e_rand_state_next (E_Rand_State *state)
 {
-	uint64_t result, t;
+    uint64_t result, t;
 
-	result = e_rand_rotl_ (state->s[0] + state->s[3], 23) + state->s[0];
-	t = state->s[1] << 17;
-	state->s[2] ^= state->s[0];
-	state->s[3] ^= state->s[1];
-	state->s[1] ^= state->s[2];
-	state->s[0] ^= state->s[3];
-	state->s[2] ^= t;
-	state->s[3] = e_rand_rotl_ (state->s[3], 45);
+    result = e_rand__rotl (state->s[0] + state->s[3], 23) + state->s[0];
+    t = state->s[1] << 17;
+    state->s[2] ^= state->s[0];
+    state->s[3] ^= state->s[1];
+    state->s[1] ^= state->s[2];
+    state->s[0] ^= state->s[3];
+    state->s[2] ^= t;
+    state->s[3] = e_rand__rotl (state->s[3], 45);
 
-	return result;
+    return result;
 }
 
 /**
@@ -95,9 +94,9 @@ e_rand_state_next (struct e_rand_state *state)
  * (inclusive) and 1.0F (exclusive).
  */
 float
-e_rand_state_f32 (struct e_rand_state *state)
+e_rand_state_f32 (E_Rand_State *state)
 {
-	return ((float) e_rand_state_next (state)) * (1.0F / (float) UINT64_MAX);
+    return ((float) e_rand_state_next (state)) * (1.0F / (float) UINT64_MAX);
 }
 
 /**
@@ -105,12 +104,12 @@ e_rand_state_f32 (struct e_rand_state *state)
  * (inclusive) and 1.0 (exclusive).
  */
 double
-e_rand_state_f64 (struct e_rand_state *state)
+e_rand_state_f64 (E_Rand_State *state)
 {
-	return ((double) e_rand_state_next (state)) * (1.0 / (double) UINT64_MAX);
+    return ((double) e_rand_state_next (state)) * (1.0 / (double) UINT64_MAX);
 }
 
-#if __STDC_VERSION__ >= 201112L && !defined (__TINYC__)
+# if __STDC_VERSION__ >= 201112L && !defined(__TINYC__)
 
 /**
  * Seed the thread-local pseudo-random number generator with `seed`.
@@ -118,7 +117,7 @@ e_rand_state_f64 (struct e_rand_state *state)
 void
 e_rand_seed (uint64_t seed[4])
 {
-	e_rand_state_seed (&e_rand_thread_local_state_, seed);
+    e_rand_state_seed (&e_rand__thread_local_state, seed);
 }
 
 /**
@@ -127,7 +126,7 @@ e_rand_seed (uint64_t seed[4])
 uint64_t
 e_rand_next (void)
 {
-	return e_rand_state_next (&e_rand_thread_local_state_);
+    return e_rand_state_next (&e_rand__thread_local_state);
 }
 
 /**
@@ -137,7 +136,7 @@ e_rand_next (void)
 float
 e_rand_f32 (void)
 {
-	return e_rand_state_f32 (&e_rand_thread_local_state_);
+    return e_rand_state_f32 (&e_rand__thread_local_state);
 }
 
 /**
@@ -147,15 +146,15 @@ e_rand_f32 (void)
 double
 e_rand_f64 (void)
 {
-	return e_rand_state_f64 (&e_rand_thread_local_state_);
+    return e_rand_state_f64 (&e_rand__thread_local_state);
 }
 
-#endif
+# endif
 
 static inline uint64_t
-e_rand_rotl_ (uint64_t x, int k)
+e_rand__rotl (uint64_t x, int k)
 {
-	return (x << k) | (x >> (64 - k));
+    return (x << k) | (x >> (64 - k));
 }
 
 #endif /* E_RAND_IMPL */

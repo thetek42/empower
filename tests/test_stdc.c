@@ -1,5 +1,5 @@
 #define E_STDC_IMPL
-#include <e_stdc.h>
+#include "e_stdc.h"
 
 #include <stddef.h>
 

@@ -14,7 +14,18 @@ Checks: 'clang-diagnostic-*,
          -readability-use-concise-preprocessor-directives,
          '
 
-FormatStyle: none
+CheckOptions:
+  - { key: readability-identifier-naming.DefaultCase,            value: lower_case       }
+  - { key: readability-identifier-naming.EnumCase,               value: Camel_Snake_Case }
+  - { key: readability-identifier-naming.EnumConstantCase,       value: UPPER_CASE       }
+  - { key: readability-identifier-naming.FunctionCase,           value: lower_case       }
+  - { key: readability-identifier-naming.GlobalConstantCase,     value: lower_case       }
+  - { key: readability-identifier-naming.StructCase,             value: Camel_Snake_Case }
+  - { key: readability-identifier-naming.TypedefCase,            value: Camel_Snake_Case }
+  - { key: readability-identifier-naming.TypedefSuffix,          value: ""               }
+  - { key: readability-identifier-naming.VariableCase,           value: lower_case       }
+
+FormatStyle: file
 
 HeaderFilterRegex: '.*'
 
