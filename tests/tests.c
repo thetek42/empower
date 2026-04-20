@@ -16,6 +16,7 @@ extern void test_macro (void);
 extern void test_mem (void);
 extern void test_rand (void);
 extern void test_stdc (void);
+extern void test_sv (void);
 
 int
 main (void)
@@ -35,6 +36,7 @@ main (void)
     test_mem ();
     test_rand ();
     test_stdc ();
+    test_sv ();
 
     e_test_finish ();
     return 0;
