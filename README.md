@@ -10,6 +10,7 @@ Empower contains the following modules:
 | Category        | Module         | Description                         |
 | --------------- | -------------- | ----------------------------------- |
 | Strings         | **e_cstr**     | String utility functions            |
+|                 | **e_sb**       | String builder                      |
 |                 | **e_sv**       | String view                         |
 | Data structures | **e_bitvec**   | Bit array                           |
 | Algorithms      | **e_base64**   | Base64 encoding/decoding            |

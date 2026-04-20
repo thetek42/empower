@@ -44,7 +44,9 @@ The following versions are used for testing:
 | e_macro  | 🔶 | 🔶 | ✅ | ✅ |
 | e_mem    | 🔶 | ✅ | ✅ | ✅ |
 | e_rand   | ❌ | 🔶 | ✅ | ✅ |
+| e_sb     | 🔶 | ✅ | ✅ | ✅ |
 | e_stdc   | ✅ | ✅ | ✅ | ✅ |
+| e_sv     | ✅ | ✅ | ✅ | ✅ |
 | e_test   | ✅ | ✅ | ✅ | ✅ |
 
 ## Platforms
@@ -64,7 +66,9 @@ The following versions are used for testing:
 | e_macro  | ✅ | ✅ | ✅ |
 | e_mem    | ✅ | ✅ | 🔶 |
 | e_rand   | ✅ | ✅ | ✅ |
+| e_sb     | ✅ | ✅ | ❌ |
 | e_stdc   | ✅ | ✅ | ✅ |
+| e_sv     | ✅ | ✅ | ✅ |
 | e_test   | ✅ | ✅ | ❌ |
 
 Note on the used platform names:

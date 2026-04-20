@@ -15,6 +15,7 @@ extern void test_log (void);
 extern void test_macro (void);
 extern void test_mem (void);
 extern void test_rand (void);
+extern void test_sb (void);
 extern void test_stdc (void);
 extern void test_sv (void);
 
@@ -35,6 +36,7 @@ main (void)
     test_macro ();
     test_mem ();
     test_rand ();
+    test_sb ();
     test_stdc ();
     test_sv ();
 
