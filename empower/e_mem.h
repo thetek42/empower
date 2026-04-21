@@ -263,13 +263,13 @@ e_mem_asprintf (const char *fmt, ...)
     size_t n;
 
     va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap);
+    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
     va_end (ap);
 
     s = malloc (sizeof (char) * (n + 1));
     if (s == NULL) return NULL;
     va_start (ap, fmt);
-    vsnprintf (s, n + 1, fmt, ap);
+    vsnprintf (s, n + 1, fmt, ap); /* NOLINT */
     va_end (ap);
 
     return s;
@@ -289,14 +289,14 @@ e_mem_asnprintf (size_t max, const char *fmt, ...)
     size_t n;
 
     va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap);
+    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
     va_end (ap);
     if (n > max) n = max;
 
     s = malloc (sizeof (char) * (n + 1));
     if (s == NULL) return NULL;
     va_start (ap, fmt);
-    vsnprintf (s, n + 1, fmt, ap);
+    vsnprintf (s, n + 1, fmt, ap); /* NOLINT */
     va_end (ap);
 
     return s;
