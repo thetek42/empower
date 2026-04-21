@@ -15,6 +15,7 @@ Empower contains the following modules:
 | Data structures | **e_da**       | Dynamic arrays                      |
 |                 | **e_bitvec**   | Bit array                           |
 | Algorithms      | **e_base64**   | Base64 encoding/decoding            |
+|                 | **e_bcd**      | Binary-coded decimals               |
 |                 | **e_cobs**     | COBS encoding/decoding              |
 |                 | **e_cobsr**    | COBS/R encoding/decoding            |
 | File formats    | **e_ini**      | INI file parsing                    |

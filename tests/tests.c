@@ -4,6 +4,7 @@
 extern void test_alloc (void);
 extern void test_arena (void);
 extern void test_base64 (void);
+extern void test_bcd (void);
 extern void test_bitvec (void);
 extern void test_cobs (void);
 extern void test_cobsr (void);
@@ -26,6 +27,7 @@ main (void)
     test_alloc ();
     test_arena ();
     test_base64 ();
+    test_bcd ();
     test_bitvec ();
     test_cobs ();
     test_cobsr ();

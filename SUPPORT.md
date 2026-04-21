@@ -33,6 +33,7 @@ The following versions are used for testing:
 | -------- | --- | --- | --- | --- |
 | e_arena  | ✅ | ✅ | ✅ | ✅ |
 | e_base64 | ✅ | ✅ | ✅ | ✅ |
+| e_bcd    | ❌ | ✅ | ✅ | ✅ |
 | e_bitvec | ✅ | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ | ✅ |
@@ -56,6 +57,7 @@ The following versions are used for testing:
 | -------- | --- | --- | --- |
 | e_arena  | ✅ | ✅ | ✅ |
 | e_base64 | ✅ | ✅ | ✅ |
+| e_bcd    | ✅ | ✅ | ✅ |
 | e_bitvec | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ |
