@@ -61,7 +61,16 @@ int e_mem_is_aligned_to (const void *ptr, size_t align);
 char *e_mem_strdup (const char *s);
 char *e_mem_strdup_n (const char *s, size_t n);
 void *e_mem_clone_size (const void *ptr, size_t n);
-#endif /* E_CONFIG_FREESTANDING */
+# if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#  if defined(__GNUC__) || defined(__clang__) || defined(__TINYC__)
+char *e_mem_asprintf (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+char *e_mem_asnprintf (size_t max, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+#  else  /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
+char *e_mem_asprintf (const char *fmt, ...);
+char *e_mem_asnprintf (size_t max, const char *fmt, ...);
+#  endif /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
+# endif  /* defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L */
+#endif   /* E_CONFIG_FREESTANDING */
 
 #if __STDC_VERSION__ >= 199901L
 uint16_t e_mem_read_u16_be (const uint8_t *mem);
@@ -83,6 +92,8 @@ void e_mem_write_u64_le (uint8_t *mem, uint64_t value);
 #ifdef E_MEM_IMPL
 
 # ifndef E_CONFIG_FREESTANDING
+#  include <stdarg.h>
+#  include <stdio.h>
 #  include <stdlib.h>
 #  include <string.h>
 # endif /* E_CONFIG_FREESTANDING */
@@ -183,8 +194,8 @@ e_mem_is_aligned_to (const void *ptr, size_t align)
 # ifndef E_CONFIG_FREESTANDING
 
 /**
- * Duplicate a string. This is equivalent to `strdup`. The allocated memory must
- * be freed by the user using `free()`.
+ * Duplicate a string. This is equivalent to `strdup`. The allocated memory must be freed by the
+ * user using `free()`. If the allocation fails, `NULL` is returned.
  */
 char *
 e_mem_strdup (const char *s)
@@ -203,8 +214,8 @@ e_mem_strdup (const char *s)
 }
 
 /**
- * Duplicate at most `n` bytes of a string. This is equivalent to `strndup`. The
- * allocated memory must be freed by the user using `free()`.
+ * Duplicate at most `n` bytes of a string. This is equivalent to `strndup`. The allocated memory
+ * must be freed by the user using `free()`. If the allocation fails, `NULL` is returned.
  */
 char *
 e_mem_strdup_n (const char *s, size_t n)
@@ -224,9 +235,9 @@ e_mem_strdup_n (const char *s, size_t n)
 }
 
 /**
- * Duplicate `n` bytes of memory from the pointer `ptr`. The allocated memory
- * must be freed by the user using `free()`. Undefined behaviour occurs if `ptr`
- * is NULL or `n` is 0.
+ * Duplicate `n` bytes of memory from the pointer `ptr`. The allocated memory must be freed by the
+ * user using `free()`. Undefined behaviour occurs if `ptr` is NULL or `n` is 0. If the allocation
+ * fails, `NULL` is returned.
  */
 void *
 e_mem_clone_size (const void *ptr, size_t n)
@@ -237,6 +248,61 @@ e_mem_clone_size (const void *ptr, size_t n)
     memcpy (ret, ptr, n);
     return ret;
 }
+
+#  if __STDC_VERSION__ >= 199901L
+
+/**
+ * Allocate a nul-terminated, printf-style formatted string. The memory must be freed using
+ * `free()`. If the allocation fails, `NULL` is returned.
+ */
+char *
+e_mem_asprintf (const char *fmt, ...)
+{
+    va_list ap;
+    char *s;
+    size_t n;
+
+    va_start (ap, fmt);
+    n = (size_t) vsnprintf (NULL, 0, fmt, ap);
+    va_end (ap);
+
+    s = malloc (sizeof (char) * (n + 1));
+    if (s == NULL) return NULL;
+    va_start (ap, fmt);
+    vsnprintf (s, n + 1, fmt, ap);
+    va_end (ap);
+
+    return s;
+}
+
+/**
+ * Allocate a nul-terminated, printf-style formatted string. At most `max` bytes (including the nul
+ * terminator) may be written. The written string is always nul-terminated. Undefined behaviour
+ * occurs if `max` is 0. The memory must be freed using `free()`. If the allocation fails, `NULL`
+ * is returned.
+ */
+char *
+e_mem_asnprintf (size_t max, const char *fmt, ...)
+{
+    va_list ap;
+    char *s;
+    size_t n;
+
+    va_start (ap, fmt);
+    n = (size_t) vsnprintf (NULL, 0, fmt, ap);
+    va_end (ap);
+    if (n > max) n = max;
+
+    s = malloc (sizeof (char) * (n + 1));
+    if (s == NULL) return NULL;
+    va_start (ap, fmt);
+    vsnprintf (s, n + 1, fmt, ap);
+    va_end (ap);
+
+    return s;
+}
+
+#  endif /* __STDC_VERSION__ >= 199901L */
 
 # endif /* E_CONFIG_FREESTANDING */
 
