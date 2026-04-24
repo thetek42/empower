@@ -83,3 +83,11 @@ fancy code completion and errors.
 For clang-tidy, the script `tooling/clang-tidy.sh` can be run. If you want to
 contribute something, please run clang-tidy to ensure that you didn't mess up
 somewhere.
+
+## Adding new modules
+
+To add a new module, follow these steps:
+1. Add `-DE_<MODULE>_IMPL` to `.clangd` and `.clang-tidy`
+2. Create the module in `empower/e_<MODULE>.h`
+3. Create the tests in `tests/test_<MODULE>.c`
+4. Call the module’s test function in `tests/tests.c`
