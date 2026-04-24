@@ -22,17 +22,18 @@
  * can be used:
  *
  * ```
- * typedef e_da (int) int_list_t;
- * int_list_t first_list;
- * int_list_t second_list;
+ * typedef E_Da (int) Int_List;
+ * Int_List first_list;
+ * Int_List second_list;
  * ```
  *
  * On allocation failure, an error message is printed and the programme is aborted.
  *
  **************************************************************************************************/
 
-/* compatibility annoyances: */
 #include <stddef.h>
+
+/* compatibility annoyances: */
 #ifndef E_TYPEOF
 # if __STDC_VERSION__ >= 202311L
 #  define E_TYPEOF(x) typeof (x)
