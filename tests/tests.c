@@ -12,6 +12,7 @@ extern void test_compat (void);
 extern void test_cstr (void);
 extern void test_da (void);
 extern void test_debug (void);
+extern void test_endian (void);
 extern void test_ini (void);
 extern void test_log (void);
 extern void test_macro (void);
@@ -36,6 +37,7 @@ main (void)
     test_cstr ();
     test_da ();
     test_debug ();
+    test_endian ();
     test_ini ();
     test_log ();
     test_macro ();

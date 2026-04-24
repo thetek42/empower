@@ -3,10 +3,6 @@
 #include "e_test.h"
 
 #include <stdlib.h>
-#include <string.h>
-#if __STDC_VERSION__ >= 199901L
-# include <stdint.h>
-#endif
 
 void
 test_mem (void)
@@ -45,40 +41,4 @@ test_mem (void)
     copy = e_mem_strdup_n ("Hello, World!foobarbaz", 13);
     e_test_assert_str_eq ("e_mem_strdup_n cutoff", orig, copy);
     free (copy);
-
-#if __STDC_VERSION__ >= 199901L
-
-    unsigned char endian[] = {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0};
-
-    e_test_assert_eq ("e_mem_read_u16_be", uint16_t, e_mem_read_u16_be (endian), 0x1234);
-    e_test_assert_eq ("e_mem_read_u16_le", uint16_t, e_mem_read_u16_le (endian), 0x3412);
-    e_test_assert_eq ("e_mem_read_u32_be", uint32_t, e_mem_read_u32_be (endian), 0x12345678);
-    e_test_assert_eq ("e_mem_read_u32_le", uint32_t, e_mem_read_u32_le (endian), 0x78563412);
-    e_test_assert_eq ("e_mem_read_u64_be", uint64_t, e_mem_read_u64_be (endian),
-                      0x123456789ABCDEF0);
-    e_test_assert_eq ("e_mem_read_u64_le", uint64_t, e_mem_read_u64_le (endian),
-                      0xF0DEBC9A78563412);
-
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u16_be (endian, 0x1234);
-    e_test_assert_eq ("e_mem_write_u16_be", uint16_t, e_mem_read_u16_be (endian), 0x1234);
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u16_le (endian, 0x1234);
-    e_test_assert_eq ("e_mem_write_u16_le", uint16_t, e_mem_read_u16_le (endian), 0x1234);
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u32_be (endian, 0x12345678);
-    e_test_assert_eq ("e_mem_write_u32_be", uint32_t, e_mem_read_u32_be (endian), 0x12345678);
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u32_le (endian, 0x12345678);
-    e_test_assert_eq ("e_mem_write_u32_le", uint32_t, e_mem_read_u32_le (endian), 0x12345678);
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u64_be (endian, 0x123456789ABCDEF0);
-    e_test_assert_eq ("e_mem_write_u64_be", uint64_t, e_mem_read_u64_be (endian),
-                      0x123456789ABCDEF0);
-    memset (endian, 0, sizeof (endian));
-    e_mem_write_u64_le (endian, 0x123456789ABCDEF0);
-    e_test_assert_eq ("e_mem_write_u64_le", uint64_t, e_mem_read_u64_le (endian),
-                      0x123456789ABCDEF0);
-
-#endif /* __STDC_VERSION__ >= 199901L */
 }

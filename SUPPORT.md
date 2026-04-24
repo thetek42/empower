@@ -41,6 +41,7 @@ The following versions are used for testing:
 | e_cstr   | ✅ | ✅ | ✅ | ✅ |
 | e_da     | 🔶 | ✅ | ✅ | ✅ |
 | e_debug  | 🔶 | 🔶 | ✅ | ✅ |
+| e_endian | ❌ | ✅ | ✅ | ✅ |
 | e_ini    | ✅ | ✅ | ✅ | ✅ |
 | e_log    | ❌ | ✅ | ✅ | ✅ |
 | e_macro  | 🔶 | 🔶 | ✅ | ✅ |
@@ -66,6 +67,7 @@ The following versions are used for testing:
 | e_cstr   | ✅ | ✅ | ❌ |
 | e_da     | ✅ | ✅ | ❌ |
 | e_debug  | ✅ | ✅ | ❌ |
+| e_endian | ✅ | ✅ | ✅ |
 | e_ini    | ✅ | ✅ | ✅ |
 | e_log    | ✅ | ✅ | ❌ |
 | e_macro  | ✅ | ✅ | ✅ |

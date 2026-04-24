@@ -17,6 +17,7 @@ CompileFlags:
         - -DE_CSTR_IMPL
         - -DE_DA_IMPL
         - -DE_DEBUG_IMPL
+        - -DE_ENDIAN_IMPL
         - -DE_INI_IMPL
         - -DE_LOG_IMPL
         - -DE_MACRO_IMPL

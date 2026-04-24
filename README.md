@@ -7,29 +7,30 @@ applications faster and with more joy.
 
 Empower contains the following modules:
 
-| Category        | Module                               | Description                         |
-| --------------- | ------------------------------------ | ----------------------------------- |
-| Strings         | [**e_cstr**](./empower/e_cstr.h)     | String utility functions            |
-|                 | [**e_sb**](./empower/e_sb.h)         | String builder                      |
-|                 | [**e_sv**](./empower/e_sv.h)         | String view                         |
-| Data structures | [**e_da**](./empower/e_da.h)         | Generic dynamic arrays              |
-|                 | [**e_rbuf**](./empower/e_rbuf.h)     | Generic ringbuffer                  |
-|                 | [**e_bitvec**](./empower/e_bitvec.h) | Bit array                           |
-| Algorithms      | [**e_base64**](./empower/e_base64.h) | Base64 encoding/decoding            |
-|                 | [**e_bcd**](./empower/e_bcd.h)       | Binary-coded decimals               |
-|                 | [**e_cobs**](./empower/e_cobs.h)     | COBS encoding/decoding              |
-|                 | [**e_cobsr**](./empower/e_cobsr.h)   | COBS/R encoding/decoding            |
-| File formats    | [**e_ini**](./empower/e_ini.h)       | INI file parsing                    |
-| Allocation      | [**e_alloc**](./empower/e_alloc.h)   | Memory allocation                   |
-|                 | [**e_arena**](./empower/e_arena.h)   | Arena allocator                     |
-| Utilities       | [**e_debug**](./empower/e_debug.h)   | Debugging utilities                 |
-|                 | [**e_log**](./empower/e_log.h)       | Logging                             |
-|                 | [**e_macro**](./empower/e_macro.h)   | Macro helpers                       |
-|                 | [**e_mem**](./empower/e_mem.h)       | Memory manipulation                 |
-|                 | [**e_rand**](./empower/e_rand.h)     | Randomization                       |
-| Compatibility   | [**e_compat**](./empower/e_compat.h) | C standard / compiler compatibility |
-|                 | [**e_stdc**](./empower/e_stdc.h)     | Uniform feature test macros         |
-| Testing         | [**e_test**](./empower/e_test.h)     | Testing                             |
+| Category            | Module                               | Description                         |
+| ------------------- | ------------------------------------ | ----------------------------------- |
+| Strings             | [**e_cstr**](./empower/e_cstr.h)     | String utility functions            |
+|                     | [**e_sb**](./empower/e_sb.h)         | String builder                      |
+|                     | [**e_sv**](./empower/e_sv.h)         | String view                         |
+| Data structures     | [**e_da**](./empower/e_da.h)         | Generic dynamic arrays              |
+|                     | [**e_rbuf**](./empower/e_rbuf.h)     | Generic ringbuffer                  |
+|                     | [**e_bitvec**](./empower/e_bitvec.h) | Bit array                           |
+| Algorithms          | [**e_base64**](./empower/e_base64.h) | Base64 encoding/decoding            |
+|                     | [**e_bcd**](./empower/e_bcd.h)       | Binary-coded decimals               |
+|                     | [**e_cobs**](./empower/e_cobs.h)     | COBS encoding/decoding              |
+|                     | [**e_cobsr**](./empower/e_cobsr.h)   | COBS/R encoding/decoding            |
+| File formats        | [**e_ini**](./empower/e_ini.h)       | INI file parsing                    |
+| Allocation          | [**e_alloc**](./empower/e_alloc.h)   | Memory allocation                   |
+|                     | [**e_arena**](./empower/e_arena.h)   | Arena allocator                     |
+| Memory manipulation | [**e_mem**](./empower/e_mem.h)       | Memory manipulation                 |
+|                     | [**e_endian**](./empower/e_endian.h) | Endian conversion                   |
+| Utilities           | [**e_debug**](./empower/e_debug.h)   | Debugging utilities                 |
+|                     | [**e_log**](./empower/e_log.h)       | Logging                             |
+|                     | [**e_macro**](./empower/e_macro.h)   | Macro helpers                       |
+|                     | [**e_rand**](./empower/e_rand.h)     | Randomization                       |
+| Compatibility       | [**e_compat**](./empower/e_compat.h) | C standard / compiler compatibility |
+|                     | [**e_stdc**](./empower/e_stdc.h)     | Uniform feature test macros         |
+| Testing             | [**e_test**](./empower/e_test.h)     | Testing                             |
 
 ## Requirements
 
