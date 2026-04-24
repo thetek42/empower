@@ -3,6 +3,8 @@
 
 /***************************************************************************************************
  *
+ * Empower / e_cobsr.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides a free-standing implementation of COBS/R (Consistent Overhead Byte Stuffing
  * - Reduced). COBS/R is a variant of the COBS algorithm that reduces the single byte overhead that
  * comes with COBS. For more information about COBS and COBS/R, check out the following links:

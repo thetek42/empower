@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_cstr.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides various utility functions for dealing with C strings and serves as an
  * extension to the `string.h` header from the standard library.
  *

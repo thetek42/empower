@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_sb.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module implements string builders.
  *
  * String builders are dynamically allocated, resizable strings. The string is not null-terminated

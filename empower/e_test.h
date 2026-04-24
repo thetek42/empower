@@ -3,6 +3,8 @@
 
 /***************************************************************************************************
  *
+ * Empower / e_test.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides basic functionality for writing unit tests.
  *
  **************************************************************************************************/

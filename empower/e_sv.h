@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_sv.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module implements string views.
  *
  * String views are string slices that consist of a pointer to the string and

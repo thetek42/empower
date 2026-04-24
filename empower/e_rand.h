@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_rand.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides functions related to randomization. For random number generation, the
  * xoshiro256++ algorithm is used. When C11 or above is used, a thread-local PRNG is provided. Note
  * that all PRNGs in this module must be explicitly seeded by the user, otherwise they will always

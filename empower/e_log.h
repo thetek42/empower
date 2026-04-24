@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_log.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides functions and macros for logging. There are four levels for logging: debug,
  * info, warn and error. Log messages are printed to `stderr`. The same formatting syntax as
  * `fprintf` is used. In addition, this module provides the `e_die` macro, which can be used for

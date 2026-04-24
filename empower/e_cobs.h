@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_cobs.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides a free-standing implementation of COBS (Consistent Overhead Byte Stuffing).
  * COBS is a simple, efficient algorithm for packet framing that does not result in arbitrary byte
  * stuffing overhead. For more information about COBS, check out its Wikipedia article:

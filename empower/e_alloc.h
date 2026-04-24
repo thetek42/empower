@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_alloc.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides various macros and wrappers around the default C allocators. The allocation
  * of these wrappers never fails: if their underlying call to malloc fails, they will terminate the
  * programme and print an error message.

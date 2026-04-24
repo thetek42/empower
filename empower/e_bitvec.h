@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_bitvec.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides a freestanding implementation of a "bit vector", i.e. an array that allows
  * for convenient access to a large number of bits. It can be used as an efficient implementation of
  * arrays of booleans. The bit vectors provided by this implementation are not resizable, since that

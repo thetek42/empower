@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_da.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module implements dynamically allocated, resizable arrays for generic types.
  *
  * It can be used as follows:

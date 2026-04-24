@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_bcd.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * Packed binary-coded decimals conversion.
  *
  * The standard "8421" encoding is used (i.e. tetrade values of 0-9 are valid, 10-15 are invalid).

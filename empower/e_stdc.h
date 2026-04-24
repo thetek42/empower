@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_stdc.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides a simpler way of checking standard C versions as well as different compilers
  * and platforms.
  *

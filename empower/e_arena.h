@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_arena.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * Arena allocation.
  *
  * Example:

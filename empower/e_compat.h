@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_compat.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides macros for compatibility across C versions and compilers.
  *
  * It essentially aims to provide a unified interface for compiler-specific extensions and

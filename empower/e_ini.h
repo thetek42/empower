@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_ini.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * A simple callback-based INI parser.
  *
  * Configuration options:
@@ -11,8 +13,6 @@
  *  - `E_CONFIG_INI_MAX_VALUE_LEN` (default 256)
  *
  **************************************************************************************************/
-
-#include <stdio.h>
 
 typedef int (*E_Ini_Callback) (const char *cateogry,
                                const char *key,

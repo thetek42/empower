@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_mem.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides miscellaneous functions for operating on memory.
  *
  * It provides various macro wrappers for the functions that require you to provide the type of the

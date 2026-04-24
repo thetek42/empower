@@ -3,6 +3,8 @@
 
 /**************************************************************************************************
  *
+ * Empower / e_base64.h - Public Domain - https://git.tjdev.de/thetek/empower
+ *
  * This module provides a freestanding implementation for encoding and decoding base64 text. It uses
  * the characters [a-zA-Z0-9+/], which is the most wide-spread base64 character set.
  *
