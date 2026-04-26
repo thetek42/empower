@@ -22,6 +22,7 @@ CompileFlags:
         - -DE_LOG_IMPL
         - -DE_MACRO_IMPL
         - -DE_MEM_IMPL
+        - -DE_QUEUE_IMPL
         - -DE_RAND_IMPL
         - -DE_RBUF_IMPL
         - -DE_SB_IMPL

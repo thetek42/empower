@@ -46,6 +46,7 @@ The following versions are used for testing:
 | e_log    | ❌ | ✅ | ✅ | ✅ |
 | e_macro  | 🔶 | 🔶 | ✅ | ✅ |
 | e_mem    | 🔶 | ✅ | ✅ | ✅ |
+| e_queue  | ✅ | ✅ | ✅ | ✅ |
 | e_rand   | ❌ | 🔶 | ✅ | ✅ |
 | e_rbuf   | ✅ | ✅ | ✅ | ✅ |
 | e_sb     | 🔶 | ✅ | ✅ | ✅ |
@@ -72,6 +73,7 @@ The following versions are used for testing:
 | e_log    | ✅ | ✅ | ❌ |
 | e_macro  | ✅ | ✅ | ✅ |
 | e_mem    | ✅ | ✅ | 🔶 |
+| e_queue  | ✅ | ✅ | ❌ |
 | e_rand   | ✅ | ✅ | ✅ |
 | e_rbuf   | ✅ | ✅ | ✅ |
 | e_sb     | ✅ | ✅ | ❌ |

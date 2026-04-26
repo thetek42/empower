@@ -13,6 +13,7 @@ Empower contains the following modules:
 |                     | [**e_sb**](./empower/e_sb.h)         | String builder                      |
 |                     | [**e_sv**](./empower/e_sv.h)         | String view                         |
 | Data structures     | [**e_da**](./empower/e_da.h)         | Generic dynamic arrays              |
+|                     | [**e_queue**](./empower/e_queue.h)   | Generic double-ended queue          |
 |                     | [**e_rbuf**](./empower/e_rbuf.h)     | Generic ringbuffer                  |
 |                     | [**e_bitvec**](./empower/e_bitvec.h) | Bit array                           |
 | Algorithms          | [**e_base64**](./empower/e_base64.h) | Base64 encoding/decoding            |

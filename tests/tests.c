@@ -17,6 +17,7 @@ extern void test_ini (void);
 extern void test_log (void);
 extern void test_macro (void);
 extern void test_mem (void);
+extern void test_queue (void);
 extern void test_rand (void);
 extern void test_rbuf (void);
 extern void test_sb (void);
@@ -42,6 +43,7 @@ main (void)
     test_log ();
     test_macro ();
     test_mem ();
+    test_queue ();
     test_rand ();
     test_rbuf ();
     test_sb ();
