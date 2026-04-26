@@ -9,7 +9,7 @@ void
 test_rbuf (void)
 {
     static int buffer[4]; /* static for C89 compliance */
-    int out;
+    int out = 0;
 
     /* e_rbuf_init */
     E_Rbuf (int) rbuf = e_rbuf_init (buffer, E_COUNTOF (buffer));

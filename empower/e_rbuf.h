@@ -136,7 +136,8 @@
  * If the `out` parameter is `NULL`, nothing will be written to it, but the item will still be
  * popped and `true` or `false` will be returned.
  */
-#define e_rbuf_pop(rbuf, out) e_rbuf__pop (&(rbuf)->data, (out), sizeof (*(rbuf)->type))
+#define e_rbuf_pop(rbuf, out)                                                                      \
+    e_rbuf__pop (&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof (*(rbuf)->type))
 
 /**
  * Try to pop an item from the front of the ringbuffer `rbuf`.
@@ -148,7 +149,8 @@
  * If the `out` parameter is `NULL`, nothing will be written to it, but the item will still be
  * popped and `true` or `false` will be returned.
  */
-#define e_rbuf_pop_front(rbuf, out) e_rbuf__pop_front (&(rbuf)->data, (out), sizeof (*(rbuf)->type))
+#define e_rbuf_pop_front(rbuf, out)                                                                \
+    e_rbuf__pop_front (&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof (*(rbuf)->type))
 
 typedef struct {
     void *ptr;
