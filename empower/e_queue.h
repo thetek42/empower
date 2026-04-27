@@ -91,6 +91,12 @@
     } while (0)
 
 /**
+ * Add an item to the front of the queue (but the item is passed as a pointer).
+ */
+#define e_queue_push_ref(queue, item_ptr)                                                          \
+    e_queue__push (&(queue)->data, (1 ? (item_ptr) : (queue)->type), sizeof (*(queue)->type))
+
+/**
  * Add an item to the back of the queue.
  */
 #define e_queue_push_back(queue, item)                                                             \
@@ -98,6 +104,12 @@
         E_TYPEOF (*(queue)->type) e_queue__item = (item);                                          \
         e_queue__push_back (&(queue)->data, &e_queue__item, sizeof (*(queue)->type));              \
     } while (0)
+
+/**
+ * Add an item to the back of the queue (but the item is passed as a pointer).
+ */
+#define e_queue_push_back_ref(queue, item_ptr)                                                     \
+    e_queue__push_back (&(queue)->data, (1 ? (item_ptr) : (queue)->type), sizeof (*(queue)->type))
 
 /**
  * Try to pop an item from the back of the queue `rbuf`.
