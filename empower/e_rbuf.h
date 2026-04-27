@@ -117,6 +117,13 @@
     } while (0)
 
 /**
+ * Add an item to the front of the ringbuffer (but the item is a pointer). If the ringbuffer is
+ * full, the tail of the ringbuffer will be overwritten.
+ */
+#define e_rbuf_push_ref(rbuf, item_ptr)                                                            \
+    e_rbuf__push (&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof (*(rbuf)->type))
+
+/**
  * Add an item to the back of the ringbuffer. If the ringbuffer is full, the head of the
  * ringbuffer will be overwritten.
  */
@@ -125,6 +132,13 @@
         E_TYPEOF (*(rbuf)->type) e_rbuf__item = (item);                                            \
         e_rbuf__push_back (&(rbuf)->data, &e_rbuf__item, sizeof (*(rbuf)->type));                  \
     } while (0)
+
+/**
+ * Add an item to the back of the ringbuffer (but the item is a pointer). If the ringbuffer is full,
+ * the head of the ringbuffer will be overwritten.
+ */
+#define e_rbuf_push_back_ref(rbuf, item_ptr)                                                       \
+    e_rbuf__push_back (&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof (*(rbuf)->type))
 
 /**
  * Try to pop an item from the back of the ringbuffer `rbuf`.
