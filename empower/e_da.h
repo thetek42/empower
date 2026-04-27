@@ -100,10 +100,26 @@
     } while (0)
 
 /**
+ * Make room for an additional item in the dynamic array, but don’t initialize that item. The
+ * pointer to the new item is returned, so that you can fill it as you please. The length of
+ * the dynamic array is adjusted, so not filling in the new memory will cause UB.
+ */
+#define e_da_push_uninit(da)                                                                       \
+    ((E_TYPEOF ((da)->type)) e_da__extend_uninit (&(da)->data, 1, sizeof (*(da)->type)))
+
+/**
  * Extend the dynamic array by multiple items.
  */
 #define e_da_extend(da, items, count)                                                              \
     e_da__extend (&(da)->data, (1 ? (items) : (da)->type), (count), sizeof (*(da)->type))
+
+/**
+ * Make room for `count` additional items in the dynamic array, but don’t initialize that item. The
+ * pointer to the first new item is returned, so that you can fill it as you please. The length of
+ * the dynamic array is adjusted, so not filling in the new memory will cause UB.
+ */
+#define e_da_extend_uninit(da, count)                                                              \
+    ((E_TYPEOF ((da)->type)) e_da__extend_uninit (&(da)->data, (count), sizeof (*(da)->type)))
 
 /**
  * Remove a certain number of items from the end of the dynamic array.
@@ -138,6 +154,7 @@ typedef struct {
 void e_da__deinit (E_Da_Data *da);
 void e_da__reserve (E_Da_Data *da, size_t cap, size_t item_size);
 void e_da__extend (E_Da_Data *da, void *data, size_t count, size_t item_size);
+void *e_da__extend_uninit (E_Da_Data *da, size_t count, size_t item_size);
 void e_da__pop (E_Da_Data *da, size_t count);
 
 /**************************************************************************************************/
@@ -180,6 +197,17 @@ e_da__extend (E_Da_Data *da, void *data, size_t count, size_t item_size)
     ptr = da->ptr;
     memcpy (&ptr[da->len * item_size], data, count * item_size);
     da->len += count;
+}
+
+void *
+e_da__extend_uninit (E_Da_Data *da, size_t count, size_t item_size)
+{
+    unsigned char *ptr;
+    e_da__reserve (da, da->len + count, item_size);
+    ptr = da->ptr;
+    ptr = &ptr[item_size * da->len];
+    da->len += count;
+    return ptr;
 }
 
 void
