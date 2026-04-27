@@ -100,6 +100,11 @@
     } while (0)
 
 /**
+ * Append a single item to the end of a dynamic array (but the item is a pointer).
+ */
+#define e_da_push_ref(da, item_ref) e_da_extend ((da), (1 ? (item_ref) : (da)->type), 1)
+
+/**
  * Make room for an additional item in the dynamic array, but don’t initialize that item. The
  * pointer to the new item is returned, so that you can fill it as you please. The length of
  * the dynamic array is adjusted, so not filling in the new memory will cause UB.
