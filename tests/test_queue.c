@@ -2,6 +2,7 @@
 #include "e_queue.h"
 #include "e_test.h"
 
+#include <assert.h>
 #include <stdlib.h>
 
 void
@@ -13,6 +14,7 @@ test_queue (void)
     /* HACK: manually allocate just 2 elements so that we can test */
     queue.data.ptr = malloc (2 * sizeof (int));
     queue.data.cap = 2;
+    assert (queue.data.ptr != NULL);
 
     e_queue_push (&queue, 10);
     e_queue_push (&queue, 20);

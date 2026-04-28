@@ -24,9 +24,14 @@
 
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
 # ifndef E_AUTO_FMT
+#  ifdef _MSC_VER
+#   define E__AUTO_FMT_CHAR
+#  else
+#   define E__AUTO_FMT_CHAR char: "%c",
+#  endif
 #  define E_AUTO_FMT(value)                                                                        \
       _Generic ((value),                                                                           \
-          char: "%c",                                                                              \
+          E__AUTO_FMT_CHAR                                                                         \
           signed char: "%d",                                                                       \
           signed short: "%d",                                                                      \
           signed int: "%d",                                                                        \
