@@ -14,11 +14,11 @@
 #include <stdint.h>
 
 /**
- * A pointer to a function that evaulates whether the ASCII character `c` matches a certain
- * predicate. It returns 0 if `c` is accepted, and non-zero if it is rejected. The functions from
- * `<ctype.h>` have this type.
+ * A pointer to a function that evaulates whether the character `c` matches a certain predicate.
+ * It returns 0 if `c` is accepted, and non-zero if it is rejected. The functions from `e_char.h`
+ * have this type.
  */
-typedef int (*E_Char_Predicate) (int c);
+typedef int (*E_Char_Predicate) (char c);
 
 size_t e_cstr_count_char (const char *s, char c);
 size_t e_cstr_count_char_not (const char *s, char c);
@@ -63,13 +63,11 @@ int e_cstr_starts_with (const char *s, const char *expect);
 int e_cstr_ends_with (const char *s, const char *expect);
 int e_cstr_continues_with (const char *s, const char *expect, size_t pos);
 size_t e_cstr_distance (const char *a, const char *b);
-int e_char_is_ascii (int c);
 
 /**************************************************************************************************/
 
 #ifdef E_CSTR_IMPL
 
-# include <ctype.h>
 # include <limits.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -248,7 +246,11 @@ e_cstr_len (const char *s)
 int
 e_cstr_is_ascii (const char *s)
 {
-    return e_cstr_matches_predicate (s, e_char_is_ascii);
+    while (*s) {
+        if (!(0 <= *s && *s <= 127)) return 0;
+        s++;
+    }
+    return 1;
 }
 
 /**
@@ -258,7 +260,12 @@ e_cstr_is_ascii (const char *s)
 int
 e_cstr_is_blank (const char *s)
 {
-    return e_cstr_matches_predicate (s, isspace);
+    while (*s) {
+        if (*s != ' ' && *s != '\f' && *s != '\n' && *s != '\r' && *s != '\t' && *s != '\v')
+            return 0;
+        s++;
+    }
+    return 1;
 }
 
 /**
@@ -284,7 +291,7 @@ e_cstr_to_ascii_lower (char *s)
     char *p;
     p = s;
     while (*p) {
-        *p = (char) tolower (*p);
+        if ('A' <= *p && *p <= 'Z') *p += 32;
         p += 1;
     }
     return s;
@@ -300,7 +307,7 @@ e_cstr_to_ascii_upper (char *s)
     char *p;
     p = s;
     while (*p) {
-        *p = (char) toupper (*p);
+        if ('a' <= *p && *p <= 'z') *p -= 32;
         p += 1;
     }
     return s;
@@ -315,7 +322,7 @@ char *
 e_cstr_to_ascii_lower_buf (const char *src, char *dest)
 {
     while (*src) {
-        *dest = isupper (*src) ? *src + 32 : *src;
+        *dest = (char) (('A' <= *src && *src <= 'Z') ? (*src + 32) : *src);
         src++;
         dest++;
     }
@@ -332,7 +339,7 @@ char *
 e_cstr_to_ascii_upper_buf (const char *src, char *dest)
 {
     while (*src) {
-        *dest = islower (*src) ? *src - 32 : *src;
+        *dest = (char) (('a' <= *src && *src <= 'z') ? (*src + 32) : *src);
         src++;
         dest++;
     }
@@ -601,7 +608,7 @@ e_cstr_eq_n (const char *a, const char *b, size_t n)
 const char *
 e_cstr_trim_start (const char *s)
 {
-    while (isspace (*s))
+    while (*s == ' ' || *s == '\f' || *s == '\n' || *s == '\r' || *s == '\t' || *s == '\v')
         s += 1;
     return s;
 }
@@ -623,8 +630,12 @@ e_cstr_trim_end (const char *s)
 size_t
 e_cstr_trim_end_with_len (const char *s, size_t len)
 {
-    while (len > 0 && isspace (s[len - 1])) /* NOLINT */
+    char c;
+    while (len > 0) {
+        c = s[len - 1]; /* NOLINT */
+        if (c != ' ' && c != '\f' && c != '\n' && c != '\r' && c != '\t' && c != '\v') break;
         len -= 1;
+    }
     return len;
 }
 
@@ -737,15 +748,6 @@ e_cstr_distance (const char *a, const char *b)
 }
 
 # undef E_CSTR__MIN3
-
-/**
- * Check whether a character \c is ASCII or not. This is the same as `isascii` from POSIX.
- */
-int
-e_char_is_ascii (int c)
-{
-    return 0 <= c && c <= 127;
-}
 
 #endif /* E_CSTR_IMPL */
 

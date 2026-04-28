@@ -1,8 +1,8 @@
 #define E_CSTR_IMPL
+#include "e_char.h"
 #include "e_cstr.h"
 #include "e_test.h"
 
-#include <ctype.h>
 #include <stddef.h>
 
 /* clang-format off */
@@ -36,15 +36,15 @@ test_cstr_count (void)
     e_test_assert_eq ("e_cstr_count_char_not_pat all", size_t, e_cstr_count_char_not_pat ("xxyyzz", "xyz"), 0);
     e_test_assert_eq ("e_cstr_count_char_not_pat empty pattern", size_t, e_cstr_count_char_not_pat ("Hello, World!", ""), 13);
 
-    e_test_assert_eq ("e_cstr_count_char_func", size_t, e_cstr_count_char_func ("Hello, World!", islower), 8);
-    e_test_assert_eq ("e_cstr_count_char_func none", size_t, e_cstr_count_char_func ("HELLO, WORLD!", islower), 0);
-    e_test_assert_eq ("e_cstr_count_char_func empty", size_t, e_cstr_count_char_func ("", islower), 0);
-    e_test_assert_eq ("e_cstr_count_char_func all", size_t, e_cstr_count_char_func ("helloworld", islower), 10);
+    e_test_assert_eq ("e_cstr_count_char_func", size_t, e_cstr_count_char_func ("Hello, World!", e_char_islower), 8);
+    e_test_assert_eq ("e_cstr_count_char_func none", size_t, e_cstr_count_char_func ("HELLO, WORLD!", e_char_islower), 0);
+    e_test_assert_eq ("e_cstr_count_char_func empty", size_t, e_cstr_count_char_func ("", e_char_islower), 0);
+    e_test_assert_eq ("e_cstr_count_char_func all", size_t, e_cstr_count_char_func ("helloworld", e_char_islower), 10);
 
-    e_test_assert_eq ("e_cstr_count_char_not_func", size_t, e_cstr_count_char_not_func ("Hello, World!", islower), 5);
-    e_test_assert_eq ("e_cstr_count_char_not_func none", size_t, e_cstr_count_char_not_func ("helloworld", islower), 0);
-    e_test_assert_eq ("e_cstr_count_char_not_func empty", size_t, e_cstr_count_char_not_func ("", islower), 0);
-    e_test_assert_eq ("e_cstr_count_char_not_func all", size_t, e_cstr_count_char_not_func ("HELLO, WORLD!", islower), 13);
+    e_test_assert_eq ("e_cstr_count_char_not_func", size_t, e_cstr_count_char_not_func ("Hello, World!", e_char_islower), 5);
+    e_test_assert_eq ("e_cstr_count_char_not_func none", size_t, e_cstr_count_char_not_func ("helloworld", e_char_islower), 0);
+    e_test_assert_eq ("e_cstr_count_char_not_func empty", size_t, e_cstr_count_char_not_func ("", e_char_islower), 0);
+    e_test_assert_eq ("e_cstr_count_char_not_func all", size_t, e_cstr_count_char_not_func ("HELLO, WORLD!", e_char_islower), 13);
 
     e_test_assert_eq ("e_cstr_count_str", size_t, e_cstr_count_str ("fooXXbarXXXXbazXX", "XX"), 4);
     e_test_assert_eq ("e_cstr_count_str none", size_t, e_cstr_count_str ("Hello, World!", "XX"), 0);
@@ -114,9 +114,9 @@ test_cstr_matches (void)
     e_test_assert ("e_cstr_is_ascii ascii", e_cstr_is_ascii ("Groesse"));
     e_test_assert ("e_cstr_is_ascii empty", e_cstr_is_ascii (""));
 
-    e_test_assert ("e_cstr_matches_predicate false", !e_cstr_matches_predicate ("1337", islower));
-    e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate ("1337", isdigit));
-    e_test_assert ("e_cstr_matches_predicate empty", e_cstr_matches_predicate ("", isdigit));
+    e_test_assert ("e_cstr_matches_predicate false", !e_cstr_matches_predicate ("1337", e_char_islower));
+    e_test_assert ("e_cstr_matches_predicate true", e_cstr_matches_predicate ("1337", e_char_isdigit));
+    e_test_assert ("e_cstr_matches_predicate empty", e_cstr_matches_predicate ("", e_char_isdigit));
 }
 
 static void
@@ -149,13 +149,13 @@ test_cstr_find (void)
     e_test_assert_null ("e_cstr_find_char_not_pat empty", e_cstr_find_char_not_pat (empty, "HWelo, "));
     e_test_assert_ptr_eq ("e_cstr_find_char_not_pat empty pattern", e_cstr_find_char_not_pat (hello, ""), hello);
 
-    e_test_assert_ptr_eq ("e_cstr_find_char_func existant", e_cstr_find_char_func (foo, isalpha), foo + 2);
-    e_test_assert_null ("e_cstr_find_char_func nonexistant", e_cstr_find_char_func (foo, isdigit));
-    e_test_assert_null ("e_cstr_find_char_func empty", e_cstr_find_char_func (empty, isdigit));
+    e_test_assert_ptr_eq ("e_cstr_find_char_func existant", e_cstr_find_char_func (foo, e_char_isalpha), foo + 2);
+    e_test_assert_null ("e_cstr_find_char_func nonexistant", e_cstr_find_char_func (foo, e_char_isdigit));
+    e_test_assert_null ("e_cstr_find_char_func empty", e_cstr_find_char_func (empty, e_char_isdigit));
 
-    e_test_assert_ptr_eq ("e_cstr_find_char_not_func existant", e_cstr_find_char_not_func (foo, isspace), foo + 2);
-    e_test_assert_null ("e_cstr_find_char_not_func nonexistant", e_cstr_find_char_not_func (nums, isdigit));
-    e_test_assert_null ("e_cstr_find_char_not_func empty", e_cstr_find_char_not_func (empty, isdigit));
+    e_test_assert_ptr_eq ("e_cstr_find_char_not_func existant", e_cstr_find_char_not_func (foo, e_char_isspace), foo + 2);
+    e_test_assert_null ("e_cstr_find_char_not_func nonexistant", e_cstr_find_char_not_func (nums, e_char_isdigit));
+    e_test_assert_null ("e_cstr_find_char_not_func empty", e_cstr_find_char_not_func (empty, e_char_isdigit));
 
     e_test_assert_ptr_eq ("e_cstr_find_str existant", e_cstr_find_str (sentence, "en"), sentence + 3);
     e_test_assert_null ("e_cstr_find_str nonexistant", e_cstr_find_str (foo, "es"));
@@ -182,13 +182,13 @@ test_cstr_find (void)
     e_test_assert_null ("e_cstr_rfind_char_not_pat empty", e_cstr_rfind_char_not_pat (empty, "1234567890"));
     e_test_assert_ptr_eq ("e_cstr_rfind_char_not_pat empty pattern", e_cstr_rfind_char_not_pat (hello, ""), hello + 12);
 
-    e_test_assert_ptr_eq ("e_cstr_rfind_char_func existant", e_cstr_rfind_char_func (foo, isalpha), foo + 4);
-    e_test_assert_null ("e_cstr_rfind_char_func nonexistant", e_cstr_rfind_char_func (foo, isdigit));
-    e_test_assert_null ("e_cstr_rfind_char_func empty", e_cstr_rfind_char_func (empty, isdigit));
+    e_test_assert_ptr_eq ("e_cstr_rfind_char_func existant", e_cstr_rfind_char_func (foo, e_char_isalpha), foo + 4);
+    e_test_assert_null ("e_cstr_rfind_char_func nonexistant", e_cstr_rfind_char_func (foo, e_char_isdigit));
+    e_test_assert_null ("e_cstr_rfind_char_func empty", e_cstr_rfind_char_func (empty, e_char_isdigit));
 
-    e_test_assert_ptr_eq ("e_cstr_rfind_char_not_func existant", e_cstr_rfind_char_not_func (foo, isspace), foo + 4);
-    e_test_assert_null ("e_cstr_rfind_char_not_func nonexistant", e_cstr_rfind_char_not_func (nums, isdigit));
-    e_test_assert_null ("e_cstr_rfind_char_not_func empty", e_cstr_rfind_char_not_func (empty, isdigit));
+    e_test_assert_ptr_eq ("e_cstr_rfind_char_not_func existant", e_cstr_rfind_char_not_func (foo, e_char_isspace), foo + 4);
+    e_test_assert_null ("e_cstr_rfind_char_not_func nonexistant", e_cstr_rfind_char_not_func (nums, e_char_isdigit));
+    e_test_assert_null ("e_cstr_rfind_char_not_func empty", e_cstr_rfind_char_not_func (empty, e_char_isdigit));
 
     e_test_assert_ptr_eq ("e_cstr_rfind_str existant", e_cstr_rfind_str (sentence, "en"), sentence + 24);
     e_test_assert_null ("e_cstr_rfind_str nonexistant", e_cstr_rfind_str (foo, "es"));
