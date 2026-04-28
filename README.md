@@ -12,6 +12,7 @@ Empower contains the following modules:
 | Strings             | [**e_cstr**](./empower/e_cstr.h)     | String utility functions            |
 |                     | [**e_sb**](./empower/e_sb.h)         | String builder                      |
 |                     | [**e_sv**](./empower/e_sv.h)         | String view                         |
+|                     | [**e_char**](./empower/e_char.h)     | A ctype.h that doesn’t suck         |
 | Data structures     | [**e_da**](./empower/e_da.h)         | Generic dynamic arrays              |
 |                     | [**e_queue**](./empower/e_queue.h)   | Generic double-ended queue          |
 |                     | [**e_rbuf**](./empower/e_rbuf.h)     | Generic ringbuffer                  |

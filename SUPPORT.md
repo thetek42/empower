@@ -35,6 +35,7 @@ The following versions are used for testing:
 | e_base64 | ✅ | ✅ | ✅ | ✅ |
 | e_bcd    | ❌ | ✅ | ✅ | ✅ |
 | e_bitvec | ✅ | ✅ | ✅ | ✅ |
+| e_char   | ✅ | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ | ✅ |
 | e_compat | ✅ | ✅ | ✅ | ✅ |
@@ -62,6 +63,7 @@ The following versions are used for testing:
 | e_base64 | ✅ | ✅ | ✅ |
 | e_bcd    | ✅ | ✅ | ✅ |
 | e_bitvec | ✅ | ✅ | ✅ |
+| e_char   | ✅ | ✅ | ✅ |
 | e_cobs   | ✅ | ✅ | ✅ |
 | e_cobsr  | ✅ | ✅ | ✅ |
 | e_compat | ✅ | ✅ | ✅ |

@@ -6,6 +6,7 @@ extern void test_arena (void);
 extern void test_base64 (void);
 extern void test_bcd (void);
 extern void test_bitvec (void);
+extern void test_char (void);
 extern void test_cobs (void);
 extern void test_cobsr (void);
 extern void test_compat (void);
@@ -32,6 +33,7 @@ main (void)
     test_base64 ();
     test_bcd ();
     test_bitvec ();
+    test_char ();
     test_cobs ();
     test_cobsr ();
     test_compat ();

@@ -11,6 +11,7 @@ CompileFlags:
         - -DE_BASE64_IMPL
         - -DE_BCD_IMPL
         - -DE_BITVEC_IMPL
+        - -DE_CHAR_IMPL
         - -DE_COBS_IMPL
         - -DE_COBSR_IMPL
         - -DE_COMPAT_IMPL
