@@ -49,25 +49,25 @@ typedef struct {
  */
 #define E_SB_ARG(sb) (int) (sb).len, (sb).ptr
 
-E_Sb e_sb_init (void);
-void e_sb_deinit (E_Sb *sb);
-void e_sb_append_char (E_Sb *sb, char c);
-void e_sb_append_buf (E_Sb *sb, const char *ptr, size_t len);
-void e_sb_append (E_Sb *sb, const char *cstr);
-void e_sb_append_null (E_Sb *sb);
+E_Sb e_sb_init(void);
+void e_sb_deinit(E_Sb *sb);
+void e_sb_append_char(E_Sb *sb, char c);
+void e_sb_append_buf(E_Sb *sb, const char *ptr, size_t len);
+void e_sb_append(E_Sb *sb, const char *cstr);
+void e_sb_append_null(E_Sb *sb);
 
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 # if defined(__GNUC__) || defined(__clang__) || defined(__TINYC__)
-size_t e_sb_append_fmt (E_Sb *sb, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+size_t e_sb_append_fmt(E_Sb *sb, const char *fmt, ...) __attribute__((format(printf, 2, 3)));
 # else  /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
-size_t e_sb_append_fmt (E_Sb *sb, const char *fmt, ...);
+size_t e_sb_append_fmt(E_Sb *sb, const char *fmt, ...);
 # endif /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
 #endif  /* defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L */
 
 #ifdef E_CONFIG_SB_SV_COMPAT
 # include "e_sv.h"
-E_Sv e_sb_to_sv (const E_Sb *sb);
-void e_sb_append_sv (E_Sb *sb, E_Sv sv);
+E_Sv e_sb_to_sv(const E_Sb *sb);
+void e_sb_append_sv(E_Sb *sb, E_Sv sv);
 #endif /* E_CONFIG_SB_SV_COMPAT */
 
 /**************************************************************************************************/
@@ -81,16 +81,14 @@ void e_sb_append_sv (E_Sb *sb, E_Sv sv);
 
 # define E_SB__INIT_CAP 128
 
-void e_sb__reserve (E_Sb *sb, size_t cap);
+void e_sb__reserve(E_Sb *sb, size_t cap);
 
 /**
  * Initialise a new string builder.
  *
  * No memory is allocated yet.
  */
-E_Sb
-e_sb_init (void)
-{
+E_Sb e_sb_init(void) {
     E_Sb sb;
     sb.ptr = NULL;
     sb.len = 0;
@@ -101,19 +99,15 @@ e_sb_init (void)
 /**
  * Free the memory occupied by the string builder.
  */
-void
-e_sb_deinit (E_Sb *sb)
-{
-    free (sb->ptr);
+void e_sb_deinit(E_Sb *sb) {
+    free(sb->ptr);
 }
 
 /**
  * Append a single character to the string builder.
  */
-void
-e_sb_append_char (E_Sb *sb, char c)
-{
-    e_sb__reserve (sb, sb->len + 1);
+void e_sb_append_char(E_Sb *sb, char c) {
+    e_sb__reserve(sb, sb->len + 1);
     sb->ptr[sb->len] = c;
     sb->len += 1;
 }
@@ -121,11 +115,9 @@ e_sb_append_char (E_Sb *sb, char c)
 /**
  * Append multiple characters to the string builder.
  */
-void
-e_sb_append_buf (E_Sb *sb, const char *ptr, size_t len)
-{
-    e_sb__reserve (sb, sb->len + len);
-    memcpy (&sb->ptr[sb->len], ptr, len);
+void e_sb_append_buf(E_Sb *sb, const char *ptr, size_t len) {
+    e_sb__reserve(sb, sb->len + len);
+    memcpy(&sb->ptr[sb->len], ptr, len);
     sb->len += len;
 }
 
@@ -134,10 +126,8 @@ e_sb_append_buf (E_Sb *sb, const char *ptr, size_t len)
  *
  * The length of the string is determined using strlen().
  */
-void
-e_sb_append (E_Sb *sb, const char *cstr)
-{
-    e_sb_append_buf (sb, cstr, strlen (cstr));
+void e_sb_append(E_Sb *sb, const char *cstr) {
+    e_sb_append_buf(sb, cstr, strlen(cstr));
 }
 
 /**
@@ -151,10 +141,8 @@ e_sb_append (E_Sb *sb, const char *cstr)
  * If you append or remove things from the string builder in any way after
  * calling this function, you will no longer have a null-terminated string.
  */
-void
-e_sb_append_null (E_Sb *sb)
-{
-    e_sb__reserve (sb, sb->len + 1);
+void e_sb_append_null(E_Sb *sb) {
+    e_sb__reserve(sb, sb->len + 1);
     sb->ptr[sb->len] = 0;
 }
 
@@ -162,20 +150,18 @@ e_sb_append_null (E_Sb *sb)
 /**
  * Append a printf-style formatted string to a string builder.
  */
-size_t
-e_sb_append_fmt (E_Sb *sb, const char *fmt, ...)
-{
+size_t e_sb_append_fmt(E_Sb *sb, const char *fmt, ...) {
     va_list ap;
     size_t n;
 
-    va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
-    va_end (ap);
+    va_start(ap, fmt);
+    n = (size_t) vsnprintf(NULL, 0, fmt, ap); /* NOLINT */
+    va_end(ap);
 
-    e_sb__reserve (sb, sb->len + n + 1);
-    va_start (ap, fmt);
-    vsnprintf (&sb->ptr[sb->len], n + 1, fmt, ap); /* NOLINT */
-    va_end (ap);
+    e_sb__reserve(sb, sb->len + n + 1);
+    va_start(ap, fmt);
+    vsnprintf(&sb->ptr[sb->len], n + 1, fmt, ap); /* NOLINT */
+    va_end(ap);
     sb->len += n;
     return n;
 }
@@ -183,35 +169,29 @@ e_sb_append_fmt (E_Sb *sb, const char *fmt, ...)
 
 # ifdef E_CONFIG_SB_SV_COMPAT
 
-E_Sv
-e_sb_to_sv (const E_Sb *sb)
-{
+E_Sv e_sb_to_sv(const E_Sb *sb) {
     E_Sv sv;
     sv.ptr = sb->ptr;
     sv.len = sb->len;
     return sv;
 }
 
-void
-e_sb_append_sv (E_Sb *sb, E_Sv sv)
-{
-    e_sb_append_buf (sb, sv.ptr, sv.len);
+void e_sb_append_sv(E_Sb *sb, E_Sv sv) {
+    e_sb_append_buf(sb, sv.ptr, sv.len);
 }
 
 # endif /* E_CONFIG_SB_SV_COMPAT */
 
-void
-e_sb__reserve (E_Sb *sb, size_t cap)
-{
+void e_sb__reserve(E_Sb *sb, size_t cap) {
     char *ptr;
     if (cap <= sb->cap) return;
     if (sb->cap == 0) sb->cap = E_SB__INIT_CAP;
     while (sb->cap < cap)
         sb->cap *= 2;
-    ptr = realloc (sb->ptr, sb->cap * sizeof (char));
+    ptr = realloc(sb->ptr, sb->cap * sizeof(char));
     if (ptr == NULL) {
-        fprintf (stderr, "[e_sb] allocation failed\n");
-        abort ();
+        fprintf(stderr, "[e_sb] allocation failed\n");
+        abort();
     }
     sb->ptr = ptr;
 }

@@ -21,19 +21,15 @@ typedef enum {
     E_COBS_ERR_TRUNCATED_ENCODED_DATA = -3
 } E_Cobs_Result;
 
-E_Cobs_Result e_cobs_decode (const unsigned char *encoded_input,
-                             size_t encoded_len,
-                             unsigned char *output,
-                             size_t *output_len);
+E_Cobs_Result e_cobs_decode(const unsigned char *encoded_input, size_t encoded_len,
+                            unsigned char *output, size_t *output_len);
 
-size_t e_cobs_decode_output_size (size_t encoded_len);
+size_t e_cobs_decode_output_size(size_t encoded_len);
 
-E_Cobs_Result e_cobs_encode (const unsigned char *plain_input,
-                             size_t plain_len,
-                             unsigned char *output,
-                             size_t *output_len);
+E_Cobs_Result e_cobs_encode(const unsigned char *plain_input, size_t plain_len,
+                            unsigned char *output, size_t *output_len);
 
-size_t e_cobs_encode_output_size (size_t plain_len);
+size_t e_cobs_encode_output_size(size_t plain_len);
 
 /**************************************************************************************************/
 
@@ -49,12 +45,8 @@ size_t e_cobs_encode_output_size (size_t plain_len);
  *
  * On success, E_COBS_OK is returned. For invalid data or invalid parameters, an error is returned.
  */
-E_Cobs_Result
-e_cobs_decode (const unsigned char *encoded_input,
-               size_t encoded_len,
-               unsigned char *output,
-               size_t *output_len)
-{
+E_Cobs_Result e_cobs_decode(const unsigned char *encoded_input, size_t encoded_len,
+                            unsigned char *output, size_t *output_len) {
     size_t code_index, in_index, out_index;
     unsigned char code, in_byte;
 
@@ -95,9 +87,7 @@ e_cobs_decode (const unsigned char *encoded_input,
 /**
  * Determine the maximum number of bytes required for decoding a COBS-encoded string.
  */
-size_t
-e_cobs_decode_output_size (size_t encoded_len)
-{
+size_t e_cobs_decode_output_size(size_t encoded_len) {
     if (encoded_len == 0) return 0;
     return encoded_len - 1;
 }
@@ -112,12 +102,8 @@ e_cobs_decode_output_size (size_t encoded_len)
  *
  * On success, E_COBS_OK is returned. For invalid data or invalid parameters, an error is returned.
  */
-E_Cobs_Result
-e_cobs_encode (const unsigned char *plain_input,
-               size_t plain_len,
-               unsigned char *output,
-               size_t *output_len)
-{
+E_Cobs_Result e_cobs_encode(const unsigned char *plain_input, size_t plain_len,
+                            unsigned char *output, size_t *output_len) {
     size_t in_index, out_index, code_index;
     unsigned char in_char, out_char;
 
@@ -153,9 +139,7 @@ e_cobs_encode (const unsigned char *plain_input,
 /**
  * Determine the maximum number of bytes required for encoding a string with COBS.
  */
-size_t
-e_cobs_encode_output_size (size_t plain_len)
-{
+size_t e_cobs_encode_output_size(size_t plain_len) {
     if (plain_len == 0) return 1;
     return plain_len + ((plain_len + 253) / 254);
 }

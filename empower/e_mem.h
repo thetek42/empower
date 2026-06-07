@@ -10,11 +10,11 @@
  * It provides various macro wrappers for the functions that require you to provide the type of the
  * arguments. This give extra "type safety" so that you don't accidentally mess up. For exapmle,
  * instead of:
- *   memcpy (dest, src, sizeof (int) * 42);
- *   memset (ptr, 0, sizeof (struct foo) * 64);
+ *   memcpy(dest, src, sizeof (int) * 42);
+ *   memset(ptr, 0, sizeof (struct foo) * 64);
  * You can use:
- *   e_mem_copy (dest, src, int, 42);
- *   e_mem_zero (ptr, struct foo, 64);
+ *   e_mem_copy(dest, src, int, 42);
+ *   e_mem_zero(ptr, struct foo, 64);
  *
  * Configuration options:
  *   - E_CONFIG_FREESTANDING: Do not use functions from the standard library.
@@ -42,34 +42,34 @@
 #endif
 /* clang-format on */
 
-#define e_mem_copy(dest, src, T, n)      memcpy ((dest), (src), sizeof (T) * (n))
-#define e_mem_copy_size(dest, src, size) memcpy ((dest), (src), (size))
-#define e_mem_move(dest, src, T, n)      memmove ((dest), (src), sizeof (T) * (n))
-#define e_mem_move_size(dest, src, size) memmove ((dest), (src), (size))
-#define e_mem_zero(ptr, T, n)            memset ((ptr), 0, sizeof (T) * (n))
-#define e_mem_eq(a, b, T, n)             e_mem_eq_size ((a), (b), sizeof (T) * (n))
-#define e_mem_swap(a, b, T, n)           e_mem_swap_size ((a), (b), sizeof (T) * (n))
-#define e_mem_is_zero(ptr, T, n)         e_mem_is_zero_size ((ptr), sizeof (T) * (n))
-#define e_mem_clone(ptr, T, n)           e_mem_clone_size ((ptr), sizeof (T) * (n))
-#define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to ((ptr), E_ALIGNOF (T))
+#define e_mem_copy(dest, src, T, n)      memcpy((dest), (src), sizeof(T) * (n))
+#define e_mem_copy_size(dest, src, size) memcpy((dest), (src), (size))
+#define e_mem_move(dest, src, T, n)      memmove((dest), (src), sizeof(T) * (n))
+#define e_mem_move_size(dest, src, size) memmove((dest), (src), (size))
+#define e_mem_zero(ptr, T, n)            memset((ptr), 0, sizeof(T) * (n))
+#define e_mem_eq(a, b, T, n)             e_mem_eq_size((a), (b), sizeof(T) * (n))
+#define e_mem_swap(a, b, T, n)           e_mem_swap_size((a), (b), sizeof(T) * (n))
+#define e_mem_is_zero(ptr, T, n)         e_mem_is_zero_size((ptr), sizeof(T) * (n))
+#define e_mem_clone(ptr, T, n)           e_mem_clone_size((ptr), sizeof(T) * (n))
+#define e_mem_is_aligned_to_type(ptr, T) e_mem_is_aligned_to((ptr), E_ALIGNOF(T))
 
-int e_mem_eq_size (const void *a, const void *b, size_t n);
-int e_mem_is_zero_size (const void *ptr, size_t n);
-void e_mem_swap_size (void *a, void *b, size_t n);
-void e_mem_reverse_bytes (void *ptr, size_t n);
-int e_mem_is_aligned_to (const void *ptr, size_t align);
+int e_mem_eq_size(const void *a, const void *b, size_t n);
+int e_mem_is_zero_size(const void *ptr, size_t n);
+void e_mem_swap_size(void *a, void *b, size_t n);
+void e_mem_reverse_bytes(void *ptr, size_t n);
+int e_mem_is_aligned_to(const void *ptr, size_t align);
 
 #ifndef E_CONFIG_FREESTANDING
-char *e_mem_strdup (const char *s);
-char *e_mem_strdup_n (const char *s, size_t n);
-void *e_mem_clone_size (const void *ptr, size_t n);
+char *e_mem_strdup(const char *s);
+char *e_mem_strdup_n(const char *s, size_t n);
+void *e_mem_clone_size(const void *ptr, size_t n);
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #  if defined(__GNUC__) || defined(__clang__) || defined(__TINYC__)
-char *e_mem_asprintf (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
-char *e_mem_asnprintf (size_t max, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+char *e_mem_asprintf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
+char *e_mem_asnprintf(size_t max, const char *fmt, ...) __attribute__((format(printf, 2, 3)));
 #  else  /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
-char *e_mem_asprintf (const char *fmt, ...);
-char *e_mem_asnprintf (size_t max, const char *fmt, ...);
+char *e_mem_asprintf(const char *fmt, ...);
+char *e_mem_asnprintf(size_t max, const char *fmt, ...);
 #  endif /* defined(__GNUC__) || defined(__clang__) || defined (__TINYC__) */
 # endif  /* defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L */
 #endif   /* E_CONFIG_FREESTANDING */
@@ -89,9 +89,7 @@ char *e_mem_asnprintf (size_t max, const char *fmt, ...);
  * Check if the memory region pointed to by `ptr` with size of `n` bytes is
  * zeroed. A non-zero value is returned if the memory is zeroed or `n` is 0.
  */
-int
-e_mem_is_zero_size (const void *ptr, size_t n)
-{
+int e_mem_is_zero_size(const void *ptr, size_t n) {
     const unsigned char *p;
     size_t i;
 
@@ -113,9 +111,7 @@ e_mem_is_zero_size (const void *ptr, size_t n)
  * This function is essentially equivalent to `memcmp`, except that passing NULL
  * is allowed.
  */
-int
-e_mem_eq_size (const void *a, const void *b, size_t n)
-{
+int e_mem_eq_size(const void *a, const void *b, size_t n) {
     const unsigned char *ap = a;
     const unsigned char *bp = b;
     size_t i;
@@ -131,9 +127,7 @@ e_mem_eq_size (const void *a, const void *b, size_t n)
 /**
  * Swaps `n` bytes of memory from `a` and `b`.
  */
-void
-e_mem_swap_size (void *a, void *b, size_t n)
-{
+void e_mem_swap_size(void *a, void *b, size_t n) {
     unsigned char *ap, *bp, tmp;
     size_t i;
 
@@ -149,9 +143,7 @@ e_mem_swap_size (void *a, void *b, size_t n)
 /**
  * Reverse the bytes at the memory location `ptr`. `n` bytes will be reversed.
  */
-void
-e_mem_reverse_bytes (void *ptr, size_t n)
-{
+void e_mem_reverse_bytes(void *ptr, size_t n) {
     unsigned char *start, *end, tmp;
 
     if (n == 0) return;
@@ -168,9 +160,7 @@ e_mem_reverse_bytes (void *ptr, size_t n)
  * Checks if the pointer `ptr` is aligned to `align` bytes. If the pointer is
  * aligned, a non-zero value is returned.
  */
-int
-e_mem_is_aligned_to (const void *ptr, size_t align)
-{
+int e_mem_is_aligned_to(const void *ptr, size_t align) {
 # if __STDC_VERSION__ >= 199901L
     return ((uintptr_t) ptr % align) == 0;
 # else
@@ -184,17 +174,15 @@ e_mem_is_aligned_to (const void *ptr, size_t align)
  * Duplicate a string. This is equivalent to `strdup`. The allocated memory must be freed by the
  * user using `free()`. If the allocation fails, `NULL` is returned.
  */
-char *
-e_mem_strdup (const char *s)
-{
+char *e_mem_strdup(const char *s) {
     size_t len;
     char *res;
 
     if (!s) return NULL;
-    len = strlen (s);
-    res = malloc (sizeof (char) * (len + 1));
+    len = strlen(s);
+    res = malloc(sizeof(char) * (len + 1));
     if (res == NULL) return NULL;
-    strncpy (res, s, len);
+    strncpy(res, s, len);
     res[len] = 0;
 
     return res;
@@ -204,18 +192,16 @@ e_mem_strdup (const char *s)
  * Duplicate at most `n` bytes of a string. This is equivalent to `strndup`. The allocated memory
  * must be freed by the user using `free()`. If the allocation fails, `NULL` is returned.
  */
-char *
-e_mem_strdup_n (const char *s, size_t n)
-{
+char *e_mem_strdup_n(const char *s, size_t n) {
     size_t len;
     char *res;
 
     if (!s) return NULL;
-    len = strlen (s);
+    len = strlen(s);
     len = len < n ? len : n;
-    res = malloc (sizeof (char) * (len + 1));
+    res = malloc(sizeof(char) * (len + 1));
     if (res == NULL) return NULL;
-    strncpy (res, s, len);
+    strncpy(res, s, len);
     res[len] = 0;
 
     return res;
@@ -226,13 +212,11 @@ e_mem_strdup_n (const char *s, size_t n)
  * user using `free()`. Undefined behaviour occurs if `ptr` is NULL or `n` is 0. If the allocation
  * fails, `NULL` is returned.
  */
-void *
-e_mem_clone_size (const void *ptr, size_t n)
-{
+void *e_mem_clone_size(const void *ptr, size_t n) {
     void *ret;
-    ret = malloc (n);
+    ret = malloc(n);
     if (ret == NULL) return NULL;
-    memcpy (ret, ptr, n);
+    memcpy(ret, ptr, n);
     return ret;
 }
 
@@ -242,22 +226,20 @@ e_mem_clone_size (const void *ptr, size_t n)
  * Allocate a nul-terminated, printf-style formatted string. The memory must be freed using
  * `free()`. If the allocation fails, `NULL` is returned.
  */
-char *
-e_mem_asprintf (const char *fmt, ...)
-{
+char *e_mem_asprintf(const char *fmt, ...) {
     va_list ap;
     char *s;
     size_t n;
 
-    va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
-    va_end (ap);
+    va_start(ap, fmt);
+    n = (size_t) vsnprintf(NULL, 0, fmt, ap); /* NOLINT */
+    va_end(ap);
 
-    s = malloc (sizeof (char) * (n + 1));
+    s = malloc(sizeof(char) * (n + 1));
     if (s == NULL) return NULL;
-    va_start (ap, fmt);
-    vsnprintf (s, n + 1, fmt, ap); /* NOLINT */
-    va_end (ap);
+    va_start(ap, fmt);
+    vsnprintf(s, n + 1, fmt, ap); /* NOLINT */
+    va_end(ap);
 
     return s;
 }
@@ -268,23 +250,21 @@ e_mem_asprintf (const char *fmt, ...)
  * occurs if `max` is 0. The memory must be freed using `free()`. If the allocation fails, `NULL`
  * is returned.
  */
-char *
-e_mem_asnprintf (size_t max, const char *fmt, ...)
-{
+char *e_mem_asnprintf(size_t max, const char *fmt, ...) {
     va_list ap;
     char *s;
     size_t n;
 
-    va_start (ap, fmt);
-    n = (size_t) vsnprintf (NULL, 0, fmt, ap); /* NOLINT */
-    va_end (ap);
+    va_start(ap, fmt);
+    n = (size_t) vsnprintf(NULL, 0, fmt, ap); /* NOLINT */
+    va_end(ap);
     if (n > max) n = max;
 
-    s = malloc (sizeof (char) * (n + 1));
+    s = malloc(sizeof(char) * (n + 1));
     if (s == NULL) return NULL;
-    va_start (ap, fmt);
-    vsnprintf (s, n + 1, fmt, ap); /* NOLINT */
-    va_end (ap);
+    va_start(ap, fmt);
+    vsnprintf(s, n + 1, fmt, ap); /* NOLINT */
+    va_end(ap);
 
     return s;
 }

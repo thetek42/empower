@@ -4,9 +4,7 @@
 
 #include <string.h>
 
-void
-test_base64 (void)
-{
+void test_base64(void) {
     char *plain = "Many hands make light work";
     char *encoded = "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcms=";
     char *invalid = "3bf7Dj2u4%73b";
@@ -14,15 +12,15 @@ test_base64 (void)
     size_t len;
     int ok;
 
-    len = e_base64_encode ((unsigned char *) plain, strlen (plain), (unsigned char *) buf);
-    e_test_assert_eq ("e_base64_encode len", size_t, len, strlen (encoded));
-    e_test_assert_mem_eq ("e_base64_encode", buf, encoded, len);
+    len = e_base64_encode((unsigned char *) plain, strlen(plain), (unsigned char *) buf);
+    e_test_assert_eq("e_base64_encode len", size_t, len, strlen(encoded));
+    e_test_assert_mem_eq("e_base64_encode", buf, encoded, len);
 
-    ok = e_base64_decode ((unsigned char *) encoded, strlen (encoded), (unsigned char *) buf, &len);
-    e_test_assert ("e_base64_decode ret", ok);
-    e_test_assert_eq ("e_base64_decode len", size_t, len, strlen (plain));
-    e_test_assert_mem_eq ("e_base64_decode", buf, plain, len);
+    ok = e_base64_decode((unsigned char *) encoded, strlen(encoded), (unsigned char *) buf, &len);
+    e_test_assert("e_base64_decode ret", ok);
+    e_test_assert_eq("e_base64_decode len", size_t, len, strlen(plain));
+    e_test_assert_mem_eq("e_base64_decode", buf, plain, len);
 
-    ok = e_base64_decode ((unsigned char *) invalid, strlen (invalid), (unsigned char *) buf, &len);
-    e_test_assert ("e_base64_decode invalid", !ok);
+    ok = e_base64_decode((unsigned char *) invalid, strlen(invalid), (unsigned char *) buf, &len);
+    e_test_assert("e_base64_decode invalid", !ok);
 }

@@ -112,54 +112,48 @@ static const Test_Case cases[] = {
 };
 /* clang-format on */
 
-void
-test_cobs_decode (void)
-{
+void test_cobs_decode(void) {
     E_Cobs_Result result;
     unsigned char buf[300];
     size_t len = (size_t) -1;
     size_t i;
     char msg[64];
 
-    for (i = 0; i < sizeof (cases) / sizeof (*cases); i += 1) {
-        result = e_cobs_decode ((const unsigned char *) cases[i].enc, cases[i].enc_len, buf, &len);
-        sprintf (msg, "e_cobs_decode %d ret", (int) i);
-        e_test_assert_eq (msg, int, result, E_COBS_OK);
+    for (i = 0; i < sizeof(cases) / sizeof(*cases); i += 1) {
+        result = e_cobs_decode((const unsigned char *) cases[i].enc, cases[i].enc_len, buf, &len);
+        sprintf(msg, "e_cobs_decode %d ret", (int) i);
+        e_test_assert_eq(msg, int, result, E_COBS_OK);
         if (result == E_COBS_OK) {
-            sprintf (msg, "e_cobs_decode %d len", (int) i);
-            e_test_assert_eq (msg, size_t, len, cases[i].plain_len);
-            sprintf (msg, "e_cobs_decode %d ptr", (int) i);
-            e_test_assert_mem_eq (msg, buf, (const unsigned char *) cases[i].plain, len);
+            sprintf(msg, "e_cobs_decode %d len", (int) i);
+            e_test_assert_eq(msg, size_t, len, cases[i].plain_len);
+            sprintf(msg, "e_cobs_decode %d ptr", (int) i);
+            e_test_assert_mem_eq(msg, buf, (const unsigned char *) cases[i].plain, len);
         }
     }
 }
 
-void
-test_cobs_encode (void)
-{
+void test_cobs_encode(void) {
     E_Cobs_Result result;
     unsigned char buf[300];
     size_t len = (size_t) -1;
     size_t i;
     char msg[64];
 
-    for (i = 0; i < sizeof (cases) / sizeof (*cases); i += 1) {
+    for (i = 0; i < sizeof(cases) / sizeof(*cases); i += 1) {
         result =
-            e_cobs_encode ((const unsigned char *) cases[i].plain, cases[i].plain_len, buf, &len);
-        sprintf (msg, "e_cobs_encode %d ret", (int) i);
-        e_test_assert_eq (msg, int, result, E_COBS_OK);
+            e_cobs_encode((const unsigned char *) cases[i].plain, cases[i].plain_len, buf, &len);
+        sprintf(msg, "e_cobs_encode %d ret", (int) i);
+        e_test_assert_eq(msg, int, result, E_COBS_OK);
         if (result == E_COBS_OK) {
-            sprintf (msg, "e_cobs_encode %d len", (int) i);
-            e_test_assert_eq (msg, size_t, len, cases[i].enc_len);
-            sprintf (msg, "e_cobs_encode %d ptr", (int) i);
-            e_test_assert_mem_eq (msg, buf, (const unsigned char *) cases[i].enc, len);
+            sprintf(msg, "e_cobs_encode %d len", (int) i);
+            e_test_assert_eq(msg, size_t, len, cases[i].enc_len);
+            sprintf(msg, "e_cobs_encode %d ptr", (int) i);
+            e_test_assert_mem_eq(msg, buf, (const unsigned char *) cases[i].enc, len);
         }
     }
 }
 
-void
-test_cobs (void)
-{
-    test_cobs_decode ();
-    test_cobs_encode ();
+void test_cobs(void) {
+    test_cobs_decode();
+    test_cobs_encode();
 }

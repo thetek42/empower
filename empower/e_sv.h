@@ -52,16 +52,16 @@ typedef struct {
  * use `e_sv_from_cstr()` instead.
  */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-# define E_SV(cstr) ((E_Sv) {.ptr = (cstr), .len = sizeof (cstr) - 1})
+# define E_SV(cstr) ((E_Sv) {.ptr = (cstr), .len = sizeof(cstr) - 1})
 #endif
 
-E_Sv e_sv_from_parts (const char *ptr, size_t len);
-E_Sv e_sv_from_cstr (const char *cstr);
-int e_sv_eq (E_Sv a, E_Sv b);
-int e_sv_starts_with (E_Sv haystack, E_Sv needle);
-int e_sv_ends_with (E_Sv haystack, E_Sv needle);
-E_Sv e_sv_chop_left (E_Sv *sv, size_t n);
-E_Sv e_sv_chop_right (E_Sv *sv, size_t n);
+E_Sv e_sv_from_parts(const char *ptr, size_t len);
+E_Sv e_sv_from_cstr(const char *cstr);
+int e_sv_eq(E_Sv a, E_Sv b);
+int e_sv_starts_with(E_Sv haystack, E_Sv needle);
+int e_sv_ends_with(E_Sv haystack, E_Sv needle);
+E_Sv e_sv_chop_left(E_Sv *sv, size_t n);
+E_Sv e_sv_chop_right(E_Sv *sv, size_t n);
 
 /**************************************************************************************************/
 
@@ -72,9 +72,7 @@ E_Sv e_sv_chop_right (E_Sv *sv, size_t n);
 /**
  * Construct a string view from a pointer and an associated length. `ptr` may not be `NULL`.
  */
-E_Sv
-e_sv_from_parts (const char *ptr, size_t len)
-{
+E_Sv e_sv_from_parts(const char *ptr, size_t len) {
     E_Sv sv;
     sv.ptr = ptr;
     sv.len = len;
@@ -86,21 +84,17 @@ e_sv_from_parts (const char *ptr, size_t len)
  *
  * The length of the string is determined using `strlen()`. `cstr` may not be `NULL`.
  */
-E_Sv
-e_sv_from_cstr (const char *cstr)
-{
+E_Sv e_sv_from_cstr(const char *cstr) {
     size_t len = 0;
     while (cstr[len] != '\0')
         len += 1;
-    return e_sv_from_parts (cstr, len);
+    return e_sv_from_parts(cstr, len);
 }
 
 /**
  * Check if two string views are equal. If they are equal, non-zero is returned.
  */
-int
-e_sv_eq (E_Sv a, E_Sv b)
-{
+int e_sv_eq(E_Sv a, E_Sv b) {
     size_t i;
     if (a.len != b.len) return 0;
     for (i = 0; i < a.len; i++) {
@@ -115,27 +109,23 @@ e_sv_eq (E_Sv a, E_Sv b)
  * Check if a string view starts with a specific text. If `haystack` starts with `needle`,
  * non-zero is returned.
  */
-int
-e_sv_starts_with (E_Sv haystack, E_Sv needle)
-{
+int e_sv_starts_with(E_Sv haystack, E_Sv needle) {
     if (haystack.len < needle.len) return 0;
     haystack.len = needle.len;
-    return e_sv_eq (haystack, needle);
+    return e_sv_eq(haystack, needle);
 }
 
 /**
  * Check if a string view ends with a specific text. If `haystack` ends with `needle`,
  * non-zero is returned.
  */
-int
-e_sv_ends_with (E_Sv haystack, E_Sv needle)
-{
+int e_sv_ends_with(E_Sv haystack, E_Sv needle) {
     size_t diff;
     if (haystack.len < needle.len) return 0;
     diff = haystack.len - needle.len;
     haystack.ptr += diff;
     haystack.len = needle.len;
-    return e_sv_eq (haystack, needle);
+    return e_sv_eq(haystack, needle);
 }
 
 /**
@@ -144,12 +134,10 @@ e_sv_ends_with (E_Sv haystack, E_Sv needle)
  * This function modifies the passed string view and returns the part of the
  * string that was chopped off.
  */
-E_Sv
-e_sv_chop_left (E_Sv *sv, size_t n)
-{
+E_Sv e_sv_chop_left(E_Sv *sv, size_t n) {
     E_Sv res;
     if (n > sv->len) n = sv->len;
-    res = e_sv_from_parts (sv->ptr, n);
+    res = e_sv_from_parts(sv->ptr, n);
     sv->ptr += n;
     sv->len -= n;
     return res;
@@ -161,13 +149,11 @@ e_sv_chop_left (E_Sv *sv, size_t n)
  * This function modifies the passed string view and returns the part of the
  * string that was chopped off.
  */
-E_Sv
-e_sv_chop_right (E_Sv *sv, size_t n)
-{
+E_Sv e_sv_chop_right(E_Sv *sv, size_t n) {
     E_Sv res;
     if (n > sv->len) n = sv->len;
     sv->len -= n;
-    res = e_sv_from_parts (sv->ptr + sv->len, n);
+    res = e_sv_from_parts(sv->ptr + sv->len, n);
     return res;
 }
 

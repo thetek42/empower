@@ -14,12 +14,9 @@
  *
  **************************************************************************************************/
 
-typedef int (*E_Ini_Callback) (const char *cateogry,
-                               const char *key,
-                               const char *value,
-                               void *user);
+typedef int (*E_Ini_Callback)(const char *cateogry, const char *key, const char *value, void *user);
 
-int e_ini_parse (const char *str, E_Ini_Callback callback, void *user);
+int e_ini_parse(const char *str, E_Ini_Callback callback, void *user);
 
 /**************************************************************************************************/
 
@@ -37,10 +34,10 @@ int e_ini_parse (const char *str, E_Ini_Callback callback, void *user);
 #  define E_CONFIG_INI_MAX_VALUE_LEN 256
 # endif
 
-static int e_ini__category (const char **str, char *category);
-static int e_ini__key (const char **str, char *key);
-static int e_ini__value (const char **str, char *value);
-static void e_ini__skip_comment (const char **str);
+static int e_ini__category(const char **str, char *category);
+static int e_ini__key(const char **str, char *key);
+static int e_ini__value(const char **str, char *value);
+static void e_ini__skip_comment(const char **str);
 
 /**
  * Parse an INI file.
@@ -59,9 +56,7 @@ static void e_ini__skip_comment (const char **str);
  * because of an invalid syntax, non-zero is returned. The returned value is the line number at
  * which parsing failed, where the first line will be counted as 1.
  */
-int
-e_ini_parse (const char *str, E_Ini_Callback callback, void *user)
-{
+int e_ini_parse(const char *str, E_Ini_Callback callback, void *user) {
     char category[E_CONFIG_INI_MAX_CATEGORY_LEN];
     char key[E_CONFIG_INI_MAX_KEY_LEN];
     char value[E_CONFIG_INI_MAX_VALUE_LEN];
@@ -83,20 +78,20 @@ e_ini_parse (const char *str, E_Ini_Callback callback, void *user)
             break;
         case '[':
             str++;
-            ret = e_ini__category (&str, category);
+            ret = e_ini__category(&str, category);
             if (ret != 0) return lineno;
             category_arg = category;
             str++;
             break;
         case ';':
-            e_ini__skip_comment (&str);
+            e_ini__skip_comment(&str);
             break;
         default:
-            ret = e_ini__key (&str, key);
+            ret = e_ini__key(&str, key);
             if (ret != 0) return lineno;
-            ret = e_ini__value (&str, value);
+            ret = e_ini__value(&str, value);
             if (ret != 0) return lineno;
-            ret = callback (category_arg, key, value, user);
+            ret = callback(category_arg, key, value, user);
             if (ret != 0) return lineno;
             break;
         }
@@ -105,9 +100,7 @@ e_ini_parse (const char *str, E_Ini_Callback callback, void *user)
     return 0;
 }
 
-static int
-e_ini__category (const char **str, char *category)
-{
+static int e_ini__category(const char **str, char *category) {
     int i;
     char c;
     for (i = 0; i < E_CONFIG_INI_MAX_CATEGORY_LEN - 1; i++) {
@@ -129,9 +122,7 @@ e_ini__category (const char **str, char *category)
     return 1;
 }
 
-static int
-e_ini__key (const char **str, char *key)
-{
+static int e_ini__key(const char **str, char *key) {
     int i, last_non_space;
     char c;
     last_non_space = 0;
@@ -160,9 +151,7 @@ e_ini__key (const char **str, char *key)
     return 1;
 }
 
-static int
-e_ini__value (const char **str, char *value)
-{
+static int e_ini__value(const char **str, char *value) {
     int i, last_non_space;
     char c;
     last_non_space = 0;
@@ -193,9 +182,7 @@ e_ini__value (const char **str, char *value)
     return 1;
 }
 
-static void
-e_ini__skip_comment (const char **str)
-{
+static void e_ini__skip_comment(const char **str) {
     char c;
     while ((c = **str)) {
         if (c == '\n') return;

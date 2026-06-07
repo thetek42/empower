@@ -19,18 +19,18 @@
  *
  * ```
  * #define E_STRINGIFY__HELPER(x) #x
- * #define E_STRINGIFY(x) E_STRINGIFY__HELPER (x)
+ * #define E_STRINGIFY(x) E_STRINGIFY__HELPER(x)
  * #define foo 42
  *
- * E_STRINGIFY__HELPER (foo)
+ * E_STRINGIFY__HELPER(foo)
  *   => "foo"
- * E_STRINGIFY (foo)
+ * E_STRINGIFY(foo)
  *   => "42"
  * ```
  */
 #ifndef E_STRINGIFY
 # define E_STRINGIFY__HELPER(x) #x
-# define E_STRINGIFY(x)         E_STRINGIFY__HELPER (x)
+# define E_STRINGIFY(x)         E_STRINGIFY__HELPER(x)
 #endif
 
 /**
@@ -40,25 +40,25 @@
  */
 #ifndef E_MACRO_CONCAT
 # define E_CONCAT__HELPER(a, b) a##b
-# define E_CONCAT(a, b)         E_CONCAT__HELPER (a, b)
+# define E_CONCAT(a, b)         E_CONCAT__HELPER(a, b)
 #endif
 
 /**
  * Source file and line concatenated into a string like "main.c:42"
  */
 #ifndef E_SOURCE_LOCATION
-# define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY (__LINE__)
+# define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY(__LINE__)
 #endif
 
 /**
  * Obtain the parent of type `type` from the pointer `ptr` to its member called `member`.
  */
-#define E_CONTAINER_OF(ptr, type, member) ((type *) ((char *) (ptr) - offsetof (type, member)))
+#define E_CONTAINER_OF(ptr, type, member) ((type *) ((char *) (ptr) - offsetof(type, member)))
 
 /**
  * Obtain the number of items in an array. Does not work with pointers, only arrays.
  */
-#define E_COUNTOF(arr) (sizeof (arr) / sizeof ((arr)[0]))
+#define E_COUNTOF(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 /**
  * The `E_MACRO_DECL_STRINGIFY_ENUM` and `E_MACRO_IMPL_STRINGIFY_ENUM` can be used to create a quick
@@ -109,13 +109,12 @@
  case name:                                                                                        \
      return #name;
 # define E_MACRO_DECL_STRINGIFY_ENUM(ENUM_DEF, enum_type_name, stringify_function)                 \
-     enum enum_type_name { ENUM_DEF (E_MACRO__ENUM_VALUE) };                                       \
-     const char *stringify_function (enum enum_type_name value)
+     enum enum_type_name { ENUM_DEF(E_MACRO__ENUM_VALUE) };                                        \
+     const char *stringify_function(enum enum_type_name value)
 # define E_MACRO_IMPL_STRINGIFY_ENUM(ENUM_DEF, enum_type_name, stringify_function)                 \
-     const char *stringify_function (enum_type_name value)                                         \
-     {                                                                                             \
+     const char *stringify_function(enum_type_name value) {                                        \
          switch (value) {                                                                          \
-             ENUM_DEF (E_MACRO__ENUM_CASE)                                                         \
+             ENUM_DEF(E_MACRO__ENUM_CASE)                                                          \
          default:                                                                                  \
              return NULL;                                                                          \
          }                                                                                         \
@@ -131,12 +130,11 @@
 #  ifdef _MSC_VER
 #   define E__AUTO_FMT_CHAR
 #  else
-#   define E__AUTO_FMT_CHAR char: "%c",
+#   define E__AUTO_FMT_CHAR char : "%c",
 #  endif
 #  define E_AUTO_FMT(value)                                                                        \
-      _Generic ((value),                                                                           \
-          E__AUTO_FMT_CHAR                                                                         \
-          signed char: "%d",                                                                       \
+      _Generic((value),                                                                            \
+          E__AUTO_FMT_CHAR signed char: "%d",                                                      \
           signed short: "%d",                                                                      \
           signed int: "%d",                                                                        \
           signed long: "%ld",                                                                      \

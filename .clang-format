@@ -3,9 +3,14 @@ AlignConsecutiveMacros: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: WithoutElse
-BinPackParameters: OnePerLine
-BreakAfterReturnType: AllDefinitions
-BreakBeforeBraces: Linux
+BinPackArguments: true
+BinPackParameters: BinPack
+BreakAfterReturnType: None
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: MultiLine
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
 ColumnLimit: 100
 ForEachMacros: ["e_da_foreach"]
 IncludeBlocks: Regroup
@@ -16,5 +21,5 @@ PPIndentWidth: 1
 SeparateDefinitionBlocks: Always
 SortIncludes: true
 SpaceAfterCStyleCast: true
-SpaceBeforeParens: Always
+SpaceBeforeParens: ControlStatements
 UseTab: Never

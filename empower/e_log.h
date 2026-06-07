@@ -45,10 +45,10 @@
 #else /* E_CONFIG_LOG_NO_FILE_LINE */
 # ifndef E_STRINGIFY
 #  define E_STRINGIFY_HELPER_(x) #x
-#  define E_STRINGIFY(x)         E_STRINGIFY_HELPER_ (x)
+#  define E_STRINGIFY(x)         E_STRINGIFY_HELPER_(x)
 # endif
 # ifndef E_SOURCE_LOCATION
-#  define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY (__LINE__)
+#  define E_SOURCE_LOCATION __FILE__ ":" E_STRINGIFY(__LINE__)
 # endif
 # define E_LOG_FILE_LINE_ " " E_LOG_COLOUR_GREY_ "(" E_SOURCE_LOCATION ")" E_LOG_COLOUR_RESET_
 #endif /* E_CONFIG_LOG_NO_FILE_LINE */
@@ -57,28 +57,26 @@
 # define e_log_debug(...)
 #else /* NDEBUG */
 # define e_log_debug(...)                                                                          \
-     e_log__impl (E_LOG_FILE_LINE_ "\n",                                                           \
-                  E_LOG_COLOUR_MAGENTA_ "DEBUG " E_LOG_COLOUR_RESET_ __VA_ARGS__)
+     e_log__impl(E_LOG_FILE_LINE_ "\n",                                                            \
+                 E_LOG_COLOUR_MAGENTA_ "DEBUG " E_LOG_COLOUR_RESET_ __VA_ARGS__)
 #endif /* NDEBUG */
 #define e_log_info(...)                                                                            \
-    e_log__impl (E_LOG_FILE_LINE_ "\n",                                                            \
-                 E_LOG_COLOUR_GREEN_ "INFO  " E_LOG_COLOUR_RESET_ __VA_ARGS__)
+    e_log__impl(E_LOG_FILE_LINE_ "\n", E_LOG_COLOUR_GREEN_ "INFO  " E_LOG_COLOUR_RESET_ __VA_ARGS__)
 #define e_log_warn(...)                                                                            \
-    e_log__impl (E_LOG_FILE_LINE_ "\n",                                                            \
-                 E_LOG_COLOUR_YELLOW_ "WARN  " E_LOG_COLOUR_RESET_ __VA_ARGS__)
+    e_log__impl(E_LOG_FILE_LINE_ "\n",                                                             \
+                E_LOG_COLOUR_YELLOW_ "WARN  " E_LOG_COLOUR_RESET_ __VA_ARGS__)
 #define e_log_error(...)                                                                           \
-    e_log__impl (E_LOG_FILE_LINE_ "\n", E_LOG_COLOUR_RED_ "ERROR " E_LOG_COLOUR_RESET_ __VA_ARGS__)
+    e_log__impl(E_LOG_FILE_LINE_ "\n", E_LOG_COLOUR_RED_ "ERROR " E_LOG_COLOUR_RESET_ __VA_ARGS__)
 #define e_die(...)                                                                                 \
     do {                                                                                           \
-        e_log_error (__VA_ARGS__);                                                                 \
-        exit (EXIT_FAILURE);                                                                       \
+        e_log_error(__VA_ARGS__);                                                                  \
+        exit(EXIT_FAILURE);                                                                        \
     } while (0)
 
 #if defined(__MINGW32__) || defined(_WIN32) || defined(WIN32)
-void e_log__impl (const char *location, const char *fmt, ...);
+void e_log__impl(const char *location, const char *fmt, ...);
 #else  /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
-__attribute__ ((format (printf, 2, 3))) void
-e_log__impl (const char *location, const char *fmt, ...);
+__attribute__((format(printf, 2, 3))) void e_log__impl(const char *location, const char *fmt, ...);
 #endif /* defined (__MINGW32__) || defined (_WIN32) || defined (WIN32) */
 
 /**************************************************************************************************/
@@ -87,14 +85,12 @@ e_log__impl (const char *location, const char *fmt, ...);
 
 # include <stdarg.h>
 
-void
-e_log__impl (const char *location, const char *fmt, ...)
-{
+void e_log__impl(const char *location, const char *fmt, ...) {
     va_list ap;
-    va_start (ap, fmt);
-    vfprintf (stderr, fmt, ap); /* NOLINT */
-    va_end (ap);
-    fprintf (stderr, "%s", location);
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap); /* NOLINT */
+    va_end(ap);
+    fprintf(stderr, "%s", location);
 }
 
 #endif /* E_LOG_IMPL */

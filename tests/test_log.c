@@ -3,7 +3,5 @@
 # include "e_log.h"
 #endif
 
-void
-test_log (void)
-{
+void test_log(void) {
 }

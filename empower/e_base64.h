@@ -13,22 +13,20 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-size_t e_base64_encoded_len (size_t plain_len);
+size_t e_base64_encoded_len(size_t plain_len);
 
-size_t e_base64_decoded_len (const unsigned char *encoded, size_t encoded_len);
+size_t e_base64_decoded_len(const unsigned char *encoded, size_t encoded_len);
 
-size_t e_base64_encode (const unsigned char *plain, size_t plain_len, unsigned char *encoded_out);
+size_t e_base64_encode(const unsigned char *plain, size_t plain_len, unsigned char *encoded_out);
 
-int e_base64_decode (const unsigned char *encoded,
-                     size_t encoded_len,
-                     unsigned char *plain_out,
-                     size_t *plain_len);
+int e_base64_decode(const unsigned char *encoded, size_t encoded_len, unsigned char *plain_out,
+                    size_t *plain_len);
 
 /**************************************************************************************************/
 
 #ifdef E_BASE64_IMPL
 
-static int base64__is_valid_char (unsigned char c);
+static int base64__is_valid_char(unsigned char c);
 
 static const unsigned char base64__enc_lut[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -48,9 +46,7 @@ static const unsigned char base64__dec_lut[] = {
  * Get the length required to store the result of Base64-encoding a plain text of length
  * `plain_len`. The returned length does not include a terminating nul byte.
  */
-size_t
-e_base64_encoded_len (size_t plain_len)
-{
+size_t e_base64_encoded_len(size_t plain_len) {
     size_t ret;
 
     ret = plain_len;
@@ -64,9 +60,7 @@ e_base64_encoded_len (size_t plain_len)
  * Get the length required to store the result of Base64-decoding the nul-terminated encoded text
  * `encoded` of length `encoded_len`. The returned length does not include a terminating nul byte.
  */
-size_t
-e_base64_decoded_len (const unsigned char *encoded, size_t encoded_len)
-{
+size_t e_base64_decoded_len(const unsigned char *encoded, size_t encoded_len) {
     size_t ret, i;
 
     if (!encoded) return 0;
@@ -74,10 +68,11 @@ e_base64_decoded_len (const unsigned char *encoded, size_t encoded_len)
     ret = (encoded_len / 4) * 3;
 
     for (i = encoded_len; i > 0; i--) {
-        if (encoded[i - 1] == '=')
+        if (encoded[i - 1] == '=') {
             ret -= 1;
-        else
+        } else {
             break;
+        }
     }
 
     return ret;
@@ -88,9 +83,7 @@ e_base64_decoded_len (const unsigned char *encoded, size_t encoded_len)
  * `encoded_out`. `encoded_out` must be capable of holding at least `e_base64_get_enc_len
  * (plain_len)` bytes. A nul terminator is not written. Returns the number of bytes written.
  */
-size_t
-e_base64_encode (const unsigned char *plain, size_t plain_len, unsigned char *encoded_out)
-{
+size_t e_base64_encode(const unsigned char *plain, size_t plain_len, unsigned char *encoded_out) {
     size_t i, j;
     unsigned long n;
 
@@ -126,12 +119,8 @@ e_base64_encode (const unsigned char *plain, size_t plain_len, unsigned char *en
  * (encoded)` bytes. A nul terminator is not written. The number of written byters is placed in
  * `plain_len`. Returns non-zero when the decoding was successful.
  */
-int
-e_base64_decode (const unsigned char *encoded,
-                 size_t encoded_len,
-                 unsigned char *plain_out,
-                 size_t *plain_len)
-{
+int e_base64_decode(const unsigned char *encoded, size_t encoded_len, unsigned char *plain_out,
+                    size_t *plain_len) {
     unsigned long n;
     size_t i, j;
 
@@ -140,7 +129,7 @@ e_base64_decode (const unsigned char *encoded,
     if (encoded_len % 4 != 0) return 0;
 
     for (i = 0, j = 0; i < encoded_len; i += 4) {
-        if (!base64__is_valid_char (encoded[i])) return 0;
+        if (!base64__is_valid_char(encoded[i])) return 0;
 
         n = (unsigned long) base64__dec_lut[(unsigned char) encoded[i]];
         n <<= 6;
@@ -163,9 +152,7 @@ e_base64_decode (const unsigned char *encoded,
     return 1;
 }
 
-static int
-base64__is_valid_char (unsigned char c)
-{
+static int base64__is_valid_char(unsigned char c) {
     if ('a' <= c && c <= 'z') return 1;
     if ('A' <= c && c <= 'Z') return 1;
     if ('0' <= c && c <= '9') return 1;

@@ -22,19 +22,15 @@ typedef enum {
     E_COBSR_ERR_TRUNCATED_ENCODED_DATA = -3
 } E_Cobsr_Result;
 
-E_Cobsr_Result e_cobsr_decode (const unsigned char *encoded_input,
-                               size_t encoded_len,
-                               unsigned char *output,
-                               size_t *output_len);
+E_Cobsr_Result e_cobsr_decode(const unsigned char *encoded_input, size_t encoded_len,
+                              unsigned char *output, size_t *output_len);
 
-size_t e_cobsr_decode_output_size (size_t encoded_len);
+size_t e_cobsr_decode_output_size(size_t encoded_len);
 
-E_Cobsr_Result e_cobsr_encode (const unsigned char *plain_input,
-                               size_t plain_len,
-                               unsigned char *output,
-                               size_t *output_len);
+E_Cobsr_Result e_cobsr_encode(const unsigned char *plain_input, size_t plain_len,
+                              unsigned char *output, size_t *output_len);
 
-size_t e_cobsr_encode_output_size (size_t plain_len);
+size_t e_cobsr_encode_output_size(size_t plain_len);
 
 /**************************************************************************************************/
 
@@ -50,12 +46,8 @@ size_t e_cobsr_encode_output_size (size_t plain_len);
  *
  * On success, E_COBSR_OK is returned. For invalid data or invalid parameters, an error is returned.
  */
-E_Cobsr_Result
-e_cobsr_decode (const unsigned char *encoded_input,
-                size_t encoded_len,
-                unsigned char *output,
-                size_t *output_len)
-{
+E_Cobsr_Result e_cobsr_decode(const unsigned char *encoded_input, size_t encoded_len,
+                              unsigned char *output, size_t *output_len) {
     size_t code_index, in_index, out_index;
     unsigned char code, in_byte;
 
@@ -98,9 +90,7 @@ e_cobsr_decode (const unsigned char *encoded_input,
 /**
  * Determine the maximum number of bytes required for decoding a COBS/R-encoded string.
  */
-size_t
-e_cobsr_decode_output_size (size_t encoded_len)
-{
+size_t e_cobsr_decode_output_size(size_t encoded_len) {
     return encoded_len;
 }
 
@@ -114,12 +104,8 @@ e_cobsr_decode_output_size (size_t encoded_len)
  *
  * On success, E_COBSR_OK is returned. For invalid data or invalid parameters, an error is returned.
  */
-E_Cobsr_Result
-e_cobsr_encode (const unsigned char *plain_input,
-                size_t plain_len,
-                unsigned char *output,
-                size_t *output_len)
-{
+E_Cobsr_Result e_cobsr_encode(const unsigned char *plain_input, size_t plain_len,
+                              unsigned char *output, size_t *output_len) {
     size_t in_index, out_index, code_index;
     unsigned char in_char, out_char, last_value;
 
@@ -165,9 +151,7 @@ e_cobsr_encode (const unsigned char *plain_input,
 /**
  * Determine the maximum number of bytes required for encoding a string with COBS/R.
  */
-size_t
-e_cobsr_encode_output_size (size_t plain_len)
-{
+size_t e_cobsr_encode_output_size(size_t plain_len) {
     if (plain_len == 0) return 1;
     return plain_len + ((plain_len + 253) / 254);
 }

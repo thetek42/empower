@@ -23,14 +23,14 @@ typedef struct {
     size_t cap;
 } E_Bitvec;
 
-E_Bitvec e_bitvec_init (unsigned char *data, size_t cap);
-int e_bitvec_get (const E_Bitvec *bitvec, size_t index);
-int e_bitvec_all (const E_Bitvec *bitvec, size_t start, size_t end);
-int e_bitvec_any (const E_Bitvec *bitvec, size_t start, size_t end);
-void e_bitvec_set (E_Bitvec *bitvec, size_t index);
-void e_bitvec_unset (E_Bitvec *bitvec, size_t index);
-void e_bitvec_put (E_Bitvec *bitvec, size_t index, int value);
-void e_bitvec_negate (E_Bitvec *bitvec, size_t index);
+E_Bitvec e_bitvec_init(unsigned char *data, size_t cap);
+int e_bitvec_get(const E_Bitvec *bitvec, size_t index);
+int e_bitvec_all(const E_Bitvec *bitvec, size_t start, size_t end);
+int e_bitvec_any(const E_Bitvec *bitvec, size_t start, size_t end);
+void e_bitvec_set(E_Bitvec *bitvec, size_t index);
+void e_bitvec_unset(E_Bitvec *bitvec, size_t index);
+void e_bitvec_put(E_Bitvec *bitvec, size_t index, int value);
+void e_bitvec_negate(E_Bitvec *bitvec, size_t index);
 
 /**************************************************************************************************/
 
@@ -43,11 +43,9 @@ void e_bitvec_negate (E_Bitvec *bitvec, size_t index);
  * data. `cap` must be divisible by 8. This means that `data` must point to `cap / 8` items of type
  * `unsigned char`. All elements are initialised to 0.
  */
-E_Bitvec
-e_bitvec_init (unsigned char *data, size_t cap)
-{
+E_Bitvec e_bitvec_init(unsigned char *data, size_t cap) {
     E_Bitvec ret;
-    memset (data, 0, cap / 8);
+    memset(data, 0, cap / 8);
     ret.data = data;
     ret.cap = cap;
     return ret;
@@ -57,9 +55,7 @@ e_bitvec_init (unsigned char *data, size_t cap)
  * Get a bit at `index` within the bit vector `bitvec`. Returns 0 or 1, depending on the value of
  * the bit. If `index` is out of range, 0 is returned.
  */
-int
-e_bitvec_get (const E_Bitvec *bitvec, size_t index)
-{
+int e_bitvec_get(const E_Bitvec *bitvec, size_t index) {
     unsigned char byte;
     if (index >= bitvec->cap) return 1;
     byte = bitvec->data[index / 8];
@@ -75,9 +71,7 @@ e_bitvec_get (const E_Bitvec *bitvec, size_t index)
  * If `start` is out of range, 0 is returned. If `end` is out of range, it is trimmed to the
  * capacity of the bit vector. If the range has a length of 0, the value 1 is returned.
  */
-int
-e_bitvec_all (const E_Bitvec *bitvec, size_t start, size_t end)
-{
+int e_bitvec_all(const E_Bitvec *bitvec, size_t start, size_t end) {
     unsigned char byte;
     size_t i;
 
@@ -102,9 +96,7 @@ e_bitvec_all (const E_Bitvec *bitvec, size_t start, size_t end)
  * If `start` is out of range, 0 is returned. If `end` is out of range, it is trimmed to the
  * capacity of the bit vector. If the range has a length of 0, the value 0 is returned.
  */
-int
-e_bitvec_any (const E_Bitvec *bitvec, size_t start, size_t end)
-{
+int e_bitvec_any(const E_Bitvec *bitvec, size_t start, size_t end) {
     unsigned char byte;
     size_t i;
 
@@ -124,9 +116,7 @@ e_bitvec_any (const E_Bitvec *bitvec, size_t start, size_t end)
  * Set the bit at `index` within the bit vector `bitvec` to 1.
  * Does nothing if `index` is out of range.
  */
-void
-e_bitvec_set (E_Bitvec *bitvec, size_t index)
-{
+void e_bitvec_set(E_Bitvec *bitvec, size_t index) {
     unsigned char *byte;
     if (index >= bitvec->cap) return;
     byte = &bitvec->data[index / 8];
@@ -137,9 +127,7 @@ e_bitvec_set (E_Bitvec *bitvec, size_t index)
  * Set the bit at `index` within the bit vector `bitvec` to 0.
  * Does nothing if `index` is out of range.
  */
-void
-e_bitvec_unset (E_Bitvec *bitvec, size_t index)
-{
+void e_bitvec_unset(E_Bitvec *bitvec, size_t index) {
     unsigned char *byte;
     if (index >= bitvec->cap) return;
     byte = &bitvec->data[index / 8];
@@ -150,22 +138,18 @@ e_bitvec_unset (E_Bitvec *bitvec, size_t index)
  * Set the bit at `index` within the bit vector `bitvec` to `value`.
  * Does nothing if `index` is out of range.
  */
-void
-e_bitvec_put (E_Bitvec *bitvec, size_t index, int value)
-{
+void e_bitvec_put(E_Bitvec *bitvec, size_t index, int value) {
     if (value)
-        e_bitvec_set (bitvec, index);
+        e_bitvec_set(bitvec, index);
     else
-        e_bitvec_unset (bitvec, index);
+        e_bitvec_unset(bitvec, index);
 }
 
 /**
  * Negate the bit at `index` within the bit vector `bitvec`.
  * Does nothing if `index` is out of range.
  */
-void
-e_bitvec_negate (E_Bitvec *bitvec, size_t index)
-{
+void e_bitvec_negate(E_Bitvec *bitvec, size_t index) {
     unsigned char *byte;
     if (index >= bitvec->cap) return;
     byte = &bitvec->data[index / 8];

@@ -8,13 +8,16 @@
  * Arena allocation.
  *
  * Example:
- *  | void *buf = e_alloc_size (64);
- *  | E_Arena arena = e_arena_init (buf, 64);
- *  | char *zeroed = e_arena_alloc_zero (&arena, char, 8);
- *  | int *one_int = e_arena_alloc (&arena, int, 1);
- *  | u64 *correctly_aligned_u64 = e_arena_alloc (&arena, u64, 1);
- *  | do_stuff ();
- *  | e_free (buf);
+ *
+ * ```
+ * void *buf = e_alloc_size(64);
+ * E_Arena arena = e_arena_init(buf, 64);
+ * char *zeroed = e_arena_alloc_zero(&arena, char, 8);
+ * int *one_int = e_arena_alloc(&arena, int, 1);
+ * u64 *correctly_aligned_u64 = e_arena_alloc(&arena, u64, 1);
+ * do_stuff();
+ * e_free(buf);
+ * ```
  *
  **************************************************************************************************/
 
@@ -59,12 +62,12 @@ union e_max_align_union {
 /* clang-format on */
 
 #define e_arena_alloc(arena, T, nmemb)                                                             \
-    ((T *) e_arena_alloc_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))
+    ((T *) e_arena_alloc_aligned((arena), sizeof(T) * (nmemb), E_ALIGNOF(T)))
 #define e_arena_alloc_zero(arena, T, nmemb)                                                        \
-    ((T *) e_arena_alloc_zero_aligned ((arena), sizeof (T) * (nmemb), E_ALIGNOF (T)))
-#define e_arena_alloc_size(arena, size) e_arena_alloc_aligned ((arena), (size), E_ALIGN_MAX)
+    ((T *) e_arena_alloc_zero_aligned((arena), sizeof(T) * (nmemb), E_ALIGNOF(T)))
+#define e_arena_alloc_size(arena, size) e_arena_alloc_aligned((arena), (size), E_ALIGN_MAX)
 #define e_arena_alloc_zero_size(arena, size)                                                       \
-    e_arena_alloc_zero_aligned ((arena), (size), E_ALIGN_MAX)
+    e_arena_alloc_zero_aligned((arena), (size), E_ALIGN_MAX)
 
 typedef struct {
     unsigned char *buf;
@@ -72,11 +75,11 @@ typedef struct {
     size_t cap;
 } E_Arena;
 
-E_Arena e_arena_init (void *buf, size_t cap);
-void *e_arena_alloc_aligned (E_Arena *arena, size_t size, size_t align);
-void *e_arena_alloc_zero_aligned (E_Arena *arena, size_t size, size_t align);
-size_t e_arena_allocated_byte_count (const E_Arena *arena);
-size_t e_arena_remaining_byte_count (const E_Arena *arena);
+E_Arena e_arena_init(void *buf, size_t cap);
+void *e_arena_alloc_aligned(E_Arena *arena, size_t size, size_t align);
+void *e_arena_alloc_zero_aligned(E_Arena *arena, size_t size, size_t align);
+size_t e_arena_allocated_byte_count(const E_Arena *arena);
+size_t e_arena_remaining_byte_count(const E_Arena *arena);
 
 /**************************************************************************************************/
 
@@ -88,9 +91,7 @@ size_t e_arena_remaining_byte_count (const E_Arena *arena);
  * The arena will use the pre-existing buffer `buf` with capacity `cap`. The user is responsible for
  * allocating and freeing the memory that the arena uses (if necessary).
  */
-E_Arena
-e_arena_init (void *buf, size_t cap)
-{
+E_Arena e_arena_init(void *buf, size_t cap) {
     E_Arena arena;
     arena.buf = buf;
     arena.offset = 0;
@@ -102,9 +103,7 @@ e_arena_init (void *buf, size_t cap)
  * Allocate `size` bytes of alignment `align` in the arena allocator `arena`. If the allocation
  * fails due to insufficient space, NULL is returned.
  */
-void *
-e_arena_alloc_aligned (E_Arena *arena, size_t size, size_t align)
-{
+void *e_arena_alloc_aligned(E_Arena *arena, size_t size, size_t align) {
     size_t offset, alignment_mismatch;
     void *ptr;
 
@@ -126,13 +125,11 @@ e_arena_alloc_aligned (E_Arena *arena, size_t size, size_t align)
  * Allocate `size` bytes of alignment `align` in the arena allocator `arena` and zero out the
  * allocated memory. If the allocation fails due to insufficient space, NULL is returned.
  */
-void *
-e_arena_alloc_zero_aligned (E_Arena *arena, size_t size, size_t align)
-{
+void *e_arena_alloc_zero_aligned(E_Arena *arena, size_t size, size_t align) {
     unsigned char *ptr;
     size_t i;
 
-    ptr = e_arena_alloc_aligned (arena, size, align);
+    ptr = e_arena_alloc_aligned(arena, size, align);
     if (ptr == NULL) return NULL;
     for (i = 0; i < size; i++)
         ptr[i] = 0;
@@ -142,18 +139,14 @@ e_arena_alloc_zero_aligned (E_Arena *arena, size_t size, size_t align)
 /**
  * Returns the number of bytes that have been allocated in `arena`.
  */
-size_t
-e_arena_allocated_byte_count (const E_Arena *arena)
-{
+size_t e_arena_allocated_byte_count(const E_Arena *arena) {
     return arena->offset;
 }
 
 /**
  * Returns the number of remaining bytes that can still be allocated in `arena`.
  */
-size_t
-e_arena_remaining_byte_count (const E_Arena *arena)
-{
+size_t e_arena_remaining_byte_count(const E_Arena *arena) {
     if (arena->offset >= arena->cap) return 0;
     return arena->cap - arena->offset;
 }

@@ -10,11 +10,11 @@
  * It can be used as follows:
  *
  * ```
- * E_Da (int) int_list = e_da_init ();
- * e_da_push (&int_list, 1);
- * e_da_push (&int_list, 2);
- * e_da_push (&int_list, 3);
- * e_da_deinit (&int_list);
+ * E_Da(int) int_list = e_da_init ();
+ * e_da_push(&int_list, 1);
+ * e_da_push(&int_list, 2);
+ * e_da_push(&int_list, 3);
+ * e_da_deinit(&int_list);
  * ```
  *
  * In the case where the dynamic array definition has to be reused for multiple
@@ -22,7 +22,7 @@
  * can be used:
  *
  * ```
- * typedef E_Da (int) Int_List;
+ * typedef E_Da(int) Int_List;
  * Int_List first_list;
  * Int_List second_list;
  * ```
@@ -36,9 +36,9 @@
 /* compatibility annoyances: */
 #ifndef E_TYPEOF
 # if __STDC_VERSION__ >= 202311L
-#  define E_TYPEOF(x) typeof (x)
+#  define E_TYPEOF(x) typeof(x)
 # else
-#  define E_TYPEOF(x) __typeof__ (x)
+#  define E_TYPEOF(x) __typeof__(x)
 # endif
 #endif /* E_TYPEOF */
 
@@ -61,7 +61,7 @@
 /**
  * Free the memory occupied by the dynamic array.
  */
-#define e_da_deinit(da) e_da__deinit (&(da)->data)
+#define e_da_deinit(da) e_da__deinit(&(da)->data)
 
 /**
  * Obtain the length (i.e. the number of contained items) of the dynamic array.
@@ -74,35 +74,35 @@
  * This does not perform any bounds checks. If the dynamic array is empty, NULL
  * may be returned (but this is not a guarantee).
  */
-#define e_da_first(da) ((E_TYPEOF ((da)->type)) (da)->data.ptr)
+#define e_da_first(da) ((E_TYPEOF((da)->type))(da)->data.ptr)
 
 /**
  * Obtain a pointer to the last item of the dynamic array.
  *
  * This does not perform any bounds checks.
  */
-#define e_da_last(da) (&(e_da_first (da))[(da)->data.len - 1])
+#define e_da_last(da) (&(e_da_first(da))[(da)->data.len - 1])
 
 /**
  * Obtain a pointer to the nth item of the dynamic array.
  *
  * This does not perform any bounds checks.
  */
-#define e_da_nth(da, n) (&(e_da_first (da))[(n)])
+#define e_da_nth(da, n) (&(e_da_first(da))[(n)])
 
 /**
  * Append a single item to the end of a dynamic array.
  */
 #define e_da_push(da, item)                                                                        \
     do {                                                                                           \
-        E_TYPEOF (*(da)->type) e_da__item = (item);                                                \
-        e_da_extend ((da), &e_da__item, 1);                                                        \
+        E_TYPEOF(*(da)->type) e_da__item = (item);                                                 \
+        e_da_extend((da), &e_da__item, 1);                                                         \
     } while (0)
 
 /**
  * Append a single item to the end of a dynamic array (but the item is a pointer).
  */
-#define e_da_push_ref(da, item_ref) e_da_extend ((da), (1 ? (item_ref) : (da)->type), 1)
+#define e_da_push_ref(da, item_ref) e_da_extend((da), (1 ? (item_ref) : (da)->type), 1)
 
 /**
  * Make room for an additional item in the dynamic array, but don’t initialize that item. The
@@ -110,13 +110,13 @@
  * the dynamic array is adjusted, so not filling in the new memory will cause UB.
  */
 #define e_da_push_uninit(da)                                                                       \
-    ((E_TYPEOF ((da)->type)) e_da__extend_uninit (&(da)->data, 1, sizeof (*(da)->type)))
+    ((E_TYPEOF((da)->type)) e_da__extend_uninit(&(da)->data, 1, sizeof(*(da)->type)))
 
 /**
  * Extend the dynamic array by multiple items.
  */
 #define e_da_extend(da, items, count)                                                              \
-    e_da__extend (&(da)->data, (1 ? (items) : (da)->type), (count), sizeof (*(da)->type))
+    e_da__extend(&(da)->data, (1 ? (items) : (da)->type), (count), sizeof(*(da)->type))
 
 /**
  * Make room for `count` additional items in the dynamic array, but don’t initialize that item. The
@@ -124,12 +124,12 @@
  * the dynamic array is adjusted, so not filling in the new memory will cause UB.
  */
 #define e_da_extend_uninit(da, count)                                                              \
-    ((E_TYPEOF ((da)->type)) e_da__extend_uninit (&(da)->data, (count), sizeof (*(da)->type)))
+    ((E_TYPEOF((da)->type)) e_da__extend_uninit(&(da)->data, (count), sizeof(*(da)->type)))
 
 /**
  * Remove a certain number of items from the end of the dynamic array.
  */
-#define e_da_pop(da, count) e_da__pop (&(da)->data, (count))
+#define e_da_pop(da, count) e_da__pop(&(da)->data, (count))
 
 /**
  * Iterate over the dynamic array.
@@ -146,8 +146,8 @@
  */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 # define e_da_foreach(da, it)                                                                      \
-     for (E_TYPEOF ((da)->type) (it) = (da)->data.ptr;                                             \
-          (it) < ((E_TYPEOF ((da)->type)) ((da)->data.ptr) + (da)->data.len); (it) += 1)
+     for (E_TYPEOF((da)->type)(it) = (da)->data.ptr;                                               \
+          (it) < ((E_TYPEOF((da)->type))((da)->data.ptr) + (da)->data.len); (it) += 1)
 #endif
 
 typedef struct {
@@ -156,11 +156,11 @@ typedef struct {
     size_t cap;
 } E_Da_Data;
 
-void e_da__deinit (E_Da_Data *da);
-void e_da__reserve (E_Da_Data *da, size_t cap, size_t item_size);
-void e_da__extend (E_Da_Data *da, void *data, size_t count, size_t item_size);
-void *e_da__extend_uninit (E_Da_Data *da, size_t count, size_t item_size);
-void e_da__pop (E_Da_Data *da, size_t count);
+void e_da__deinit(E_Da_Data *da);
+void e_da__reserve(E_Da_Data *da, size_t cap, size_t item_size);
+void e_da__extend(E_Da_Data *da, void *data, size_t count, size_t item_size);
+void *e_da__extend_uninit(E_Da_Data *da, size_t count, size_t item_size);
+void e_da__pop(E_Da_Data *da, size_t count);
 
 /**************************************************************************************************/
 
@@ -172,52 +172,42 @@ void e_da__pop (E_Da_Data *da, size_t count);
 
 # define E_DA__INIT_CAP 32
 
-void
-e_da__deinit (E_Da_Data *da)
-{
-    free (da->ptr);
+void e_da__deinit(E_Da_Data *da) {
+    free(da->ptr);
 }
 
-void
-e_da__reserve (E_Da_Data *da, size_t cap, size_t item_size)
-{
+void e_da__reserve(E_Da_Data *da, size_t cap, size_t item_size) {
     void *ptr;
     if (cap <= da->cap) return;
     if (da->cap == 0) da->cap = E_DA__INIT_CAP;
     while (da->cap < cap)
         da->cap *= 2;
-    ptr = realloc (da->ptr, da->cap * item_size);
+    ptr = realloc(da->ptr, da->cap * item_size);
     if (ptr == NULL) {
-        fprintf (stderr, "[e_da] allocation failed!\n");
-        abort ();
+        fprintf(stderr, "[e_da] allocation failed!\n");
+        abort();
     }
     da->ptr = ptr;
 }
 
-void
-e_da__extend (E_Da_Data *da, void *data, size_t count, size_t item_size)
-{
+void e_da__extend(E_Da_Data *da, void *data, size_t count, size_t item_size) {
     unsigned char *ptr;
-    e_da__reserve (da, da->len + count, item_size);
+    e_da__reserve(da, da->len + count, item_size);
     ptr = da->ptr;
-    memcpy (&ptr[da->len * item_size], data, count * item_size);
+    memcpy(&ptr[da->len * item_size], data, count * item_size);
     da->len += count;
 }
 
-void *
-e_da__extend_uninit (E_Da_Data *da, size_t count, size_t item_size)
-{
+void *e_da__extend_uninit(E_Da_Data *da, size_t count, size_t item_size) {
     unsigned char *ptr;
-    e_da__reserve (da, da->len + count, item_size);
+    e_da__reserve(da, da->len + count, item_size);
     ptr = da->ptr;
     ptr = &ptr[item_size * da->len];
     da->len += count;
     return ptr;
 }
 
-void
-e_da__pop (E_Da_Data *da, size_t count)
-{
+void e_da__pop(E_Da_Data *da, size_t count) {
     if (count > da->len) count = da->len;
     da->len -= count;
 }

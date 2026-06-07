@@ -11,22 +11,22 @@
  * It can be used as follows:
  *
  * ```
- * int *memory = malloc (sizeof (int) * 128);
- * E_Rbuf (int) int_rbuf = e_rbuf_init (memory, 128);
- * e_rbuf_push (&int_rbuf, 1);
- * e_rbuf_push (&int_rbuf, 2);
+ * int *memory = malloc(sizeof (int) * 128);
+ * E_Rbuf(int) int_rbuf = e_rbuf_init(memory, 128);
+ * e_rbuf_push(&int_rbuf, 1);
+ * e_rbuf_push(&int_rbuf, 2);
  * int popped;
- * bool x = e_rbuf_pop (&int_rbuf, &popped); // true
- * bool y = e_rbuf_pop (&int_rbuf, &popped); // true
- * bool z = e_rbuf_pop (&int_rbuf, &popped); // false (no items left)
- * e_rbuf_deinit (&int_rbuf);
+ * bool x = e_rbuf_pop(&int_rbuf, &popped); // true
+ * bool y = e_rbuf_pop(&int_rbuf, &popped); // true
+ * bool z = e_rbuf_pop(&int_rbuf, &popped); // false (no items left)
+ * e_rbuf_deinit(&int_rbuf);
  * ```
  *
  * In the case where the ringbuffer definition has to be reused for multiple variables and those
  * variables have to have a compatible type, a `typedef` can be used:
  *
  * ```
- * typedef E_Rbuf (int) Int_Rbuf;
+ * typedef E_Rbuf(int) Int_Rbuf;
  * Int_Rbuf first_rbuf;
  * Int_Rbuf second_rbuf;
  * ```
@@ -49,9 +49,9 @@
 /* compatibility annoyances: */
 #ifndef E_TYPEOF
 # if __STDC_VERSION__ >= 202311L
-#  define E_TYPEOF(x) typeof (x)
+#  define E_TYPEOF(x) typeof(x)
 # else
-#  define E_TYPEOF(x) __typeof__ (x)
+#  define E_TYPEOF(x) __typeof__(x)
 # endif
 #endif /* E_TYPEOF */
 
@@ -112,8 +112,8 @@
  */
 #define e_rbuf_push(rbuf, item)                                                                    \
     do {                                                                                           \
-        E_TYPEOF (*(rbuf)->type) e_rbuf__item = (item);                                            \
-        e_rbuf__push (&(rbuf)->data, &e_rbuf__item, sizeof (*(rbuf)->type));                       \
+        E_TYPEOF(*(rbuf)->type) e_rbuf__item = (item);                                             \
+        e_rbuf__push(&(rbuf)->data, &e_rbuf__item, sizeof(*(rbuf)->type));                         \
     } while (0)
 
 /**
@@ -121,7 +121,7 @@
  * full, the tail of the ringbuffer will be overwritten.
  */
 #define e_rbuf_push_ref(rbuf, item_ptr)                                                            \
-    e_rbuf__push (&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof (*(rbuf)->type))
+    e_rbuf__push(&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof(*(rbuf)->type))
 
 /**
  * Add an item to the back of the ringbuffer. If the ringbuffer is full, the head of the
@@ -129,8 +129,8 @@
  */
 #define e_rbuf_push_back(rbuf, item)                                                               \
     do {                                                                                           \
-        E_TYPEOF (*(rbuf)->type) e_rbuf__item = (item);                                            \
-        e_rbuf__push_back (&(rbuf)->data, &e_rbuf__item, sizeof (*(rbuf)->type));                  \
+        E_TYPEOF(*(rbuf)->type) e_rbuf__item = (item);                                             \
+        e_rbuf__push_back(&(rbuf)->data, &e_rbuf__item, sizeof(*(rbuf)->type));                    \
     } while (0)
 
 /**
@@ -138,7 +138,7 @@
  * the head of the ringbuffer will be overwritten.
  */
 #define e_rbuf_push_back_ref(rbuf, item_ptr)                                                       \
-    e_rbuf__push_back (&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof (*(rbuf)->type))
+    e_rbuf__push_back(&(rbuf)->data, (1 ? (item_ptr) : (rbuf)->type), sizeof(*(rbuf)->type))
 
 /**
  * Try to pop an item from the back of the ringbuffer `rbuf`.
@@ -151,7 +151,7 @@
  * popped and `true` or `false` will be returned.
  */
 #define e_rbuf_pop(rbuf, out)                                                                      \
-    e_rbuf__pop (&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof (*(rbuf)->type))
+    e_rbuf__pop(&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof(*(rbuf)->type))
 
 /**
  * Try to pop an item from the front of the ringbuffer `rbuf`.
@@ -164,7 +164,7 @@
  * popped and `true` or `false` will be returned.
  */
 #define e_rbuf_pop_front(rbuf, out)                                                                \
-    e_rbuf__pop_front (&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof (*(rbuf)->type))
+    e_rbuf__pop_front(&(rbuf)->data, (1 ? (out) : (rbuf)->type), sizeof(*(rbuf)->type))
 
 typedef struct {
     void *ptr;
@@ -174,18 +174,16 @@ typedef struct {
     size_t tail;
 } E_Rbuf_Data;
 
-void e_rbuf__push (E_Rbuf_Data *rbuf, const void *item, size_t item_size);
-void e_rbuf__push_back (E_Rbuf_Data *rbuf, const void *item, size_t item_size);
-int e_rbuf__pop (E_Rbuf_Data *rbuf, void *out, size_t item_size);
-int e_rbuf__pop_front (E_Rbuf_Data *rbuf, void *out, size_t item_size);
+void e_rbuf__push(E_Rbuf_Data *rbuf, const void *item, size_t item_size);
+void e_rbuf__push_back(E_Rbuf_Data *rbuf, const void *item, size_t item_size);
+int e_rbuf__pop(E_Rbuf_Data *rbuf, void *out, size_t item_size);
+int e_rbuf__pop_front(E_Rbuf_Data *rbuf, void *out, size_t item_size);
 
 /**************************************************************************************************/
 
 #ifdef E_RBUF_IMPL
 
-void
-e_rbuf__push (E_Rbuf_Data *rbuf, const void *item, size_t item_size)
-{
+void e_rbuf__push(E_Rbuf_Data *rbuf, const void *item, size_t item_size) {
     const unsigned char *item_uchar;
     unsigned char *item_ptr;
     unsigned char *ptr;
@@ -210,9 +208,7 @@ e_rbuf__push (E_Rbuf_Data *rbuf, const void *item, size_t item_size)
     rbuf->head = (rbuf->head + 1) % rbuf->cap;
 }
 
-void
-e_rbuf__push_back (E_Rbuf_Data *rbuf, const void *item, size_t item_size)
-{
+void e_rbuf__push_back(E_Rbuf_Data *rbuf, const void *item, size_t item_size) {
     const unsigned char *item_uchar;
     unsigned char *item_ptr;
     unsigned char *ptr;
@@ -237,9 +233,7 @@ e_rbuf__push_back (E_Rbuf_Data *rbuf, const void *item, size_t item_size)
     }
 }
 
-int
-e_rbuf__pop (E_Rbuf_Data *rbuf, void *out, size_t item_size)
-{
+int e_rbuf__pop(E_Rbuf_Data *rbuf, void *out, size_t item_size) {
     unsigned char *out_uchar;
     unsigned char *ptr_item;
     unsigned char *ptr;
@@ -260,9 +254,7 @@ e_rbuf__pop (E_Rbuf_Data *rbuf, void *out, size_t item_size)
     return 1;
 }
 
-int
-e_rbuf__pop_front (E_Rbuf_Data *rbuf, void *out, size_t item_size)
-{
+int e_rbuf__pop_front(E_Rbuf_Data *rbuf, void *out, size_t item_size) {
     unsigned char *out_uchar;
     unsigned char *ptr_item;
     unsigned char *ptr;

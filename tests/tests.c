@@ -1,57 +1,55 @@
 #define E_TEST_IMPL
 #include "e_test.h"
 
-extern void test_alloc (void);
-extern void test_arena (void);
-extern void test_base64 (void);
-extern void test_bcd (void);
-extern void test_bitvec (void);
-extern void test_char (void);
-extern void test_cobs (void);
-extern void test_cobsr (void);
-extern void test_compat (void);
-extern void test_cstr (void);
-extern void test_da (void);
-extern void test_debug (void);
-extern void test_endian (void);
-extern void test_ini (void);
-extern void test_log (void);
-extern void test_macro (void);
-extern void test_mem (void);
-extern void test_queue (void);
-extern void test_rand (void);
-extern void test_rbuf (void);
-extern void test_sb (void);
-extern void test_stdc (void);
-extern void test_sv (void);
+extern void test_alloc(void);
+extern void test_arena(void);
+extern void test_base64(void);
+extern void test_bcd(void);
+extern void test_bitvec(void);
+extern void test_char(void);
+extern void test_cobs(void);
+extern void test_cobsr(void);
+extern void test_compat(void);
+extern void test_cstr(void);
+extern void test_da(void);
+extern void test_debug(void);
+extern void test_endian(void);
+extern void test_ini(void);
+extern void test_log(void);
+extern void test_macro(void);
+extern void test_mem(void);
+extern void test_queue(void);
+extern void test_rand(void);
+extern void test_rbuf(void);
+extern void test_sb(void);
+extern void test_stdc(void);
+extern void test_sv(void);
 
-int
-main (void)
-{
-    test_alloc ();
-    test_arena ();
-    test_base64 ();
-    test_bcd ();
-    test_bitvec ();
-    test_char ();
-    test_cobs ();
-    test_cobsr ();
-    test_compat ();
-    test_cstr ();
-    test_da ();
-    test_debug ();
-    test_endian ();
-    test_ini ();
-    test_log ();
-    test_macro ();
-    test_mem ();
-    test_queue ();
-    test_rand ();
-    test_rbuf ();
-    test_sb ();
-    test_stdc ();
-    test_sv ();
+int main(void) {
+    test_alloc();
+    test_arena();
+    test_base64();
+    test_bcd();
+    test_bitvec();
+    test_char();
+    test_cobs();
+    test_cobsr();
+    test_compat();
+    test_cstr();
+    test_da();
+    test_debug();
+    test_endian();
+    test_ini();
+    test_log();
+    test_macro();
+    test_mem();
+    test_queue();
+    test_rand();
+    test_rbuf();
+    test_sb();
+    test_stdc();
+    test_sv();
 
-    e_test_finish ();
+    e_test_finish();
     return 0;
 }

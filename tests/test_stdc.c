@@ -3,7 +3,5 @@
 
 #include <stddef.h>
 
-void
-test_stdc (void)
-{
+void test_stdc(void) {
 }
