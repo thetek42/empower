@@ -91,6 +91,7 @@ somewhere.
 
 To add a new module, follow these steps:
 1. Add `-DE_<MODULE>_IMPL` to `.clangd` and `.clang-tidy`
-2. Create the module in `empower/e_<MODULE>.h`
-3. Create the tests in `tests/test_<MODULE>.c`
+2. Create the module in `empower/e_<MODULE>.h` (copy `misc/module_template.h`)
+3. Create the tests in `tests/test_<MODULE>.c` (copy `misc/test_template.c`)
 4. Call the module’s test function in `tests/tests.c`
+5. Update REAMDE.md and SUPPORT.md
